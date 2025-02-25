@@ -45,5 +45,6 @@ console.log("Key 'tempKey' created with a 10s expiration");
 kv.sadd("mySet", "apple");
 kv.sadd("mySet", "banana");
 kv.sadd("mySet", "cherry");
+kv.sadd("mySet", "cherry");
 const setMembers = kv.smembers("mySet");
 console.log("Set elements in 'mySet':", setMembers);
