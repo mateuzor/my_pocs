@@ -1,0 +1,91 @@
+{
+    "type": "Program",
+    "start": 1,
+    "end": 84,
+    "body": [
+      {
+        "type": "VariableDeclaration",
+        "start": 1,
+        "end": 12,
+        "declarations": [
+          {
+            "type": "VariableDeclarator",
+            "start": 5,
+            "end": 11,
+            "id": {
+              "type": "Identifier",
+              "start": 5,
+              "end": 6,
+              "name": "x"
+            },
+            "init": {
+              "type": "Literal",
+              "start": 9,
+              "end": 11,
+              "value": 10,
+              "raw": "10"
+            }
+          }
+        ],
+        "kind": "var"
+      },
+      {
+        "type": "FunctionDeclaration",
+        "start": 14,
+        "end": 84,
+        "id": {
+          "type": "Identifier",
+          "start": 23,
+          "end": 34,
+          "name": "myFunction"
+        },
+        "params": [
+          { "type": "Identifier", "start": 35, "end": 36, "name": "a" },
+          { "type": "Identifier", "start": 38, "end": 39, "name": "b" },
+          { "type": "Identifier", "start": 41, "end": 42, "name": "c" },
+          { "type": "Identifier", "start": 44, "end": 45, "name": "d" },
+          { "type": "Identifier", "start": 47, "end": 48, "name": "e" },
+          { "type": "Identifier", "start": 50, "end": 51, "name": "f" }
+        ],
+        "body": {
+          "type": "BlockStatement",
+          "start": 53,
+          "end": 84,
+          "body": [
+            {
+              "type": "ReturnStatement",
+              "start": 59,
+              "end": 80,
+              "argument": {
+                "type": "BinaryExpression",
+                "operator": "+",
+                "left": {
+                  "type": "BinaryExpression",
+                  "operator": "+",
+                  "left": {
+                    "type": "BinaryExpression",
+                    "operator": "+",
+                    "left": {
+                      "type": "BinaryExpression",
+                      "operator": "+",
+                      "left": {
+                        "type": "BinaryExpression",
+                        "operator": "+",
+                        "left": { "type": "Identifier", "name": "a" },
+                        "right": { "type": "Identifier", "name": "b" }
+                      },
+                      "right": { "type": "Identifier", "name": "c" }
+                    },
+                    "right": { "type": "Identifier", "name": "d" }
+                  },
+                  "right": { "type": "Identifier", "name": "e" }
+                },
+                "right": { "type": "Identifier", "name": "f" }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+  
