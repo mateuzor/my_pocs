@@ -1,18 +1,68 @@
-module.exports = [
-  (node) => {
-    if (node.type === "VariableDeclaration" && node.kind === "var") {
+// Rule to detect 'var' usage - recommends using let/const instead
+const noVarRule = (node) => {
+  if (node.type === "VariableDeclaration" && node.kind === "var") {
+    return {
+      message: "Unexpected var, use let or const instead",
+      line: node.loc.start.line,
+      column: node.loc.start.column,
+      severity: "error",
+      ruleId: "no-var",
+    };
+  }
+};
+
+// Rule to detect console.log statements
+const noConsoleRule = (node) => {
+  if (
+    node.type === "CallExpression" &&
+    node.callee.type === "MemberExpression" &&
+    node.callee.object.name === "console"
+  ) {
+    return {
+      message: "Unexpected console statement",
+      line: node.loc.start.line,
+      column: node.loc.start.column,
+      severity: "warning",
+      ruleId: "no-console",
+    };
+  }
+};
+
+// Rule to check if line length exceeds 80 characters
+const maxLineLengthRule = (node) => {
+  if (node.loc) {
+    const lineLength = node.loc.end.column - node.loc.start.column;
+    if (lineLength > 80) {
       return {
-        message: "Avoid using 'var'. Use 'let' or 'const' instead.",
+        message: `Line has a length of ${lineLength}. Maximum allowed is 80`,
         line: node.loc.start.line,
+        column: node.loc.start.column,
+        severity: "warning",
+        ruleId: "max-len",
       };
     }
-  },
-  (node) => {
-    if (node.type === "FunctionDeclaration" && node.params.length > 5) {
+  }
+};
+
+// Rule to track variable declarations and usage
+const declarations = new Set();
+
+const noRedeclareRule = (node) => {
+  if (node.type === "VariableDeclarator") {
+    const varName = node.id.name;
+
+    if (declarations.has(varName)) {
       return {
-        message: "Avoid functions with more than 5 parameters.",
+        message: `'${varName}' is already declared`,
         line: node.loc.start.line,
+        column: node.loc.start.column,
+        severity: "error",
+        ruleId: "no-redeclare",
       };
     }
-  },
-];
+
+    declarations.add(varName);
+  }
+};
+
+module.exports = [noVarRule, noConsoleRule, maxLineLengthRule, noRedeclareRule];
