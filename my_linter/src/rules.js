@@ -65,4 +65,38 @@ const noRedeclareRule = (node) => {
   }
 };
 
-module.exports = [noVarRule, noConsoleRule, maxLineLengthRule, noRedeclareRule];
+const globals = new Set(["console", "log"]);
+
+const noOutOfScopeUsageRule = (
+  node,
+  globalVarsAndFunctions,
+  functionScopes
+) => {
+  if (node.type === "Identifier") {
+    const varName = node.name;
+
+    if (globals.has(varName)) return;
+
+    if (globalVarsAndFunctions.has(varName)) return;
+
+    const isInScope = functionScopes.some((scope) => scope.has(varName));
+
+    if (!isInScope) {
+      return {
+        message: `'${varName}' is used outside its declared scope.`,
+        line: node.loc.start.line,
+        column: node.loc.start.column,
+        severity: "error",
+        ruleId: "no-out-of-scope",
+      };
+    }
+  }
+};
+
+module.exports = [
+  noVarRule,
+  noConsoleRule,
+  maxLineLengthRule,
+  noRedeclareRule,
+  noOutOfScopeUsageRule,
+];

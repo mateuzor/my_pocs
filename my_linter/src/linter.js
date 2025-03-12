@@ -18,14 +18,41 @@ function lint(filePath) {
   fs.writeFileSync("syntaxTree.json", astJson);
 
   const errors = [];
+  const globalVarsAndFunctions = new Map();
+  const functionScopes = [new Set()];
 
   // Traverse the AST and apply rules
   estraverse.traverse(ast, {
     enter(node) {
+      if (node.type === "FunctionDeclaration") {
+        functionScopes.push(new Set()); // Create a new scope for this function
+        globalVarsAndFunctions.set(node.id.name, node.loc.start.line); // Store the function name as globally accessible
+      }
+
+      if (node.type === "VariableDeclaration") {
+        node.declarations.forEach((declaration) => {
+          if (declaration.id.type === "Identifier") {
+            const varName = declaration.id.name;
+
+            if (node.kind === "var" && functionScopes.length === 1) {
+              globalVarsAndFunctions.set(varName, node.loc.start.line);
+            } else {
+              functionScopes[functionScopes.length - 1].add(varName); // Store it in the current function scope
+            }
+          }
+        });
+      }
+
       rules.forEach((rule) => {
-        const error = rule(node);
+        const error = rule(node, globalVarsAndFunctions, functionScopes);
         if (error) errors.push(error);
       });
+    },
+    leave(node) {
+      // When exiting a function, remove its scope from the stack
+      if (node.type === "FunctionDeclaration") {
+        functionScopes.pop();
+      }
     },
   });
 
