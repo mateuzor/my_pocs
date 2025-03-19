@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessible Modal POC</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <button id="open-modal" aria-haspopup="dialog">Open Modal</button>
+
+    <!-- Accessible Modal -->
+    <div
+      id="modal"
+      class="modal"
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-hidden="true"
+    >
+      <div class="modal-content">
+        <h2 id="modal-title">Accessible Modal</h2>
+        <p>This is a fully accessible modal without dependencies.</p>
+        <button id="close-modal">Close</button>
+      </div>
+    </div>
+
+    <script src="modal.js"></script>
+  </body>
+</html>
