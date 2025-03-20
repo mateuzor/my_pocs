@@ -70,6 +70,12 @@ Simply open `index.html` in a browser—**no server required!** 🎯
 
 ## 📌 Next Steps
 
+1️⃣ Enhance Drag & Drop animations for smoother movement.
+
+2️⃣ Allow renaming of tabs for customization.
+
+3️⃣ Expand tab content functionality (e.g., text editors, embedded components).
+
 ---
 
 🚀 **Project created to explore interactive UI components with HTML5 APIs!**
