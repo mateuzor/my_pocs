@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Form Validation</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <form id="registration-form" novalidate>
+      <h2>Register</h2>
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required />
+        <small class="error"></small>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required />
+        <small class="error"></small>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password (min 6 characters)</label>
+        <input type="password" id="password" required minlength="6" />
+        <small class="error"></small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">Confirm Password</label>
+        <input type="password" id="confirm" required />
+        <small class="error"></small>
+      </div>
+
+      <div class="form-group">
+        <label for="age">Age (18+)</label>
+        <input type="number" id="age" required />
+        <small class="error"></small>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <script src="validation.js"></script>
+  </body>
+</html>
