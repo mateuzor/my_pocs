@@ -4,7 +4,6 @@ import { Product } from "@/types/Product";
 interface StoreState {
   products: Product[];
   searchTerm: string;
-  rateProduct: (id: number, rating: number) => void;
   setSearchTerm: (term: string) => void;
 }
 
@@ -82,6 +81,5 @@ export const useStore = create<StoreState>((set) => ({
     },
   ],
   searchTerm: "",
-  rateProduct: (id, rating) => {},
   setSearchTerm: (term) => set({ searchTerm: term }),
 }));
