@@ -33,6 +33,7 @@ export default function ProductRating({ ratings }: ProductRatingProps) {
           </button>
         ))}
       </div>
+      <span className="text-gray-600">{ratings?.length}</span>
     </div>
   );
 }
