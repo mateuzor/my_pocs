@@ -46,9 +46,9 @@ export default function ProductList({ title, products }: ProductListProps) {
                 {product.description}
               </p>
               <span className="text-sm font-semibold text-black">
-                R$ {product.price.toFixed(2)}
+                $ {product.price.toFixed(2)}
               </span>
-              <ProductRating productId={product.id} ratings={product.ratings} />
+              <ProductRating rating={product?.rating} />
             </div>
           ))
         )}

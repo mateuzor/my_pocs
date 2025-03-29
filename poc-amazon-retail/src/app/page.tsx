@@ -14,9 +14,8 @@ export default function Home() {
 
   const recommended = products
     .filter((p) => {
-      if (!p.ratings.length) return false;
-      const avg = p.ratings.reduce((a, b) => a + b, 0) / p.ratings.length;
-      return avg >= 4.5;
+      if (!p.rating.count) return false;
+      return p.rating.rate >= 4.5;
     })
     .slice(0, 4);
 
