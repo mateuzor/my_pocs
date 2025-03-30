@@ -1,5 +1,6 @@
 "use client";
 
+import HeaderBanner from "@/components/Header";
 import ProductList from "@/components/ProductList";
 import SearchBox from "@/components/SearchBox";
 import { useStore } from "@/store/useStore";
@@ -20,12 +21,8 @@ export default function Home() {
     .slice(0, 4);
 
   return (
-    <main className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-xl font-semibold mb-4 text-black">Products</h1>
-      <div className="mb-6">
-        <SearchBox />
-      </div>
-
+    <main className="min-h-screen bg-gray-100">
+      <HeaderBanner />
       <ProductList products={filtered} />
 
       <div className="mt-10">

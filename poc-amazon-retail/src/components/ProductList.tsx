@@ -21,7 +21,7 @@ export default function ProductList({ title, products }: ProductListProps) {
     );
 
   return (
-    <div className="w-full px-0">
+    <div className="w-full m-2 px-0">
       {title && (
         <h2 className="text-lg font-semibold mb-4 text-black">{title}</h2>
       )}
