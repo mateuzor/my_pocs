@@ -22,7 +22,7 @@ export default function ProductRating({ rating }: ProductRatingProps) {
 
   return (
     <div className="flex items-center justify-between text-xs mt-1">
-      <span className="text-gray-600">{rate?.toFixed(1) ?? "No ratings"}</span>
+      <span className="text-black">{rate?.toFixed(1) ?? "No ratings"}</span>
       <div className="flex gap-0.5 text-yellow-500 text-base">
         {[1, 2, 3, 4, 5].map((star) => (
           <span key={star} className="hover:text-yellow-400">
@@ -30,7 +30,7 @@ export default function ProductRating({ rating }: ProductRatingProps) {
           </span>
         ))}
       </div>
-      <span className="text-gray-600">{count ?? 0}</span>
+      <span className="text-black">{count ?? 0}</span>
     </div>
   );
 }

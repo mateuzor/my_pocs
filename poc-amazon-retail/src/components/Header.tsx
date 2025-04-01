@@ -5,13 +5,17 @@ import SearchBox from "@/components/SearchBox";
 
 export default function HeaderBanner() {
   return (
-    <header className="w-full bg-[#232F3E] py-2 px-2 flex items-center justify-between gap-4">
+    <header
+      className="w-full bg-[#232F3E] py-4 px-4 flex items-center justify-between gap-4 text-white"
+      role="banner"
+      aria-label="Main navigation"
+    >
       <div className="flex items-center gap-4">
         <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
-          alt="Amazon Logo"
-          width={60}
-          height={35}
+          src="/images/amazon-logo.png"
+          alt="Amazon logo"
+          width={70}
+          height={30}
           className="object-contain"
         />
       </div>
