@@ -21,11 +21,11 @@ export default function ProductList({ title, products }: ProductListProps) {
     );
 
   return (
-    <div className="w-full m-2 px-0">
+    <div className="w-full px-2">
       {title && (
         <h2 className="text-lg font-semibold mb-4 text-black">{title}</h2>
       )}
-      <div className="grid gap-4 grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {list.length === 0 ? (
           <p className="text-gray-500">No products found.</p>
         ) : (

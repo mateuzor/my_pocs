@@ -6,7 +6,7 @@ import SearchBox from "@/components/SearchBox";
 export default function HeaderBanner() {
   return (
     <header
-      className="w-full bg-[#232F3E] py-4 px-4 flex items-center justify-between gap-4 text-white"
+      className="w-full bg-[#232F3E] py-4 px-4 flex items-center gap-4 text-white"
       role="banner"
       aria-label="Main navigation"
     >
@@ -19,7 +19,7 @@ export default function HeaderBanner() {
           className="object-contain"
         />
       </div>
-      <div className="flex-1 max-w-4xl">
+      <div className="flex-1">
         <SearchBox />
       </div>
     </header>
