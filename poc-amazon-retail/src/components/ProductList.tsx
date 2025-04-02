@@ -23,9 +23,15 @@ export default function ProductList({ title, products }: ProductListProps) {
   return (
     <div className="w-full px-2">
       {title && (
-        <h2 className="text-lg font-semibold mb-4 text-black">{title}</h2>
+        <h2
+          className="text-lg font-semibold mb-4 text-black"
+          tabIndex={0}
+          aria-label={title}
+        >
+          {title}
+        </h2>
       )}
-      <div className="grid gap-4 grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      <div className="grid gap-4 grid-cols-1 [@media(min-width:480px)]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {list.length === 0 ? (
           <p className="text-gray-500">No products found.</p>
         ) : (
@@ -33,6 +39,10 @@ export default function ProductList({ title, products }: ProductListProps) {
             <div
               key={product.id}
               className="border rounded-xl p-3 shadow bg-white flex flex-col gap-2"
+              tabIndex={0}
+              aria-label={`${product.name}, price R$ ${product.price.toFixed(
+                2
+              )}`}
             >
               <img
                 src={product.image}
@@ -46,7 +56,7 @@ export default function ProductList({ title, products }: ProductListProps) {
                 {product.description}
               </p>
               <span className="text-sm font-semibold text-black">
-                $ {product.price.toFixed(2)}
+                R$ {product.price.toFixed(2)}
               </span>
               <ProductRating rating={product?.rating} />
             </div>

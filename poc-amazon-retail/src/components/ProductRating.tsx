@@ -21,7 +21,13 @@ export default function ProductRating({ rating }: ProductRatingProps) {
   };
 
   return (
-    <div className="flex items-center justify-between text-xs mt-1">
+    <div
+      className="flex items-center justify-between text-xs mt-1"
+      tabIndex={0}
+      aria-label={`Rating: ${rate?.toFixed(1) ?? "No ratings"}, based on ${
+        count ?? 0
+      } reviews`}
+    >
       <span className="text-black">{rate?.toFixed(1) ?? "No ratings"}</span>
       <div className="flex gap-0.5 text-yellow-500 text-base">
         {[1, 2, 3, 4, 5].map((star) => (
