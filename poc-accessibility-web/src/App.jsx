@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useState, useRef } from "react";
 import beachImage from "./images/beach.jpg";
 import "./App.css";
