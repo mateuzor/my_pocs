@@ -33,7 +33,6 @@ export default [
       "react/jsx-uses-react": "off",
       "react/jsx-uses-vars": "error",
 
-      // Acessibilidade: máximo possível de regras jsx-a11y
       "jsx-a11y/alt-text": "warn",
       "jsx-a11y/anchor-has-content": "error",
       "jsx-a11y/anchor-is-valid": [
