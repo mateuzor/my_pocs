@@ -2,7 +2,6 @@
 
 import HeaderBanner from "@/components/Header";
 import ProductList from "@/components/ProductList";
-import SearchBox from "@/components/SearchBox";
 import { useStore } from "@/store/useStore";
 
 export default function Home() {
