@@ -10,7 +10,7 @@ interface StoreState {
 export const useStore = create<StoreState>((set) => {
   (async () => {
     try {
-      const res = await fetch("https://fakestoreapi.com/products");
+      const res = await fetch("https://api.escuelajs.co/api/v1/products");
       const data = await res.json();
 
       set({
@@ -19,19 +19,21 @@ export const useStore = create<StoreState>((set) => {
           name: item.title,
           description: item.description,
           price: item.price,
-          rating: item.rating,
-          image: item.image,
+          rating: Math.round(Math.random() * 5),
+          image: item.images?.[0] || "",
         })),
       });
     } catch (error) {
-      console.error("Failed to fetch products from Fake Store API", error);
+      console.error(
+        "Failed to fetch products from Platzi Fake Store API",
+        error
+      );
     }
   })();
 
   return {
     products: [],
     searchTerm: "",
-
     setSearchTerm: (term) => set({ searchTerm: term }),
   };
 });
