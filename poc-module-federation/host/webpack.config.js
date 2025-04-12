@@ -1,34 +1,45 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ModuleFederationPlugin } = require('webpack').container;
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { ModuleFederationPlugin } = require("webpack").container;
 
 module.exports = {
-  entry: './src/index',
-  mode: 'development',
+  entry: "./src/index",
+  mode: "development",
   devServer: {
     port: 3000,
   },
   output: {
-    publicPath: 'auto',
+    publicPath: "auto",
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
         exclude: /node_modules/,
       },
     ],
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'host',
+      name: "host",
       remotes: {
-        remote: 'remote@http://localhost:3001/remoteEntry.js',
+        remote: "remote@http://localhost:3001/remoteEntry.js",
       },
-      shared: ['react', 'react-dom'],
+      shared: {
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: "^18.0.0",
+        },
+        "react-dom": {
+          singleton: true,
+          eager: true,
+          requiredVersion: "^18.0.0",
+        },
+      },
     }),
     new HtmlWebpackPlugin({
-      template: './public/index.html',
+      template: "./public/index.html",
     }),
   ],
 };

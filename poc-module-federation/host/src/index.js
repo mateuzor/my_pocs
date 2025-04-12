@@ -1,12 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Button from 'remote/Button';
+import React from "react";
+import ReactDOM from "react-dom";
 
-const App = () => (
-  <div>
-    <h1>Host App</h1>
-    <Button />
-  </div>
+const App = React.lazy(() => import("./App"));
+
+const Root = () => (
+  <React.Suspense fallback={<div>Loading...</div>}>
+    <App />
+  </React.Suspense>
 );
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<Root />, document.getElementById("root"));
