@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accessible Progress Bar</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Accessible Progress Bar</h1>
+  <div class="progress-container">
+    <div class="progress-bar" 
+         role="progressbar"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         aria-valuenow="0"
+         style="width: 0%;">
+      <span class="progress-text">0%</span>
+    </div>
+  </div>
+  <button id="start">Start Loading</button>
+  <script src="app.js"></script>
+</body>
+</html>
