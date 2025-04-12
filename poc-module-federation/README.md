@@ -42,6 +42,22 @@ This is a Proof of Concept (POC) using **Module Federation** from Webpack 5 with
 
 ---
 
+## What is Module Federation?
+
+Module Federation is a **native feature introduced in Webpack 5** that allows multiple, separately built applications to share code and dependencies **at runtime**. It enables a new kind of architecture where you can load remote components or entire applications dynamically without needing to redeploy your main app.
+
+Technically, it works through the `ModuleFederationPlugin`:
+
+```js
+const { ModuleFederationPlugin } = require("webpack").container;
+```
+
+This plugin allows you to define which modules are exposed by an app (remote) and which modules should be consumed by another (host), along with shared dependencies like React.
+
+Module Federation has become especially powerful in **micro frontend architectures**, allowing different teams to deploy independently while maintaining a unified user experience.
+
+---
+
 ## Understanding Module Federation in Real Life
 
 Module Federation lets you treat one application as a **live library provider** and another as a **consumer**, loading modules **dynamically at runtime**. Think of the remote as a "live NPM package" that gets fetched over the web.
@@ -89,4 +105,4 @@ Each team can develop, deploy and iterate **independently**, and the host assemb
 - 🚨 Remotes must be **always online** — if `remoteEntry.js` is unreachable, parts of the app might break
 - 🧪 Debugging can be harder in runtime-shared code
 
-> Module Federation is a game-changer for micro frontends and modular architecture.
+Module Federation is a game-changer for micro frontends and modular architecture.
