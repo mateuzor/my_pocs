@@ -20,6 +20,7 @@ This POC demonstrates how to build a **fully accessible progress bar component**
 ## 🚀 How to Run
 
 1. Open a terminal in the `src/` folder:
+
 ```bash
 npx http-server -p 3000
 ```
@@ -60,5 +61,3 @@ This simulates a loading scenario, updating both visual and accessible states.
 - Integrate with real file uploads or async tasks
 
 ---
-
-🔧 Created as part of the Frontend POC series focused on accessibility and usability.
