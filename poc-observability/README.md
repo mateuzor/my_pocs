@@ -175,10 +175,13 @@ npm start
 ---
 
 ## 📝 Screenshots & Recordings
+<img width="1281" alt="Screenshot 2025-04-14 at 10 15 41 AM" src="https://github.com/user-attachments/assets/aceaf25b-e1d0-4fa4-ae12-e0f8c225f071" />
+<img width="1288" alt="Screenshot 2025-04-14 at 10 17 17 AM" src="https://github.com/user-attachments/assets/9469737a-ae2e-40e2-b87a-1b14ec5fe079" />
+<img width="1293" alt="Screenshot 2025-04-14 at 10 17 34 AM" src="https://github.com/user-attachments/assets/2cc7ea0a-a2b1-4eeb-b9d4-216dd906f391" />
 
-- [ ] Screenshot of Sentry capturing a JS error
-- [ ] Video of LogRocket session with stack trace
-- [ ] Screenshot of Clarity heatmap & replay
+https://github.com/user-attachments/assets/53c14230-500c-46f3-bcf4-5c8270efa528
+
+https://github.com/user-attachments/assets/8ad60309-b47b-4cc1-b3dd-74780a626520
 
 ---
 
