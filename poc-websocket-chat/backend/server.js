@@ -1,22 +1,21 @@
-
-import { WebSocketServer } from 'ws';
+import { WebSocketServer } from "ws";
 
 const wss = new WebSocketServer({ port: 4000 });
 let clientId = 0;
 
-wss.on('connection', function connection(ws) {
+wss.on("connection", function connection(ws) {
   ws.id = ++clientId;
-  console.log(`Cliente ${ws.id} conectado`);
+  console.log(`Client ${ws.id} connected`);
 
-  ws.send(JSON.stringify({ system: true, message: 'Você entrou no chat!' }));
+  ws.send(JSON.stringify({ system: true, message: "You joined the chat!" }));
 
-  ws.on('message', function incoming(data) {
+  ws.on("message", function incoming(data) {
     const msg = data.toString();
 
-    // Envia para todos os clientes com identificação de quem enviou
+    // Broadcast to all clients with sender identification
     wss.clients.forEach((client) => {
       if (client.readyState === 1) {
-        const sender = client === ws ? 'Você' : `Usuário ${ws.id}`;
+        const sender = client === ws ? "You" : `User ${ws.id}`;
         client.send(JSON.stringify({ sender, message: msg }));
       }
     });
