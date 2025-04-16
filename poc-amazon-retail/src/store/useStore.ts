@@ -4,7 +4,10 @@ import { Product } from "@/types/Product";
 interface StoreState {
   products: Product[];
   searchTerm: string;
+  currentPage: number;
+  itemsPerPage: number;
   setSearchTerm: (term: string) => void;
+  setCurrentPage: (page: number) => void;
 }
 
 export const useStore = create<StoreState>((set) => {
@@ -34,6 +37,9 @@ export const useStore = create<StoreState>((set) => {
   return {
     products: [],
     searchTerm: "",
-    setSearchTerm: (term) => set({ searchTerm: term }),
+    currentPage: 1,
+    itemsPerPage: 4,
+    setSearchTerm: (term) => set({ searchTerm: term, currentPage: 1 }),
+    setCurrentPage: (page) => set({ currentPage: page }),
   };
 });

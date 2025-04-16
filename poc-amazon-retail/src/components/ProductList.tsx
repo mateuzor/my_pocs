@@ -13,12 +13,19 @@ interface ProductListProps {
 export default function ProductList({ title, products }: ProductListProps) {
   const allProducts = useStore((state) => state.products);
   const searchTerm = useStore((state) => state.searchTerm);
+  const currentPage = useStore((state) => state.currentPage);
+  const itemsPerPage = useStore((state) => state.itemsPerPage);
 
   const list =
     products ??
     allProducts.filter((product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+  const paginated = list.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="w-full px-2">
@@ -31,11 +38,12 @@ export default function ProductList({ title, products }: ProductListProps) {
           {title}
         </h2>
       )}
+
       <div className="grid gap-4 grid-cols-1 [@media(min-width:480px)]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-        {list.length === 0 ? (
+        {paginated.length === 0 ? (
           <p className="text-gray-500">No products found.</p>
         ) : (
-          list.map((product) => (
+          paginated.map((product) => (
             <div
               key={product.id}
               className="border rounded-xl p-3 shadow bg-white flex flex-col gap-2"

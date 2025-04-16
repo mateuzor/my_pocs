@@ -1,6 +1,7 @@
 "use client";
 
 import HeaderBanner from "@/components/Header";
+import Pagination from "@/components/Pagination";
 import ProductList from "@/components/ProductList";
 import { useStore } from "@/store/useStore";
 
@@ -23,10 +24,11 @@ export default function Home() {
     <main className="min-h-screen bg-gray-100">
       <HeaderBanner />
       <ProductList products={filtered} />
+      <Pagination />
 
-      <div className="mt-10">
+      {/* <div className="mt-10">
         <ProductList title="You may also like" products={recommended} />
-      </div>
+      </div> */}
     </main>
   );
 }
