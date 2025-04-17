@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="tailwind.css" />
+    <title>My Tailwind</title>
+  </head>
+  <body>
+    <div class="flex flex-col justify-center items-center">
+      <div class="bg-primary text-light p-4 m-2">Primary Background</div>
+      <div class="bg-secondary text-light p-4 m-2">Secondary Background</div>
+      <div class="bg-success text-light p-4 m-2">Success Background</div>
+      <div class="bg-info text-light p-4 m-2">Info Background</div>
+      <div class="bg-warning text-dark p-4 m-2">Warning Background</div>
+      <div class="bg-danger text-light p-4 m-2">Danger Background</div>
+      <div class="bg-light text-dark p-4 m-2">Light Background</div>
+      <div class="bg-dark text-light p-4 m-2">Dark Background</div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      socket.on("reload", () => {
+        console.log("Reloading the page...");
+        location.reload();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "tailspin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "lite-server",
+    "build": "cp src/index.html dist/index.html && cp src/styles/tailwind.css dist/tailwind.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/parser": "^7.21.9",
+    "chokidar": "^3.5.3",
+    "http-server": "^14.1.1",
+    "lite-server": "^2.6.1",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1"
+  }
+}
