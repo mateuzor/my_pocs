@@ -16,6 +16,7 @@ This project is a highly optimized React-based proof of concept (POC) designed t
 - **VoiceOver tested**
 - **Linted with `eslint-plugin-jsx-a11y` (Flat config)**
 - **Automated tests using `jest-axe`**
+- **WCAG 2.1 AA coverage across tests, lint and structure**
 
 ---
 
@@ -51,6 +52,37 @@ yarn test:accessibility
 
 This project includes automated tests that validate the rendered HTML against accessibility rules from [axe-core](https://github.com/dequelabs/axe-core).
 
+### ✅ What does `jest-axe` do?
+
+- It uses the **axe-core** engine to scan your rendered React components
+- It outputs detailed reports on violations, WCAG tags, element paths and suggested fixes
+- It's great for CI validation and regression testing
+
+### 🔍 Real-world use cases
+
+- Prevent regressions when modifying UI components
+- Test themes, layouts or modal behavior for screen readers
+- Validate CMS content rendering consistently follows accessibility guidelines
+
+### 🧩 Customizing axe
+
+You can configure the behavior using `axe()` options:
+
+```js
+axe(container, {
+  rules: {
+    "color-contrast": { enabled: false },
+    region: { enabled: true },
+  },
+});
+```
+
+### Use Cases for Custom Options:
+
+- **Disable contrast** if testing during theming (e.g., dark mode)
+- **Ignore specific violations** if you're mid-refactor
+- **Target only parts of the DOM** (e.g., just inside `<main>`, excluding nav/header/footer)
+
 ### Sample test output:
 
 ```txt
@@ -58,7 +90,7 @@ PASS  src/__tests__/accessibility.test.jsx
 ✓ should have no accessibility violations
 ```
 
-If you break accessibility (e.g., remove an `aria-label` or use incorrect structure), the test will fail and point to the violated rule.
+If you break accessibility (e.g., remove an `aria-label` or use incorrect structure), the test will fail and point to the violated rule with a direct link to documentation.
 
 ---
 
@@ -66,7 +98,7 @@ If you break accessibility (e.g., remove an `aria-label` or use incorrect struct
 
 - The ESLint configuration uses **Flat Config** format
 - Plugin: `eslint-plugin-jsx-a11y`
-- Rules: All major WCAG/ARIA rules enabled
+- Rules: All major WCAG/ARIA rules enabled and enforced
 
 You can find the config in: `eslint.config.mjs`
 
@@ -74,7 +106,12 @@ You can find the config in: `eslint.config.mjs`
 yarn lint
 ```
 
-> All non-interactive `tabIndex`, redundant roles, ARIA misuse, label associations, etc. are enforced.
+> Examples of enforced rules:
+>
+> - No `tabIndex` on non-interactive elements
+> - All `<img>` must have an `alt` prop
+> - `<label>` must be associated with a control
+> - All landmarks must not be nested improperly
 
 ---
 
@@ -84,6 +121,7 @@ yarn lint
 
 - macOS: `Cmd + F5` to toggle VoiceOver
 - Navigate using arrow keys or `Tab`
+- Test reading order, announcements, focus behavior
 
 ### Keyboard
 
@@ -110,6 +148,7 @@ yarn lint
 ### Modal
 
 - `role="dialog"`, `aria-modal`, and focus trapping on open
+- Focus returned after close via `ref`
 
 ### Footer
 
@@ -124,6 +163,8 @@ yarn lint
 3. Select only "Accessibility"
 4. Click "Analyze page load"
 5. You should get **100% score** if everything is correct
+
+---
 
 ## 📁 Folder Structure
 
@@ -143,5 +184,7 @@ src/
 - [Deque axe-core](https://www.deque.com/axe/)
 - [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y)
 - [Apple VoiceOver documentation](https://support.apple.com/guide/voiceover/welcome/mac)
+- [W3C WCAG 2.1](https://www.w3.org/TR/WCAG21/)
+- [MDN Accessibility Guide](https://developer.mozilla.org/en-US/docs/Learn/Accessibility)
 
 ---
