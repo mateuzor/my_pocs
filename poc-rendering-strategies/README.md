@@ -6,16 +6,31 @@ This project demonstrates the **three main rendering strategies** available in [
 - ✅ **SSR (Server Side Rendering)**
 - ✅ **ISR (Incremental Static Regeneration)**
 
-Each route uses the same mocked data source (`fetchPost`) and displays a timestamp to show when the HTML was generated. This makes it easy to see the behavior of each strategy in practice.
+Each route uses the same mocked data source (`fetchPost`) and displays a timestamp passed from the server. This makes it easy to understand when the HTML was generated during different phases.
 
 ---
 
 ## 🚀 Getting Started
 
+1. Install dependencies:
+
 ```bash
 npm install
-npm run dev
 ```
+
+2. Build the application:
+
+```bash
+npm run build
+```
+
+3. Start the production server:
+
+```bash
+npm start
+```
+
+> ⚠️ ISR and SSG **do not behave correctly** in development mode (`npm run dev`). You must run the app in production mode to see proper caching and regeneration behavior.
 
 Then open in your browser:
 
@@ -115,11 +130,33 @@ export async function getStaticProps() {
 
 ## 🧪 How to Test Behavior
 
-- Open each route and observe the timestamp.
-- Refresh the page:
-  - `/ssg`: timestamp stays the same until next build
-  - `/ssr`: timestamp changes on every reload
-  - `/isr`: timestamp updates after 10 seconds (revalidation)
+These strategies only behave correctly in production mode (`npm run build && npm start`). In development mode, all pages act like SSR.
+
+### ✅ Steps to test properly:
+
+1. Run:
+
+```bash
+npm run build
+npm start
+```
+
+2. Visit `/ssg`:
+
+   - See a timestamp.
+   - Refresh → timestamp will not change unless you rebuild.
+
+3. Visit `/ssr`:
+
+   - Refresh → timestamp changes every time.
+
+4. Visit `/isr`:
+   - See a timestamp.
+   - Wait more than 10 seconds.
+   - Refresh → timestamp remains the same.
+   - Refresh again → timestamp is updated.
+
+> 💡 Tip: Add `console.log()` inside each data-fetching function (`getStaticProps`, `getServerSideProps`, etc.) to observe when they are re-executed.
 
 ---
 
@@ -130,7 +167,8 @@ The `fetchPost` function simulates a real API and adds a timestamp to the conten
 ```ts
 export async function fetchPost() {
   return {
-    title: "Sample post - " + new Date().toISOString(),
+    title: "Sample post",
+    timestamp: new Date().toLocaleTimeString(),
   };
 }
 ```

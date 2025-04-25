@@ -11,5 +11,5 @@ export const getStaticProps = async () => {
 };
 
 export default function ISR({ post }) {
-  return <Post title="ISR" post={post} />;
+  return <Post title="ISR - Incremental Static Generation" post={post} />;
 }

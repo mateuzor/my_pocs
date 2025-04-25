@@ -1,0 +1,39 @@
+{
+  "version": 4,
+  "routes": {
+    "/ssg": {
+      "initialRevalidateSeconds": false,
+      "srcRoute": null,
+      "dataRoute": "/_next/data/dRCJqiIltWItqIeKjScPj/ssg.json",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/isr": {
+      "initialRevalidateSeconds": 10,
+      "initialExpireSeconds": 31536000,
+      "srcRoute": null,
+      "dataRoute": "/_next/data/dRCJqiIltWItqIeKjScPj/isr.json",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    }
+  },
+  "dynamicRoutes": {},
+  "notFoundRoutes": [],
+  "preview": {
+    "previewModeId": "6548ca4218490549d6060fdc363f6e53",
+    "previewModeSigningKey": "4a4e3e012d248c17d5ffcd0bc2754a0a7478ac6110596b9aff30e64683d95967",
+    "previewModeEncryptionKey": "e929e993183a44141ae854b0309f212807ecfc6f9187aec4192d12bd66a30679"
+  }
+}

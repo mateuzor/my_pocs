@@ -8,5 +8,5 @@ export const getServerSideProps = async () => {
 };
 
 export default function SSR({ post }) {
-  return <Post title="SSR" post={post} />;
+  return <Post title="SSR - Server Side Rendering" post={post} />;
 }

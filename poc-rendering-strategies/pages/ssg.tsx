@@ -8,5 +8,5 @@ export const getStaticProps = async () => {
 };
 
 export default function SSG({ post }) {
-  return <Post title="SSG" post={post} />;
+  return <Post title="SSG - Static Site Generation" post={post} />;
 }
