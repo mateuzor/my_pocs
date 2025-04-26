@@ -1,11 +1,28 @@
 ---
 import CounterReact from "../components/Counter";
 import CounterVue from "../components/Counter.vue";
+
+const request = await fetch("https://api.github.com/users/google/repos");
+const data = await request.json();
 ---
 
 <html lang="en">
   <body>
     <h1>Hello from Astro mixing React + Vue!</h1>
+    <main>
+      <h1>Google Repositories</h1>
+      <ul>
+        {
+          data.map((repo: any) => (
+            <li>
+              <a href={repo.html_url} target="_blank" rel="noreferrer">
+                {repo.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
     <CounterReact client:load />
     <CounterVue client:load />
   </body>

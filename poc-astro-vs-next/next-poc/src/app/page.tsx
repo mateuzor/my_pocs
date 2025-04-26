@@ -1,10 +1,21 @@
 import React from "react";
 
-export default function Home() {
+export default async function Home() {
+  const request = await fetch("https://api.github.com/users/google/repos");
+  const data = await request.json();
+
   return (
     <main>
-      <h1>Hello from Next.js!</h1>
-      <p>This is a basic page, but it will load React JS bundle.</p>
+      <h1>Google Repositories</h1>
+      <ul>
+        {data.map((repo: any) => (
+          <li key={repo.id}>
+            <a href={repo.html_url} target="_blank" rel="noreferrer">
+              {repo.name}
+            </a>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
