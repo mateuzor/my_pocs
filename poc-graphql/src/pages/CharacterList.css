@@ -1,0 +1,9 @@
+.CharacterList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.CharacterName {
+  text-align: center;
+}
