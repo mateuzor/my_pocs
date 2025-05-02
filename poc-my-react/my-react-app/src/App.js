@@ -2,18 +2,18 @@ export function App({ MyReact }) {
   const [count, setCount] = MyReact.useState(0);
 
   MyReact.useEffect(() => {
-    console.log("useEffect: contador mudou para", count);
+    console.log("useEffect: counter changed to", count);
   }, [count]);
 
-  // Retorna a estrutura VDOM utilizando MyReact.createElement
+  // Returns the VDOM structure using MyReact.createElement
   return MyReact.createElement(
-    "div", // Elemento pai: <div>
-    null, // Sem props adicionais
+    "div", // Parent element: <div>
+    null, // No additional props
     MyReact.createElement("h1", null, `Counter: ${count}`),
 
     MyReact.createElement(
       "button",
-      { onclick: () => setCount(count + 1) }, // Evento de clique que incrementa o contador
+      { onclick: () => setCount(count + 1) }, // Click event handler to increment counter
       "Increment"
     )
   );
