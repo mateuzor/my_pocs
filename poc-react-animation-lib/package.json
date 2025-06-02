@@ -1,0 +1,27 @@
+{
+  "name": "poc-react-animation-lib",
+  "version": "1.0.0",
+  "description": "A reusable React animation library (fade-in component)",
+  "main": "src/fadeIn.tsx",
+  "types": "src/fadeIn.tsx",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "react-dom": "^18.2.0"
+  }
+}
