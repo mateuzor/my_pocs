@@ -32,6 +32,68 @@ This project demonstrates the differences between **LocalStorage**, **SessionSto
   - Limited storage size.
   - Additional overhead in network requests.
   - Security risks if not marked as `HttpOnly` or `Secure`.
+  - Cookies are always sent with every HTTP request to matching paths and domains, which can increase bandwidth usage.
+  - Cookies are visible and modifiable via JavaScript unless marked with `HttpOnly`.
+
+### Cookie Attributes:
+
+- **`domain`** – Determines which subdomains can access the cookie.
+
+  ```js
+  document.cookie = "token=abc; domain=example.com";
+  // Available to example.com and all its subdomains like sub.example.com
+  ```
+
+- **`secure`** – Ensures the cookie is sent only over HTTPS connections.
+
+  ```js
+  document.cookie = "session=123; secure";
+  // Only sent if the site is accessed via HTTPS
+  ```
+
+- **`HttpOnly`** – Prevents access to the cookie via JavaScript (`document.cookie`).
+
+  > Note: This flag can only be set via HTTP headers from the server.
+
+  ```http
+  Set-Cookie: session=secure_value; HttpOnly
+  ```
+
+- **`SameSite`** – Controls whether the cookie is sent with cross-site requests.
+
+  ```js
+  document.cookie = "promo=1; SameSite=Strict";
+  // Not sent when navigating from external origins (CSRF protection)
+  ```
+
+- **`path`** – Restricts the cookie to specific URL paths.
+
+  ```js
+  document.cookie = "lang=en; path=/docs";
+  // Only sent to requests that start with /docs
+  ```
+
+- **Description:** Stores small pieces of data sent between client and server with each HTTP request.
+
+- **Max Size:** \~4KB per cookie.
+
+### Examples:
+
+| Cookie Path | Requested URL     | Cookie Sent? |
+| ----------- | ----------------- | ------------ |
+| `/`         | `/dashboard`      | ✅ Yes       |
+| `/admin/`   | `/admin/settings` | ✅ Yes       |
+| `/admin/`   | `/public`         | ❌ No        |
+
+By default (if omitted), the path is set to the current document location where the cookie was created.
+
+### How cookies are stored and transmitted:
+
+- Stored in a flat text file or SQLite DB depending on browser implementation.
+
+- Automatically appended to every matching HTTP request in the `Cookie:` header.
+
+- This makes them useful for login sessions, but also a liability if overused or misconfigured.
 
 ### 4. IndexedDB
 - **Description:** A low-level API for client-side storage of significant amounts of structured data.
