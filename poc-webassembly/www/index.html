@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WASM POC</title>
+</head>
+<body>
+  <h1>WebAssembly Integration POC</h1>
+
+  <!-- Triga a função wasm via js-->
+  <button onclick="run()">Click to Add</button>
+
+  <!-- onde vai adicionar o resultado -->
+  <p id="output"></p>
+
+  <script type="module">
+    // Import nossa funcao add exposta
+    import init, { add } from '../pkg/poc_webassembly.js';
+
+    // Define a função que inicializa nosso modulo wasm e chama nosso add
+    async function run() {
+      // Carrega as instâncias do modulo web assembly
+      await init();
+
+      // Chama a função do rust
+      const result = add(2, 3);
+
+      // atualiza o dom com o resultado
+      document.getElementById("output").textContent = "2 + 3 = " + result;
+    }
+
+    // Expõem a função run para o escopo global, para podermos usar no button
+    window.run = run;
+  </script>
+</body>
+</html>
