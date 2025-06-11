@@ -1,0 +1,9 @@
+{
+  "name": "poc-service-worker-indexeddb",
+  "version": "1.0.0",
+  "description": "POC demonstrating advanced caching with Service Workers and IndexedDB",
+  "scripts": {
+    "start": "npx serve www"
+  },
+  "dependencies": {}
+}
