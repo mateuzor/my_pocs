@@ -1,0 +1,12 @@
+{
+  "name": "poc-cdn-static-assets",
+  "version": "1.0.0",
+  "description": "POC to demonstrate using a CDN for static assets in a frontend project.",
+  "scripts": {
+    "start": "serve public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.0.1"
+  }
+}
