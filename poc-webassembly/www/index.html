@@ -2,35 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>WASM POC</title>
+  <title>Mini Photoshop - WASM</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>WebAssembly Integration POC</h1>
-
-  <!-- Triga a função wasm via js-->
-  <button onclick="run()">Click to Add</button>
-
-  <!-- onde vai adicionar o resultado -->
-  <p id="output"></p>
+  <h1>Image Editor with WebAssembly</h1>
+  <input type="file" accept="image/*" id="upload" />
+  <canvas id="canvas"></canvas>
 
   <script type="module">
-    // Import nossa funcao add exposta
-    import init, { add } from '../pkg/poc_webassembly.js';
+    const upload = document.getElementById("upload");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
 
-    // Define a função que inicializa nosso modulo wasm e chama nosso add
-    async function run() {
-      // Carrega as instâncias do modulo web assembly
-      await init();
+    upload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-      // Chama a função do rust
-      const result = add(2, 3);
-
-      // atualiza o dom com o resultado
-      document.getElementById("output").textContent = "2 + 3 = " + result;
-    }
-
-    // Expõem a função run para o escopo global, para podermos usar no button
-    window.run = run;
+      const img = new Image();
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = URL.createObjectURL(file);
+    });
   </script>
 </body>
 </html>
