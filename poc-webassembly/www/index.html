@@ -1,32 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Mini Photoshop - WASM</title>
+  <title>Mini Photoshop</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <h1>Image Editor with WebAssembly</h1>
-  <input type="file" accept="image/*" id="upload" />
+  <h1>Mini Photoshop (WASM)</h1>
+
+  <input type="file" id="upload" accept="image/*" />
+
   <canvas id="canvas"></canvas>
 
+  <button id="apply">Apply Grayscale</button>
+
   <script type="module">
-    const upload = document.getElementById("upload");
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
+    // Import the WebAssembly module and the exposed grayscale function
+    import init, { grayscale } from './pkg/poc_webassembly.js';
 
-    upload.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+    // DOM elements
+    const upload = document.getElementById('upload');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const apply = document.getElementById('apply');
 
-      const img = new Image();
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-      };
-      img.src = URL.createObjectURL(file);
-    });
+    // Global variable to store image data (pixels)
+    let imageData;
+
+    // Main async function to initialize the WASM module and set up event listeners
+    async function main() {
+      // Initialize the WASM module (loads and compiles .wasm)
+      await init();
+
+      // Event listener for file input change
+      upload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        console.log("File selected:", file);
+
+        if (!file) {
+          console.log("No file selected");
+          return;
+        }
+
+        const reader = new FileReader();
+        
+        // Triggered when the file is read as base64 data URL
+        reader.onload = function (event) {
+          console.log("FileReader result:", event.target.result);
+
+          const img = new Image();
+
+          // Once the image is loaded in memory
+          img.onload = function () {
+            // Set canvas dimensions to match the image
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // Allow the layout to settle before drawing
+            setTimeout(() => {
+              console.log("Drawing image on canvas with size:", canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0);
+
+              // Extract pixel data from canvas
+              imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              console.log("Image data captured:", imageData);
+            }, 10);
+          };
+
+          img.onerror = function () {
+            console.error("Image failed to load");
+          };
+
+          // Assign the base64 image data as source
+          img.src = event.target.result;
+        };
+
+        // Read the image file as base64
+        reader.readAsDataURL(file);
+      });
+
+      // Event listener for the grayscale button click
+      apply.addEventListener('click', () => {
+        // Call the WASM grayscale function with the raw pixel data
+        grayscale(imageData.data);
+
+        // Draw the modified image back onto the canvas
+        ctx.putImageData(imageData, 0, 0);
+      });
+    }
+
+    main();
   </script>
 </body>
+
 </html>

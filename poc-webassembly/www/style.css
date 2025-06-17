@@ -1,24 +1,48 @@
 body {
-  font-family: sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  background-color: #f7f9fc;
+  color: #2d2d2d;
   padding: 2rem;
-  background-color: #f5f5f5;
+  margin: 0;
 }
 
+
 h1 {
-  margin-bottom: 1rem;
-  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: #1a1a1a;
 }
 
 input[type="file"] {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.2rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 canvas {
-  border: 1px solid #ccc;
+  display: block;
+  margin: 1rem auto;
+  border: 2px solid #ccc;
   max-width: 100%;
   height: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.4rem;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #005fa3;
 }

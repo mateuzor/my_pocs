@@ -1,9 +1,9 @@
 {
   "name": "poc-webassembly",
   "version": "1.0.0",
-  "scripts": {
-    "build": "wasm-pack build --target web && mkdir -p www && cp -r pkg www/",
-    "serve": "npm run build && npx serve www"
+"scripts": {
+  "build": "cd rust && wasm-pack build --target web && mkdir -p ../www/pkg && cp -r pkg/* ../www/pkg",
+  "serve": "npm run build && npx serve www"
   },
   "devDependencies": {
     "serve": "^14.2.0"
