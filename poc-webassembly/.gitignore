@@ -1,2 +1,26 @@
-**/node_modules
+# Rust
+**/target/
+**/pkg/
+**/Cargo.lock
+
+# WASM Build
+*.wasm
+*.wasm.d.ts
+**/www/pkg/
+
+# Node.js
+**/node_modules/
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs and misc
+*.log
+*.tmp
+*.swp
+
+# Shell scripts (if temporary or local)
 *.sh
