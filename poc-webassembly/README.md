@@ -71,6 +71,10 @@ http://localhost:3000
 
 ---
 
+## Example
+![ScreenRecording2025-06-18at1 09 35PM-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/50e260f8-6c98-4c2b-9f1a-0b1f064d7782)
+
+
 ## 📁 Project Structure
 
 ```
