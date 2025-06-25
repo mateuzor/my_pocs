@@ -1,5 +1,5 @@
   // Import the WebAssembly module and the exposed grayscale function
-  import init, { grayscale } from './pkg/poc_webassembly.js';
+  import init, { grayscale, greet } from './pkg/poc_webassembly.js';
 
   // DOM elements
   const upload = document.getElementById('upload');
@@ -20,10 +20,8 @@
       // Event listener for file input change
     upload.addEventListener('change', (e) => {
       const file = e.target.files[0];
-      console.log("File selected:", file);
 
       if (!file) {
-        console.log("No file selected");
         return;
       }
 
@@ -31,7 +29,6 @@
 
         // Triggered when the file is read as base64 data URL
       reader.onload = function (event) {
-        console.log("FileReader result:", event.target.result);
 
         const img = new Image();
 
@@ -43,12 +40,10 @@
 
             // Allow the layout to settle before drawing
           setTimeout(() => {
-            console.log("Drawing image on canvas with size:", canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0);
 
               // Extract pixel data from canvas
             imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            console.log("Image data captured:", imageData);
 
             // Clone original image data for later reset
             originalImageData = new ImageData(
@@ -57,6 +52,7 @@
               imageData.height
             );
           }, 10);
+          greet("Mateus");
         };
 
         img.onerror = function () {

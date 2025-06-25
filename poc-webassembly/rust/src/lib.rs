@@ -1,5 +1,13 @@
 use wasm_bindgen::prelude::*;
 
+/// alert e console log
+#[wasm_bindgen]
+extern "C" {
+    pub fn alert(s: &str);                      
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);                             
+}
+
 /// Receives a mutable Uint8ClampedArray buffer (pixels from canvas)
 /// Each pixel is RGBA: R, G, B, A (0-255)
 #[wasm_bindgen]
@@ -17,4 +25,12 @@ pub fn grayscale(data: &mut [u8]) {
         data[i + 1] = gray;
         data[i + 2] = gray;
     }
+
+     log("Grayscale conversion finished.");
+}
+
+/// shows an alert and writes to the console.
+#[wasm_bindgen]
+pub fn greet(name: &str) {
+    alert(&format!("Hello, {}!", name));
 }
