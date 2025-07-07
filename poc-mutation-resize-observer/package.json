@@ -1,0 +1,12 @@
+{
+  "name": "poc-mutation-resize-observer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "POC demonstrating MutationObserver and ResizeObserver APIs.",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
