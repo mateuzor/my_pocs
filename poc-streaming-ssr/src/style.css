@@ -1,0 +1,36 @@
+html,
+body {
+  margin: 0;
+  background-color: #202225;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+}
+
+#approot {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  background: #eee;
+}
+
+h1 {
+  width: 100%;
+  text-align: center;
+  font-size: 30px;
+}
+
+.card {
+  background: #353a40;
+  padding: 15px 20px;
+  margin: 5px;
+  border-radius: 12px;
+  margin: 1rem 0;
+  color: #fff;
+  font: 16px/1.3 system-ui, sans-serif;
+  width: 80%;
+  max-width: 500px;
+}
