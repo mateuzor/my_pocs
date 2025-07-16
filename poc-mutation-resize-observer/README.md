@@ -26,6 +26,9 @@ Open the URL and:
 2. Click **Remove Last Item** – list updates and log adjusts accordingly.
 3. Drag the bottom‑right corner of the green box – observe resize logs.
 
+https://github.com/user-attachments/assets/6696d8aa-b947-4aab-9e69-0eeb6c7cdcca
+   
+
 ## 🔍 Explanation
 
 ### 🔁 MutationObserver
