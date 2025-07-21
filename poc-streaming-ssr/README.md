@@ -139,3 +139,31 @@ It's ideal for modern apps that care about perceived performance and have multip
 > ⚙️ You just need to structure your components to use `<Suspense>` and `renderToPipeableStream`.
 
 ---
+
+## 🧪 Why chunks aren't visible in DevTools
+
+Browsers buffer HTML responses internally. Even when the server is sending data using **chunked transfer encoding**, the DevTools (e.g., Chrome Network tab) will **only show the response once it’s fully received**.
+
+To actually observe streaming:
+
+- Use `curl -N http://localhost:3000/`
+- Log timestamps with `stream.on('data')` and `stream.on('end')`
+
+---
+
+### Run it:
+
+```bash
+npm install
+npm run dev
+```
+
+Then test:
+
+```bash
+curl -N http://localhost:3000/
+```
+
+---
+
+## 🎥 Demo
