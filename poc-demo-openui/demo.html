@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open UI Demo</title>
+    <link rel="stylesheet" href="demo.css">
+</head>
+
+<body>
+    <h2>Open UI Inspired Select</h2>
+    <div class="open-ui-select" id="customSelect">
+        <button class="trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span class="selected">Choose a language</span>
+            <span class="indicator">▼</span>
+        </button>
+        <ul class="listbox" role="listbox" tabindex="-1" hidden>
+            <li role="option">JavaScript</li>
+            <li role="option">Rust</li>
+            <li role="option">Go</li>
+            <li role="option">Python</li>
+        </ul>
+    </div>
+
+    <script src="demo.js"></script>
+</body>
+
+</html>
