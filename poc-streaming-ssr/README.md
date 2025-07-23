@@ -167,3 +167,6 @@ curl -N http://localhost:3000/
 ---
 
 ## 🎥 Demo
+https://github.com/user-attachments/assets/016039c7-faa2-4e74-98d0-feb4af4886af
+
+
