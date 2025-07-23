@@ -1,0 +1,7 @@
+{
+  "type": "error",
+  "params": {
+    "errno": 5,
+    "message": "Os { code: 5, kind: Uncategorized, message: \"I/O error\" }"
+  }
+}
