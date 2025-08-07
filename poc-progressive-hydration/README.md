@@ -62,6 +62,9 @@ Progressive Hydration is a technique where:
    - 2-second delay, then button turns blue and becomes clickable
 4. **Click buttons** to increment counters and confirm interactivity
 
+https://github.com/user-attachments/assets/a0153433-346e-49f2-a98e-b5ca6945b12e
+  
+
 ## 🔧 Technical Details
 
 - **React.createElement**: Used for SSR without build step
