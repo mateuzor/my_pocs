@@ -1,6 +1,6 @@
 # React Code Splitting POC
 
-This project demonstrates the difference between a React application **with and without code splitting**, using [`React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy) and [`Suspense`](https://reactjs.org/docs/concurrent-mode-suspense.html). The goal is to help you visualize the impact of loading large components dynamically instead of bundling them with the initial JavaScript payload.
+This project demonstrates the difference between having a React application **with and without code splitting**, using [`React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy) and [`Suspense`](https://reactjs.org/docs/concurrent-mode-suspense.html). The goal is to help you visualize the impact of loading large components dynamically instead of bundling them with the initial JavaScript payload.
 
 ---
 
@@ -26,29 +26,17 @@ And rendered with:
 
 ## 📂 Project Structure
 
-- **`/with-code-splitting`**  
-  Loads the `HeavyComponent` (which uses the large `chart.js` library) only when it is rendered. This keeps the initial bundle size small.
-
-- **`/without-code-splitting`**  
-  Imports `HeavyComponent` directly, meaning `chart.js` is included in the initial JavaScript bundle — even if the component is not used immediately.
+- **`/components/HeavyComponent`**
+  This is where our `HeavyComponent` is (which uses the large `chart.js` library), it will only be rendered when we need it.
 
 ---
 
 ## ▶️ How to Run
 
 ```bash
-# With Code Splitting
-cd with-code-splitting
-npm install
-npm run dev
-
-# Without Code Splitting
-cd ../without-code-splitting
 npm install
 npm run dev
 ```
-
-> Both projects use [Vite](https://vitejs.dev) as the bundler and dev server.
 
 ---
 
@@ -56,8 +44,8 @@ npm run dev
 
 1. **Initial Bundle Size**
 
-   - Tools like [Bundlephobia](https://bundlephobia.com/) or `vite build --report` can help visualize the difference.
-   - With code splitting, the bundle loaded at first is significantly smaller.
+   - The bundle loaded at first is significantly smaller with code splitting, we can observe that on the network tab on the browser.
+   - We can also run `npm run build`, and notice the difference with and without the code splitting technique. With code splitting we will have one more `.js` file.
 
 2. **Loading Behavior**
 
@@ -65,6 +53,7 @@ npm run dev
    - The version without it may take longer to load the initial page, especially on slow networks.
 
 3. **User Experience**
+
    - Code splitting improves perceived performance by deferring heavy scripts until they're needed.
 
 ---
@@ -85,5 +74,3 @@ The `chart.js` library is intentionally used here as a "heavy" dependency to exa
 | Optimized Performance       | ✅                  | ❌                     |
 
 ---
-
-Feel free to clone, run and adapt this POC for your own demos or talks. Happy coding!
