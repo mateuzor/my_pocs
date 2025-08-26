@@ -1,7 +1,10 @@
 # React Code Splitting POC
 
-This project demonstrates the difference between having a React application **with and without code splitting**, using [`React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy) and [`Suspense`](https://reactjs.org/docs/concurrent-mode-suspense.html). The goal is to help you visualize the impact of loading large components dynamically instead of bundling them with the initial JavaScript payload.
+This project demonstrates the difference between having a React application with and without code splitting, using React.lazy
+ and Suspense
+. The goal is to help visualize the impact of loading large components dynamically instead of bundling them into the initial JavaScript payload.
 
+This is a very simple example. In real-world scenarios, code splitting is most useful in React routes for applications with many pages. Users may never access certain pages, so downloading those bundles upfront would be unnecessary.
 ---
 
 ## 🧠 What is Code Splitting?
