@@ -5,6 +5,7 @@ This project demonstrates the difference between having a React application with
 . The goal is to help visualize the impact of loading large components dynamically instead of bundling them into the initial JavaScript payload.
 
 This is a very simple example. In real-world scenarios, code splitting is most useful in React routes for applications with many pages. Users may never access certain pages, so downloading those bundles upfront would be unnecessary.
+
 ---
 
 ## 🧠 What is Code Splitting?
