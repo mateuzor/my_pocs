@@ -1,6 +1,10 @@
 # React Code Splitting POC
 
-This project demonstrates the difference between having a React application **with and without code splitting**, using [`React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy) and [`Suspense`](https://reactjs.org/docs/concurrent-mode-suspense.html). The goal is to help you visualize the impact of loading large components dynamically instead of bundling them with the initial JavaScript payload.
+This project demonstrates the difference between having a React application with and without code splitting, using React.lazy
+ and Suspense
+. The goal is to help visualize the impact of loading large components dynamically instead of bundling them into the initial JavaScript payload.
+
+This is a very simple example. In real-world scenarios, code splitting is most useful in React routes for applications with many pages. Users may never access certain pages, so downloading those bundles upfront would be unnecessary.
 
 ---
 
@@ -46,6 +50,15 @@ npm run dev
 
    - The bundle loaded at first is significantly smaller with code splitting, we can observe that on the network tab on the browser.
    - We can also run `npm run build`, and notice the difference with and without the code splitting technique. With code splitting we will have one more `.js` file.
+
+Without Code Splitting  
+<img width="1917" height="1015" alt="Screenshot 2025-08-25 at 9 24 08 PM" src="https://github.com/user-attachments/assets/4b677ffd-fc7b-4ff7-b31b-7f0b63f41ae0" />
+With Code Splitting
+<img width="1918" height="1015" alt="Screenshot 2025-08-25 at 9 25 43 PM" src="https://github.com/user-attachments/assets/e92957e6-1228-4ec2-b7cc-ac54680d98da" />
+
+Build differences (With x Without)
+
+<img width="702" height="486" alt="Screenshot 2025-08-25 at 9 49 49 PM" src="https://github.com/user-attachments/assets/55716075-5b19-4daa-b4db-5ec9a709a2ff" />
 
 2. **Loading Behavior**
 
