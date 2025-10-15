@@ -59,72 +59,6 @@ poc-nitrojs-todos/
 
 ---
 
-## 🧩 Core Code Example
-
-### `server/utils/kv.ts`
-
-```ts
-import { createStorage } from "unstorage";
-import fsDriver from "unstorage/drivers/fs";
-import type { Todo } from "./index";
-
-type KVSchema = { todos: Todo[] };
-
-export const kv = createStorage<KVSchema>({
-  driver: fsDriver({ base: ".data/kv" }),
-});
-
-export async function readTodos(): Promise<Todo[]> {
-  return (await kv.getItem("todos")) ?? [];
-}
-
-export async function writeTodos(items: Todo[]): Promise<void> {
-  await kv.setItem("todos", items);
-}
-```
-
-### `server/routes/todos.post.ts`
-
-```ts
-import type { Todo } from "../utils";
-import { defineEventHandler, readBody, setResponseStatus } from "h3";
-import { readTodos, writeTodos } from "../utils/kv";
-
-export default defineEventHandler(async (event) => {
-  const { todo, completed } = await readBody(event);
-  if (!todo || completed == null) {
-    setResponseStatus(event, 400);
-    return {
-      statusCode: 400,
-      message: "Both Todo and Completed fields should have a value set",
-    };
-  }
-
-  const completedStr = String(completed);
-  if (completedStr !== "true" && completedStr !== "false") {
-    setResponseStatus(event, 400);
-    return {
-      statusCode: 400,
-      message: "The value of completed must either be true or false",
-    };
-  }
-
-  const list: Todo[] = await readTodos();
-  const newTodo: Todo = {
-    id: Date.now(),
-    todo: String(todo),
-    completed: completedStr as "true" | "false",
-  };
-  list.push(newTodo);
-  await writeTodos(list);
-
-  setResponseStatus(event, 201);
-  return { statusCode: 201, message: "Todo added successfully", data: newTodo };
-});
-```
-
----
-
 ## 🚀 Getting Started
 
 ### 1️⃣ Install dependencies
@@ -186,31 +120,9 @@ By default, it runs on:
 
 ---
 
-## 🛂 Deployment Example (Vercel)
-
-Nitro has first-class support for Vercel.
-To deploy:
-
-```bash
-git init
-git add .
-git commit -m "init poc-nitrojs-todos"
-vercel
-```
-
-Then in your Vercel dashboard:
-
-- Add **KV Storage** (optional if you want remote persistence).
-- Redeploy.
-
----
-
 ## 🤌 Conclusion
 
 Nitro.js redefines what a modern server-side toolkit can be — **portable, efficient, and developer-centric**.
 By leveraging the UnJS ecosystem and TypeScript-first design, it offers an ergonomic alternative to traditional Node frameworks.
 
 This PoC shows how simple it is to build a persistent CRUD API with no external database — just a file-based KV layer — and still enjoy type safety, caching, and cross-platform deployment.
-
-> **Author:** Mateus Ramos (Full-Stack Engineer)
-> **Project:** `poc-nitrojs-todos` > **Stack:** Nitro.js · TypeScript · Unstorage · h3 · Node.js
