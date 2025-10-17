@@ -1,0 +1,166 @@
+type: collection.insomnia.rest/5.0
+name: My first collection
+meta:
+  id: wrk_e21144ab16c24a4ea9f8e54f2a09c52b
+  created: 1761130646414
+  modified: 1761130646414
+  description: ""
+collection:
+  - name: NitroJS Poc
+    meta:
+      id: fld_c8741d44b9bb41fdbdd3418a93d799b3
+      created: 1761131754153
+      modified: 1761131790050
+      sortKey: -1761131754153
+      description: ""
+    children:
+      - url: http://localhost:3000/todos
+        name: todos
+        meta:
+          id: req_1a82dc0a5e154d8c8c62f3477be05919
+          created: 1761130646438
+          modified: 1761131795008
+          isPrivate: false
+          description: ""
+          sortKey: -1761131771882
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3000/todos
+        name: todos
+        meta:
+          id: req_9eeaa42422b7460283ee5e0516b8a53f
+          created: 1761130737458
+          modified: 1761131797195
+          isPrivate: false
+          description: ""
+          sortKey: -1761131771832
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            { "todo": "Wash the dishes", "completed": "false" }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3000/todos/1761130810604
+        name: todos/:id
+        meta:
+          id: req_b0ff5f468cc14744b5d8ac6f078461d2
+          created: 1761130833846
+          modified: 1761131803400
+          isPrivate: false
+          description: ""
+          sortKey: -1761131771857
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3000/todos/1761131833693
+        name: todos/:id
+        meta:
+          id: req_e768f1342e2045a2904bf0869b9670e4
+          created: 1761130879076
+          modified: 1761134263080
+          isPrivate: false
+          description: ""
+          sortKey: -1761131771782
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: '{ "todo": "Walk the dog", "completed": "true" }'
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3000/todos/1761130810604
+        name: todos/:id
+        meta:
+          id: req_36323c6ea4e2486ab5733f8096335a58
+          created: 1761130997293
+          modified: 1761131777805
+          isPrivate: false
+          description: ""
+          sortKey: -1761131771732
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3000/stats
+        name: stats
+        meta:
+          id: req_8b15ba6c76ab4d748e9a368b63fc89a0
+          created: 1761131709525
+          modified: 1761131779166
+          isPrivate: false
+          description: ""
+          sortKey: -1761131771707
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_07c4ae4c8f96e4a3f18c78619c4a6976185d7e10
+    created: 1761130646418
+    modified: 1761130646418
+environments:
+  name: Base Environment
+  meta:
+    id: env_07c4ae4c8f96e4a3f18c78619c4a6976185d7e10
+    created: 1761130646417
+    modified: 1761130646417
+    isPrivate: false
