@@ -620,6 +620,28 @@ const _inlineRuntimeConfig = {
         "cache": {
           "maxAge": 60
         }
+      },
+      "/todos/**": {
+        "cors": true,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "access-control-allow-methods": "*",
+          "access-control-allow-headers": "*",
+          "access-control-max-age": "0",
+          "x-api-version": "1"
+        }
+      },
+      "/": {
+        "redirect": {
+          "to": "/todos",
+          "statusCode": 301
+        }
+      },
+      "/external/**": {
+        "proxy": {
+          "to": "https://api.example.com/**",
+          "_proxyStripBase": "/external"
+        }
       }
     }
   }
