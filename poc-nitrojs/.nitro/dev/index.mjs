@@ -22,9 +22,11 @@ import { SourceMapConsumer } from 'file:///Users/mateuzor/Projects/my_pocs/poc-n
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/mateuzor/Projects/my_pocs/poc-nitrojs/node_modules/pathe/dist/index.mjs';
+import nodeCrypto, { randomUUID, createHash } from 'node:crypto';
 import { Server } from 'node:http';
-import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
+import { z } from 'file:///Users/mateuzor/Projects/my_pocs/poc-nitrojs/node_modules/zod/index.js';
+import pino from 'file:///Users/mateuzor/Projects/my_pocs/poc-nitrojs/node_modules/pino/pino.js';
 
 const serverAssets = [{"baseName":"server","dir":"/Users/mateuzor/Projects/my_pocs/poc-nitrojs/server/assets"}];
 
@@ -930,8 +932,21 @@ async function errorHandler(error, event) {
   // H3 will handle fallback
 }
 
+const _20A_Or1ahXhssII2RfPlRQ3L56CTv5vDYboG4qTWUk = (nitroApp) => {
+  nitroApp.hooks.hook("request", (event) => {
+    const reqId = event.context.reqId;
+    const url = new URL(
+      event.node.req.url,
+      `http://${event.node.req.headers.host}`
+    );
+    console.log(`[${reqId}] ${event.node.req.method} ${url.pathname}`);
+  });
+  nitroApp.hooks.hook("afterResponse", (event) => {
+  });
+};
+
 const plugins = [
-  
+  _20A_Or1ahXhssII2RfPlRQ3L56CTv5vDYboG4qTWUk
 ];
 
 const assets = {};
@@ -1023,7 +1038,40 @@ const _qhLbpj = eventHandler((event) => {
   return readAsset(id);
 });
 
+const _jgC5Tz = defineEventHandler((event) => {
+  const id = randomUUID();
+  event.context.reqId = id;
+  event.node.res.setHeader("x-request-id", id);
+});
+
+const kv = createStorage({
+  driver: unstorage_47drivers_47fs({ base: ".data/kv" })
+});
+async function readTodos() {
+  var _a;
+  return (_a = await kv.getItem("todos")) != null ? _a : [];
+}
+async function writeTodos(items) {
+  await kv.setItem("todos", items);
+}
+
+const _fhAa_Q = defineEventHandler(async (event) => {
+  if (event.method !== "GET") return;
+  const url = getRequestURL(event);
+  if (url.pathname !== "/todos") return;
+  const todos = await readTodos();
+  const body = JSON.stringify(todos);
+  const etag = createHash("sha1").update(body).digest("hex");
+  event.node.res.setHeader("ETag", `"${etag}"`);
+  const ifNone = event.node.req.headers["if-none-match"];
+  if (ifNone === `"${etag}"`) {
+    event.node.res.statusCode = 304;
+    event.node.res.end();
+  }
+});
+
 const _lazy_P33gBh = () => Promise.resolve().then(function () { return index$1; });
+const _lazy_izFyE8 = () => Promise.resolve().then(function () { return openapi_get$1; });
 const _lazy_DbkKbq = () => Promise.resolve().then(function () { return stats_get$1; });
 const _lazy_nZsWrW = () => Promise.resolve().then(function () { return todos_get$1; });
 const _lazy_C6mPG7 = () => Promise.resolve().then(function () { return todos_post$1; });
@@ -1033,7 +1081,10 @@ const _lazy_hryM4m = () => Promise.resolve().then(function () { return _id__patc
 
 const handlers = [
   { route: '', handler: _qhLbpj, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _jgC5Tz, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _fhAa_Q, lazy: false, middleware: true, method: undefined },
   { route: '/', handler: _lazy_P33gBh, lazy: true, middleware: false, method: undefined },
+  { route: '/openapi', handler: _lazy_izFyE8, lazy: true, middleware: false, method: "get" },
   { route: '/stats', handler: _lazy_DbkKbq, lazy: true, middleware: false, method: "get" },
   { route: '/todos', handler: _lazy_nZsWrW, lazy: true, middleware: false, method: "get" },
   { route: '/todos', handler: _lazy_C6mPG7, lazy: true, middleware: false, method: "post" },
@@ -1313,23 +1364,34 @@ const index$1 = /*#__PURE__*/Object.freeze({
   default: index
 });
 
+const spec = {
+  openapi: "3.0.3",
+  info: { title: "Nitro Todos API", version: "1.0.0" },
+  paths: {
+    "/todos": {
+      get: { summary: "List todos" },
+      post: { summary: "Create todo" }
+    },
+    "/todos/{id}": {
+      get: { summary: "Get todo" },
+      patch: { summary: "Update todo" },
+      delete: { summary: "Delete todo" }
+    }
+  }
+};
+const openapi_get = defineEventHandler(() => spec);
+
+const openapi_get$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  default: openapi_get
+});
+
 const stats_get = defineEventHandler(async () => ({ cached: true, at: (/* @__PURE__ */ new Date()).toISOString() }));
 
 const stats_get$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   default: stats_get
 });
-
-const kv = createStorage({
-  driver: unstorage_47drivers_47fs({ base: ".data/kv" })
-});
-async function readTodos() {
-  var _a;
-  return (_a = await kv.getItem("todos")) != null ? _a : [];
-}
-async function writeTodos(items) {
-  await kv.setItem("todos", items);
-}
 
 const todos_get = defineEventHandler(async () => {
   const todos = await readTodos();
@@ -1341,23 +1403,48 @@ const todos_get$1 = /*#__PURE__*/Object.freeze({
   default: todos_get
 });
 
+const createTodoSchema = z.object({
+  todo: z.string().min(1),
+  completed: z.union([z.literal("true"), z.literal("false")]).optional().default("false")
+});
+z.object({
+  todo: z.string().min(1).optional(),
+  completed: z.union([z.literal("true"), z.literal("false")]).optional()
+});
+
+const logger = pino({ level: process.env.LOG_LEVEL || "info" });
+
 const todos_post = defineEventHandler(async (event) => {
-  const { todo, completed } = await readBody(event);
-  if (!todo || completed == null) {
-    setResponseStatus(event, 400);
-    return { statusCode: 400, message: "Both Todo and Completed fields should have a value set" };
+  try {
+    const body = await readBody(event);
+    const result = createTodoSchema.safeParse(body);
+    if (!result.success) {
+      const errors = result.error.flatten();
+      setResponseStatus(event, 400);
+      logger.warn({ errors }, "Invalid request body for /todos POST");
+      return { statusCode: 400, message: "Validation failed", errors };
+    }
+    const input = result.data;
+    const list = await readTodos();
+    const newTodo = {
+      id: Date.now(),
+      todo: input.todo,
+      completed: input.completed
+    };
+    list.push(newTodo);
+    await writeTodos(list);
+    logger.info({ todo: newTodo }, "New todo created successfully");
+    setResponseStatus(event, 201);
+    return {
+      statusCode: 201,
+      message: "Todo added successfully",
+      data: newTodo
+    };
+  } catch (err) {
+    logger.error({ err }, "Unhandled error in /todos POST");
+    setResponseStatus(event, 500);
+    return { statusCode: 500, message: "Internal server error" };
   }
-  const completedStr = String(completed);
-  if (completedStr !== "true" && completedStr !== "false") {
-    setResponseStatus(event, 400);
-    return { statusCode: 400, message: "The value of completed must either be true or false" };
-  }
-  const list = await readTodos();
-  const newTodo = { id: Date.now(), todo: String(todo), completed: completedStr };
-  list.push(newTodo);
-  await writeTodos(list);
-  setResponseStatus(event, 201);
-  return { statusCode: 201, message: "Todo added successfully", data: { ...newTodo } };
 });
 
 const todos_post$1 = /*#__PURE__*/Object.freeze({
