@@ -8,6 +8,9 @@ export default function TextToSpeech() {
     "Hello! This is a Web Speech API proof of concept."
   );
   const [selVoice, setSelVoice] = useState<string>("");
+  const [rate, setRate] = useState(1);
+  const [pitch, setPitch] = useState(1);
+  const [volume, setVolume] = useState(1);
 
   useEffect(() => {
     const saved = localStorage.getItem("tts.voiceURI");
@@ -31,36 +34,65 @@ export default function TextToSpeech() {
 
       <div className="row">
         <div className="col">
-          <div className="field">
-            <label>Voice</label>
-            <select
-              value={selVoice}
-              onChange={(e) => setSelVoice(e.target.value)}
-            >
-              <option value="">(System default)</option>
-              {voices.map((v) => (
-                <option key={v.voiceURI} value={v.voiceURI}>
-                  {v.name} — {v.lang}
-                  {v.default ? " (default)" : ""}
-                </option>
-              ))}
-            </select>
-          </div>
+          <label>Voice</label>
+          <select
+            value={selVoice}
+            onChange={(e) => setSelVoice(e.target.value)}
+          >
+            <option value="">(System default)</option>
+            {voices.map((v) => (
+              <option key={v.voiceURI} value={v.voiceURI}>
+                {v.name} — {v.lang}
+                {v.default ? " (default)" : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="col">
+          <label>Rate: {rate.toFixed(1)}</label>
+          <input
+            type="range"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value={rate}
+            onChange={(e) => setRate(parseFloat(e.target.value))}
+          />
+          <label>Pitch: {pitch.toFixed(1)}</label>
+          <input
+            type="range"
+            min="0"
+            max="2"
+            step="0.1"
+            value={pitch}
+            onChange={(e) => setPitch(parseFloat(e.target.value))}
+          />
+          <label>Volume: {volume.toFixed(1)}</label>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={volume}
+            onChange={(e) => setVolume(parseFloat(e.target.value))}
+          />
         </div>
       </div>
 
-      <div className="field">
-        <label>Text</label>
-        <textarea
-          rows={6}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
+      <div className="row">
+        <div className="col">
+          <label>Text</label>
+          <textarea
+            rows={5}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div className="actions">
+      <div className="row">
         <button
-          onClick={() => speak(text, { voice })}
+          onClick={() => speak(text, { voice, rate, pitch, volume })}
           disabled={!supported || !text.trim()}
         >
           Speak
