@@ -1,8 +1,7 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-export type NotificationPermissionState =
-  | NotificationPermission
-  | "unsupported";
+export type NotificationPermissionState = NotificationPermission | "unsupported";
 
 export interface NotificationOptionsLite {
   body?: string;
@@ -25,22 +24,16 @@ function nowIso() {
 }
 
 export function useNotifications() {
-  const [permission, setPermission] = useState<NotificationPermissionState>(
-    () => {
-      if (
-        typeof window === "undefined" ||
-        typeof Notification === "undefined"
-      ) {
-        return "unsupported";
-      }
-      return Notification.permission;
+  const [permission, setPermission] = useState<NotificationPermissionState>(() => {
+    if (typeof window === "undefined" || typeof Notification === "undefined") {
+      return "unsupported";
     }
-  );
+    return Notification.permission;
+  });
 
-  const [visibilityState, setVisibilityState] =
-    useState<DocumentVisibilityState>(
-      typeof document === "undefined" ? "visible" : document.visibilityState
-    );
+  const [visibilityState, setVisibilityState] = useState<DocumentVisibilityState>(
+    typeof document === "undefined" ? "visible" : document.visibilityState
+  );
 
   const [log, setLog] = useState<NotificationLogEntry[]>([]);
 
@@ -84,11 +77,7 @@ export function useNotifications() {
 
       if (!supported) {
         setLog((prev) => [
-          {
-            ...base,
-            status: "unsupported",
-            errorMessage: "Notifications API not supported",
-          },
+          { ...base, status: "unsupported", errorMessage: "Notifications API not supported" },
           ...prev,
         ]);
         return;
@@ -96,11 +85,7 @@ export function useNotifications() {
 
       if (permission !== "granted") {
         setLog((prev) => [
-          {
-            ...base,
-            status: "blocked",
-            errorMessage: `Permission is ${permission}`,
-          },
+          { ...base, status: "blocked", errorMessage: `Permission is ${permission}` },
           ...prev,
         ]);
         return;

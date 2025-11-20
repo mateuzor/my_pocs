@@ -1,17 +1,17 @@
+
 import React from "react";
 import { useNotifications } from "../hooks/useNotifications";
 
 export default function PermissionPanel() {
-  const { supported, permission, visibilityState, requestPermission } =
-    useNotifications();
+  const { supported, permission, visibilityState, requestPermission } = useNotifications();
 
   if (!supported) {
     return (
       <div className="card">
         <h2>Environment & Permission</h2>
         <p className="small">
-          Notifications API is not supported in this browser. Try a modern
-          Chromium browser (Chrome, Edge) on desktop.
+          Notifications API is not supported in this browser. Try a modern Chromium browser
+          (Chrome, Edge) on desktop.
         </p>
       </div>
     );
@@ -21,9 +21,8 @@ export default function PermissionPanel() {
     <div className="card">
       <h2>Environment & Permission</h2>
       <p className="small">
-        Quick overview of your current support, permission status and page
-        visibility. Use this section to understand why notifications might be
-        blocked.
+        Quick overview of your current support, permission status and page visibility. Use this
+        section to understand why notifications might be blocked.
       </p>
 
       <div className="actions" style={{ marginTop: 12 }}>
@@ -31,9 +30,7 @@ export default function PermissionPanel() {
           <span className={`chip-dot ok`} /> API support: <b>Yes</b>
         </span>
         <span className="chip">
-          <span
-            className={`chip-dot ${permission === "granted" ? "ok" : "danger"}`}
-          />
+          <span className={`chip-dot ${permission === "granted" ? "ok" : "danger"}`} />
           Permission: <b>{permission}</b>
         </span>
         <span className="chip">
