@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Web Notifications PoC (vanilla)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+    <main class="page">
+        <h1>Web Notifications API – PoC</h1>
+        <p class="hint">
+            Small experiment to request notification permission and show a basic
+            notification using plain JavaScript.
+        </p>
+
+        <section class="card">
+            <p class="status" id="status"></p>
+
+            <div class="actions">
+                <button id="checkSupportBtn">Check support</button>
+                <button id="requestPermissionBtn">Request permission</button>
+                <button id="notifyBtn">Show test notification</button>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="./scripts/main.js"></script>
+</body>
+
+</html>
