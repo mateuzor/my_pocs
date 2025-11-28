@@ -3,15 +3,17 @@ export function isSupported() {
   return typeof Notification !== "undefined";
 }
 
-// Atualiza o status
+// Atualiza e loga o status
 export function setStatus(statusEl, message) {
   statusEl.textContent = message;
+  console.log("[notifications]", message);
 }
 
 // Pede permissão ao navegador
 export async function requestPermission(statusEl) {
   if (!isSupported()) {
     setStatus(statusEl, "Cannot request permission: API not supported.");
+    console.log("[notifications]", message);
     return Notification.permission;
   }
 
