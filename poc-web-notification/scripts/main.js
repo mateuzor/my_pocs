@@ -1,4 +1,4 @@
-import { useNotifications } from "./notifications.js";
+import { useNotifications } from "./useNotifications.js";
 
 const statusEl = document.getElementById("status");
 const checkSupportBtn = document.getElementById("checkSupportBtn");
