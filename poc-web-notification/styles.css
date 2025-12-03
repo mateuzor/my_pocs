@@ -78,3 +78,11 @@ button:disabled {
   font-size: 14px;
   color: #9ca3af;
 }
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  margin: 8px 0 4px;
+}

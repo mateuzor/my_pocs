@@ -43,8 +43,8 @@ export function useNotifications(statusEl) {
     }
   }
 
-  // Envia uma notificação
-  function sendNotification(title, body) {
+  // Envia uma notificação (com suporte a requireInteraction)
+  function sendNotification(options = {}) {
     if (!isSupported()) {
       setStatus("Cannot show notification: API not supported.");
       return;
@@ -57,11 +57,20 @@ export function useNotifications(statusEl) {
       return;
     }
 
+    const {
+      title = "Web Notifications PoC",
+      body = "This is a basic test notification.",
+      requireInteraction = false,
+    } = options;
+
     const safeTitle = title?.trim() || "Web Notifications PoC";
     const safeBody = body?.trim() || undefined;
 
     try {
-      const n = new Notification(safeTitle, { body: safeBody });
+      const n = new Notification(safeTitle, {
+        body: safeBody,
+        requireInteraction, // suporte ao requireInteraction
+      });
 
       setStatus(
         "Notification sent. Check your OS notification area / popup area."

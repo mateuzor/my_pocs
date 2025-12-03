@@ -4,8 +4,9 @@ const statusEl = document.getElementById("status");
 const checkSupportBtn = document.getElementById("checkSupportBtn");
 const requestPermissionBtn = document.getElementById("requestPermissionBtn");
 const notifyBtn = document.getElementById("notifyBtn");
-const titleInput = document.getElementById("titleInput");
-const bodyInput = document.getElementById("bodyInput");
+const requireInteractionInput = document.getElementById(
+  "requireInteractionInput"
+);
 
 // Instancia o hook, passando o elemento de status
 const notifications = useNotifications(statusEl);
@@ -55,10 +56,14 @@ requestPermissionBtn.addEventListener("click", async () => {
 });
 
 notifyBtn.addEventListener("click", () => {
-  const title =
-    (titleInput && titleInput.value) || "Web Notifications PoC";
-  const body =
-    (bodyInput && bodyInput.value) || "This is a basic test notification.";
-  notifications.sendNotification(title, body);
+  const requireInteraction =
+    !!requireInteractionInput && requireInteractionInput.checked;
+
+  notifications.sendNotification({
+    title: "Web Notifications PoC",
+    body: "This is a basic test notification.",
+    requireInteraction,
+  });
+
   updateButtons();
 });
