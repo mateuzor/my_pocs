@@ -4,9 +4,11 @@ const statusEl = document.getElementById("status");
 const checkSupportBtn = document.getElementById("checkSupportBtn");
 const requestPermissionBtn = document.getElementById("requestPermissionBtn");
 const notifyBtn = document.getElementById("notifyBtn");
+const scheduleBtn = document.getElementById("scheduleBtn");
 const requireInteractionInput = document.getElementById(
   "requireInteractionInput"
 );
+const delayInput = document.getElementById("delayInput");
 
 // Instancia o hook, passando o elemento de status
 const notifications = useNotifications(statusEl);
@@ -19,6 +21,7 @@ function updateButtons() {
   checkSupportBtn.disabled = false;
   requestPermissionBtn.disabled = !supported;
   notifyBtn.disabled = !canNotify;
+  scheduleBtn.disabled = !canNotify;
 }
 
 // Estado inicial
@@ -62,6 +65,22 @@ notifyBtn.addEventListener("click", () => {
   notifications.sendNotification({
     title: "Web Notifications PoC",
     body: "This is a basic test notification.",
+    requireInteraction,
+  });
+
+  updateButtons();
+});
+
+scheduleBtn.addEventListener("click", () => {
+  const requireInteraction =
+    !!requireInteractionInput && requireInteractionInput.checked;
+
+  const delaySeconds = Number(delayInput?.value || 0);
+  const delayMs = Math.max(0, delaySeconds) * 1000;
+
+  notifications.scheduleNotification(delayMs, {
+    title: "Scheduled notification",
+    body: "This notification was scheduled.",
     requireInteraction,
   });
 

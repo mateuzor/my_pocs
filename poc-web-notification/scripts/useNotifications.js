@@ -83,6 +83,27 @@ export function useNotifications(statusEl) {
     }
   }
 
+  // Agendar notificação para daqui X ms
+  function scheduleNotification(delayMs, options = {}) {
+    if (!isSupported()) {
+      setStatus("Cannot schedule notification: API not supported.");
+      return;
+    }
+
+    if (delayMs <= 0) {
+      setStatus("Delay is 0s, sending notification immediately.");
+      sendNotification(options);
+      return;
+    }
+
+    const seconds = Math.round(delayMs / 1000);
+    setStatus(`Notification scheduled to fire in ${seconds}s...`);
+
+    setTimeout(() => {
+      sendNotification(options);
+    }, delayMs);
+  }
+
   return {
     setStatus,
     isSupported,
@@ -90,5 +111,6 @@ export function useNotifications(statusEl) {
     canNotify,
     requestPermission,
     sendNotification,
+    scheduleNotification,
   };
 }
