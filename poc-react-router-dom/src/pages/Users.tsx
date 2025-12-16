@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { USERS } from "../data/users";
 
 /**
@@ -11,6 +11,7 @@ import { USERS } from "../data/users";
  */
 
 export default function Users() {
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
 
@@ -43,7 +44,13 @@ export default function Users() {
       <ul>
         {filtered.map((u) => (
           <li key={u.id}>
-            <Link to={`/users/${u.id}`}>Open {u.name}</Link>
+            <Link
+              to={`/users/${u.id}`}
+              // guardamos a tela atual como "fundo"
+              state={{ background: location }}
+            >
+              Open {u.name}
+            </Link>
           </li>
         ))}
       </ul>
