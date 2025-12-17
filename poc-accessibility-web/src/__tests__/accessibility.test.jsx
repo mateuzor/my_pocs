@@ -6,6 +6,6 @@ expect.extend(toHaveNoViolations);
 
 test("should have no accessibility violations", async () => {
   const { container } = render(<AccessibleApp />);
-  const results = await axe(container);
+  const results = await axe(container, cus);
   expect(results).toHaveNoViolations();
 });
