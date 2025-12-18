@@ -5,6 +5,7 @@ import About from "./pages/About";
 import Users from "./pages/Users";
 import UserDetails from "./pages/UserDetails";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
 import "./App.css";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="users" element={<Users />} />
           <Route path="users/:userId" element={<UserDetails />} />
+          <Route path="admin" element={<Admin />} />
         </Route>
         {/* path="*" pega qualquer rota não mapeada (404) */}
         <Route path="*" element={<NotFound />} />
