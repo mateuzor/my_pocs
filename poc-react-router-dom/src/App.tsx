@@ -7,6 +7,8 @@ import UserDetails from "./pages/UserDetails";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import LongContent from "./pages/LongContent";
+import Products from "./pages/Products";
+import { productsLoader } from "./loaders/productsLoader";
 import "./App.css";
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
           <Route path="users/:userId" element={<UserDetails />} />
           <Route path="admin" element={<Admin />} />
           <Route path="long" element={<LongContent />} />
+          {/* Rota com loader function - dados carregados antes de renderizar */}
+          <Route path="products" element={<Products />} loader={productsLoader} />
         </Route>
         {/* path="*" pega qualquer rota não mapeada (404) */}
         <Route path="*" element={<NotFound />} />
