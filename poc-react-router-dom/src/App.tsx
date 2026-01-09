@@ -8,7 +8,9 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import LongContent from "./pages/LongContent";
 import Products from "./pages/Products";
+import Contact from "./pages/Contact";
 import { productsLoader } from "./loaders/productsLoader";
+import { contactAction } from "./actions/contactAction";
 import "./App.css";
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
           <Route path="long" element={<LongContent />} />
           {/* Rota com loader function - dados carregados antes de renderizar */}
           <Route path="products" element={<Products />} loader={productsLoader} />
+          {/* Rota com action function - processa formulários sem useState */}
+          <Route path="contact" element={<Contact />} action={contactAction} />
         </Route>
         {/* path="*" pega qualquer rota não mapeada (404) */}
         <Route path="*" element={<NotFound />} />

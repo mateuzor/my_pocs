@@ -10,6 +10,7 @@ export default function Layout() {
         <NavLink to="/users">Users</NavLink>
         <NavLink to="/about">About</NavLink>
         <NavLink to="/products">Products</NavLink>
+        <NavLink to="/contact">Contact</NavLink>
         <NavLink to="/long">Long Page</NavLink>
         <NavLink to="/admin">Admin</NavLink>
       </nav>
