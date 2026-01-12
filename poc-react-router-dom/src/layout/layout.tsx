@@ -11,6 +11,7 @@ export default function Layout() {
         <NavLink to="/about">About</NavLink>
         <NavLink to="/products">Products</NavLink>
         <NavLink to="/contact">Contact</NavLink>
+        <NavLink to="/dashboard">Dashboard</NavLink>
         <NavLink to="/long">Long Page</NavLink>
         <NavLink to="/admin">Admin</NavLink>
       </nav>

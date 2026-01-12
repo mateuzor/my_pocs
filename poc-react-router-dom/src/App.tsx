@@ -9,6 +9,8 @@ import Admin from "./pages/Admin";
 import LongContent from "./pages/LongContent";
 import Products from "./pages/Products";
 import Contact from "./pages/Contact";
+import Dashboard from "./pages/Dashboard";
+import Success from "./pages/Success";
 import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
 import "./App.css";
@@ -35,6 +37,9 @@ function App() {
           <Route path="products" element={<Products />} loader={productsLoader} />
           {/* Rota com action function - processa formulários sem useState */}
           <Route path="contact" element={<Contact />} action={contactAction} />
+          {/* Rotas demonstrando navegação programática com state */}
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="success" element={<Success />} />
         </Route>
         {/* path="*" pega qualquer rota não mapeada (404) */}
         <Route path="*" element={<NotFound />} />
