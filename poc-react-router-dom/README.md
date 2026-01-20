@@ -18,16 +18,12 @@ npm install
 # Run in development mode
 npm run dev
 
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
 ```
 
 ## Implemented Features
 
 ### 1. Basic Routes and Layout
+
 - **Nested routes** with `Layout` component
 - **`<Outlet />`** for child route rendering
 - **`NavLink`** with automatic active styling
@@ -36,6 +32,7 @@ npm run preview
 **Files:** `src/App.tsx`, `src/layout/layout.tsx`
 
 ### 2. Dynamic Route Parameters
+
 - Routes with parameters: `/users/:userId`
 - **`useParams()`** to capture IDs from URL
 - Navigation between list and details
@@ -47,6 +44,7 @@ const { userId } = useParams<{ userId: string }>();
 ```
 
 ### 3. Query Strings (Search Params)
+
 - Search filter using **`useSearchParams()`**
 - State persisted in URL (`/users?q=name`)
 - `replace: true` option to avoid polluting history
@@ -59,6 +57,7 @@ const q = searchParams.get("q") ?? "";
 ```
 
 ### 4. Modal Routing (Background Location)
+
 - Advanced technique for **modal with preserved route**
 - Uses `state: { background: location }` to keep background page
 - Renders two route stacks simultaneously
@@ -72,6 +71,7 @@ const q = searchParams.get("q") ?? "";
 ```
 
 ### 5. Programmatic Navigation
+
 - **`useNavigate()`** for imperative navigation
 - `navigate(-1)` - go back in history
 - `navigate("/path")` - go to specific route
@@ -85,6 +85,7 @@ navigate("/users"); // Go to list
 ```
 
 ### 6. Scroll Restoration
+
 - **`ScrollToTop`** component using `useLocation()`
 - Restores scroll to top on route change
 - Demo page with long content
@@ -98,6 +99,7 @@ useEffect(() => {
 ```
 
 ### 7. Loader Functions (Data Fetching)
+
 - **Loaders** load data BEFORE rendering
 - **`useLoaderData()`** to access data in component
 - Eliminates need for `useState` + `useEffect`
@@ -117,6 +119,7 @@ const { products } = useLoaderData() as { products: Product[] };
 ```
 
 ### 8. Action Functions (Form Handling)
+
 - **Actions** process forms without `preventDefault()`
 - **`<Form>`** component (React Router)
 - **`useActionData()`** for submit result
@@ -137,10 +140,11 @@ export async function contactAction({ request }) {
 <Form method="post">
   <input name="email" />
   <button type="submit">Send</button>
-</Form>
+</Form>;
 ```
 
 ### 9. State Passing Between Routes
+
 - **`navigate(path, { state })`** to pass data between routes
 - **`useLocation().state`** to access received data
 - Dashboard → Success flow with checkout data
@@ -150,7 +154,7 @@ export async function contactAction({ request }) {
 ```tsx
 // Sending state
 navigate("/success", {
-  state: { plan: "Pro", price: 19.99 }
+  state: { plan: "Pro", price: 19.99 },
 });
 
 // Receiving state
@@ -158,6 +162,7 @@ const state = useLocation().state as { plan: string; price: number };
 ```
 
 ### 10. Protected Routes (Admin)
+
 - Protected route simulation
 - Authentication pattern demonstration
 - **`useMatch()`** to detect active route
@@ -202,23 +207,23 @@ src/
 
 ## React Router DOM Concepts Covered
 
-| Concept | Hook/Component | Example File |
-|---------|---------------|--------------|
-| Basic Routes | `<Routes>`, `<Route>` | `App.tsx` |
-| Nested Routes | `<Outlet>` | `layout/layout.tsx` |
-| Navigation Links | `<NavLink>`, `<Link>` | `layout/layout.tsx` |
-| URL Parameters | `useParams()` | `pages/UserDetails.tsx` |
-| Query Strings | `useSearchParams()` | `pages/Users.tsx` |
-| Programmatic Navigation | `useNavigate()` | `pages/Dashboard.tsx` |
-| Location/State | `useLocation()` | `pages/Success.tsx` |
-| Data Loading | `loader`, `useLoaderData()` | `pages/Products.tsx` |
-| Form Actions | `action`, `useActionData()` | `pages/Contact.tsx` |
-| Form Component | `<Form>` | `pages/Contact.tsx` |
-| Navigation State | `useNavigation()` | `pages/Contact.tsx` |
-| Modal Routing | Background Location | `App.tsx` |
-| Route Matching | `useMatch()` | `pages/Users.tsx` |
-| Catch-all Routes | `path="*"` | `App.tsx` |
-| Scroll Behavior | Custom Hook | `components/ScrollToTop.tsx` |
+| Concept                 | Hook/Component              | Example File                 |
+| ----------------------- | --------------------------- | ---------------------------- |
+| Basic Routes            | `<Routes>`, `<Route>`       | `App.tsx`                    |
+| Nested Routes           | `<Outlet>`                  | `layout/layout.tsx`          |
+| Navigation Links        | `<NavLink>`, `<Link>`       | `layout/layout.tsx`          |
+| URL Parameters          | `useParams()`               | `pages/UserDetails.tsx`      |
+| Query Strings           | `useSearchParams()`         | `pages/Users.tsx`            |
+| Programmatic Navigation | `useNavigate()`             | `pages/Dashboard.tsx`        |
+| Location/State          | `useLocation()`             | `pages/Success.tsx`          |
+| Data Loading            | `loader`, `useLoaderData()` | `pages/Products.tsx`         |
+| Form Actions            | `action`, `useActionData()` | `pages/Contact.tsx`          |
+| Form Component          | `<Form>`                    | `pages/Contact.tsx`          |
+| Navigation State        | `useNavigation()`           | `pages/Contact.tsx`          |
+| Modal Routing           | Background Location         | `App.tsx`                    |
+| Route Matching          | `useMatch()`                | `pages/Users.tsx`            |
+| Catch-all Routes        | `path="*"`                  | `App.tsx`                    |
+| Scroll Behavior         | Custom Hook                 | `components/ScrollToTop.tsx` |
 
 ## Patterns and Best Practices
 
@@ -236,5 +241,3 @@ src/
 - [Vite Documentation](https://vitejs.dev/)
 
 ## License
-
-MIT - Educational project for studying React Router DOM
