@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tailwind - Animations & Transitions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          keyframes: {
+            'fade-in-up': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(30px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              },
+            },
+            'fade-in-down': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(-30px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              },
+            },
+            'scale-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'scale(0.9)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'scale(1)'
+              },
+            },
+            'slide-in-right': {
+              '0%': {
+                transform: 'translateX(-100%)'
+              },
+              '100%': {
+                transform: 'translateX(0)'
+              },
+            },
+            'bounce-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'scale(0.3)'
+              },
+              '50%': {
+                opacity: '1',
+                transform: 'scale(1.05)'
+              },
+              '70%': {
+                transform: 'scale(0.9)'
+              },
+              '100%': {
+                transform: 'scale(1)'
+              },
+            },
+            'wiggle': {
+              '0%, 100%': {
+                transform: 'rotate(-3deg)'
+              },
+              '50%': {
+                transform: 'rotate(3deg)'
+              },
+            },
+            'pulse-ring': {
+              '0%': {
+                transform: 'scale(0.95)',
+                boxShadow: '0 0 0 0 rgba(59, 130, 246, 0.7)'
+              },
+              '70%': {
+                transform: 'scale(1)',
+                boxShadow: '0 0 0 10px rgba(59, 130, 246, 0)'
+              },
+              '100%': {
+                transform: 'scale(0.95)',
+                boxShadow: '0 0 0 0 rgba(59, 130, 246, 0)'
+              },
+            },
+          },
+          animation: {
+            'fade-in-up': 'fade-in-up 0.6s ease-out',
+            'fade-in-down': 'fade-in-down 0.6s ease-out',
+            'scale-in': 'scale-in 0.4s ease-out',
+            'slide-in-right': 'slide-in-right 0.5s ease-out',
+            'bounce-in': 'bounce-in 0.8s ease-out',
+            'wiggle': 'wiggle 1s ease-in-out infinite',
+            'pulse-ring': 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 p-8">
+
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8 animate-fade-in-down">
+      Custom Animations & Transitions
+    </h1>
+
+    <!-- Built-in animations -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Built-in Animations</h2>
+      <div class="grid grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+          <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-4 animate-spin"></div>
+          <div class="font-semibold">Spin</div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+          <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 animate-ping"></div>
+          <div class="font-semibold">Ping</div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+          <div class="w-16 h-16 bg-purple-500 rounded-full mx-auto mb-4 animate-pulse"></div>
+          <div class="font-semibold">Pulse</div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+          <div class="w-16 h-16 bg-red-500 rounded-full mx-auto mb-4 animate-bounce"></div>
+          <div class="font-semibold">Bounce</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Custom animations -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Custom Keyframe Animations</h2>
+      <div class="grid grid-cols-3 gap-6">
+        <div class="bg-white p-8 rounded-xl shadow-lg animate-fade-in-up">
+          <h3 class="font-bold text-lg mb-2">Fade In Up</h3>
+          <p class="text-gray-600 text-sm">Smooth entrance from bottom</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg animate-scale-in" style="animation-delay: 0.2s;">
+          <h3 class="font-bold text-lg mb-2">Scale In</h3>
+          <p class="text-gray-600 text-sm">Grows into view</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg animate-bounce-in" style="animation-delay: 0.4s;">
+          <h3 class="font-bold text-lg mb-2">Bounce In</h3>
+          <p class="text-gray-600 text-sm">Playful entrance</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hover transitions -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Hover Transitions</h2>
+      <div class="grid grid-cols-3 gap-6">
+        <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300">
+          Color Transition
+        </button>
+        <button class="bg-purple-500 hover:scale-110 text-white font-bold py-4 px-6 rounded-xl transition-transform duration-300">
+          Scale Transform
+        </button>
+        <button class="bg-green-500 hover:shadow-2xl text-white font-bold py-4 px-6 rounded-xl transition-shadow duration-300">
+          Shadow Lift
+        </button>
+      </div>
+      <div class="grid grid-cols-3 gap-6 mt-6">
+        <button class="bg-red-500 hover:-translate-y-2 text-white font-bold py-4 px-6 rounded-xl transition-transform duration-300">
+          Lift Up
+        </button>
+        <button class="bg-yellow-500 hover:rotate-6 text-white font-bold py-4 px-6 rounded-xl transition-transform duration-300">
+          Rotate
+        </button>
+        <button class="bg-pink-500 hover:skew-x-6 text-white font-bold py-4 px-6 rounded-xl transition-transform duration-300">
+          Skew
+        </button>
+      </div>
+    </section>
+
+    <!-- Transition timing functions -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Transition Timing Functions</h2>
+      <div class="space-y-4">
+        <button class="w-full bg-gray-800 hover:bg-blue-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-150 ease-linear text-left">
+          ease-linear (duration-150)
+        </button>
+        <button class="w-full bg-gray-800 hover:bg-green-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 ease-in text-left">
+          ease-in (duration-300)
+        </button>
+        <button class="w-full bg-gray-800 hover:bg-purple-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-500 ease-out text-left">
+          ease-out (duration-500)
+        </button>
+        <button class="w-full bg-gray-800 hover:bg-red-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-700 ease-in-out text-left">
+          ease-in-out (duration-700)
+        </button>
+      </div>
+    </section>
+
+    <!-- Complex card with multiple animations -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Complex Interactive Card</h2>
+      <div class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative p-8 group-hover:text-white transition-colors duration-500">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold">Premium Feature</h3>
+            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center group-hover:animate-pulse-ring">
+              <span class="text-white font-bold">★</span>
+            </div>
+          </div>
+          <p class="mb-6 group-hover:translate-x-2 transition-transform duration-300">
+            Hover to see multiple animations working together
+          </p>
+          <button class="bg-gray-900 group-hover:bg-white text-white group-hover:text-gray-900 font-bold py-3 px-8 rounded-xl transition-all duration-300 group-hover:scale-105">
+            Get Started
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading states -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Loading States</h2>
+      <div class="grid grid-cols-3 gap-6">
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <div class="flex justify-center mb-4">
+            <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <div class="text-center text-gray-600">Loading...</div>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <div class="flex justify-center gap-2 mb-4">
+            <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+            <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+            <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+          </div>
+          <div class="text-center text-gray-600">Processing...</div>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <div class="flex justify-center mb-4">
+            <div class="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+          </div>
+          <div class="text-center text-gray-600">Please wait...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notification toast -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6">Animated Notifications</h2>
+      <div class="space-y-4">
+        <div class="bg-green-500 text-white p-4 rounded-xl shadow-lg animate-slide-in-right flex items-center gap-4">
+          <div class="w-8 h-8 bg-white text-green-500 rounded-full flex items-center justify-center font-bold">✓</div>
+          <div>
+            <div class="font-bold">Success!</div>
+            <div class="text-sm opacity-90">Your changes have been saved</div>
+          </div>
+        </div>
+        <div class="bg-red-500 text-white p-4 rounded-xl shadow-lg animate-wiggle flex items-center gap-4">
+          <div class="w-8 h-8 bg-white text-red-500 rounded-full flex items-center justify-center font-bold">!</div>
+          <div>
+            <div class="font-bold">Error</div>
+            <div class="text-sm opacity-90">Something went wrong</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
