@@ -1,20 +1,20 @@
-import DataFetcher from './DataFetcher';
-
-interface User { name: string; email: string; }
+import Toggle from './Toggle';
 
 function App() {
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Render Props: Data Fetcher</h1>
+      <h1>Render Props: Toggle</h1>
       
-      <DataFetcher<User>
-        url="https://jsonplaceholder.typicode.com/users/1"
-        render={(user, loading, error) => {
-          if (loading) return <p>Loading...</p>;
-          if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
-          return <div><h3>{user?.name}</h3><p>{user?.email}</p></div>;
-        }}
-      />
+      <Toggle>
+        {(isOn, toggle) => (
+          <div>
+            <button onClick={toggle} style={{ padding: '10px 20px', backgroundColor: isOn ? '#10b981' : '#6b7280', color: 'white', border: 'none', borderRadius: '6px' }}>
+              {isOn ? 'ON ✅' : 'OFF ❌'}
+            </button>
+            {isOn && <p style={{ marginTop: '10px', color: '#10b981' }}>Toggle is active!</p>}
+          </div>
+        )}
+      </Toggle>
     </div>
   );
 }
