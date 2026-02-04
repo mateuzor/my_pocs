@@ -1,19 +1,20 @@
-import MouseTracker from './MouseTracker';
+import DataFetcher from './DataFetcher';
+
+interface User { name: string; email: string; }
 
 function App() {
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Render Props Pattern: Mouse Tracker</h1>
-      <p>Move your mouse inside the box</p>
+      <h1>Render Props: Data Fetcher</h1>
       
-      <MouseTracker render={({ x, y }) => (
-        <div>
-          <h3>Mouse Position:</h3>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#3b82f6' }}>
-            X: {x}px, Y: {y}px
-          </p>
-        </div>
-      )} />
+      <DataFetcher<User>
+        url="https://jsonplaceholder.typicode.com/users/1"
+        render={(user, loading, error) => {
+          if (loading) return <p>Loading...</p>;
+          if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
+          return <div><h3>{user?.name}</h3><p>{user?.email}</p></div>;
+        }}
+      />
     </div>
   );
 }
