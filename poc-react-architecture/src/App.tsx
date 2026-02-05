@@ -1,27 +1,25 @@
-import { useState } from 'react';
-import { useDebounce, useToggle } from './hooks';
+import { useState, useRef } from 'react';
+import { usePrevious, useWindowSize } from './hooks';
 
 function App() {
-  const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 500);
-  const [isOn, toggle] = useToggle();
+  const [count, setCount] = useState(0);
+  const prevCount = usePrevious(count);
+  const { width, height } = useWindowSize();
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Custom Hooks: useDebounce & useToggle</h1>
+      <h1>Custom Hooks: usePrevious & useWindowSize</h1>
       
       <div style={{ marginBottom: '20px' }}>
-        <h2>useDebounce Demo</h2>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..." style={{ padding: '8px', width: '300px' }} />
-        <p>Immediate: {search}</p>
-        <p>Debounced (500ms): {debouncedSearch}</p>
+        <h2>usePrevious Demo</h2>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
+        <p>Current: {count}</p>
+        <p>Previous: {prevCount ?? '-'}</p>
       </div>
 
       <div>
-        <h2>useToggle Demo</h2>
-        <button onClick={toggle} style={{ padding: '10px 20px' }}>
-          {isOn ? 'ON' : 'OFF'}
-        </button>
+        <h2>useWindowSize Demo</h2>
+        <p>Width: {width}px, Height: {height}px</p>
       </div>
     </div>
   );

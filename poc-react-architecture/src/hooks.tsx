@@ -37,3 +37,19 @@ export function useToggle(initial = false) {
   const [value, setValue] = useState(initial);
   return [value, () => setValue(v => !v)] as const;
 }
+
+export function usePrevious<T>(value: T): T | undefined {
+  const ref = useRef<T>();
+  useEffect(() => { ref.current = value; }, [value]);
+  return ref.current;
+}
+
+export function useWindowSize() {
+  const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  useEffect(() => {
+    const handle = () => setSize({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener('resize', handle);
+    return () => window.removeEventListener('resize', handle);
+  }, []);
+  return size;
+}
