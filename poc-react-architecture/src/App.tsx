@@ -1,22 +1,27 @@
-import { useFetch, useLocalStorage } from './hooks';
+import { useState } from 'react';
+import { useDebounce, useToggle } from './hooks';
 
 function App() {
-  const { data, loading } = useFetch<{ title: string }>('https://jsonplaceholder.typicode.com/todos/1');
-  const [name, setName] = useLocalStorage('name', '');
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
+  const [isOn, toggle] = useToggle();
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Custom Hooks: useFetch & useLocalStorage</h1>
+      <h1>Custom Hooks: useDebounce & useToggle</h1>
       
       <div style={{ marginBottom: '20px' }}>
-        <h2>useFetch Demo</h2>
-        {loading ? <p>Loading...</p> : <p>Todo: {data?.title}</p>}
+        <h2>useDebounce Demo</h2>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..." style={{ padding: '8px', width: '300px' }} />
+        <p>Immediate: {search}</p>
+        <p>Debounced (500ms): {debouncedSearch}</p>
       </div>
 
       <div>
-        <h2>useLocalStorage Demo</h2>
-        <input value={name} onChange={e => setName(e.target.value)} placeholder="Your name" style={{ padding: '8px' }} />
-        <p>Stored: {name}</p>
+        <h2>useToggle Demo</h2>
+        <button onClick={toggle} style={{ padding: '10px 20px' }}>
+          {isOn ? 'ON' : 'OFF'}
+        </button>
       </div>
     </div>
   );

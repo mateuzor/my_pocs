@@ -23,3 +23,17 @@ export function useLocalStorage<T>(key: string, initial: T) {
   
   return [value, setValue] as const;
 }
+
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debounced;
+}
+
+export function useToggle(initial = false) {
+  const [value, setValue] = useState(initial);
+  return [value, () => setValue(v => !v)] as const;
+}
