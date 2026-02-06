@@ -1,26 +1,15 @@
-import { useState, useRef } from 'react';
-import { usePrevious, useWindowSize } from './hooks';
+import ErrorBoundary from './ErrorBoundary';
+import BuggyComponent from './BuggyComponent';
 
 function App() {
-  const [count, setCount] = useState(0);
-  const prevCount = usePrevious(count);
-  const { width, height } = useWindowSize();
-
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Custom Hooks: usePrevious & useWindowSize</h1>
+      <h1>Error Boundaries: Basic Implementation</h1>
+      <p>Error boundary catches the crash</p>
       
-      <div style={{ marginBottom: '20px' }}>
-        <h2>usePrevious Demo</h2>
-        <button onClick={() => setCount(count + 1)}>Increment</button>
-        <p>Current: {count}</p>
-        <p>Previous: {prevCount ?? '-'}</p>
-      </div>
-
-      <div>
-        <h2>useWindowSize Demo</h2>
-        <p>Width: {width}px, Height: {height}px</p>
-      </div>
+      <ErrorBoundary>
+        <BuggyComponent />
+      </ErrorBoundary>
     </div>
   );
 }
