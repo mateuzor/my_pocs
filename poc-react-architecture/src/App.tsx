@@ -1,25 +1,26 @@
 import { lazy, Suspense, useState } from 'react';
+import ErrorBoundary from './ErrorBoundary';
 
-const Gallery = lazy(() => import('./Gallery'));
 const Heavy = lazy(() => import('./HeavyComponent'));
+const preload = () => import('./HeavyComponent');
 
 function App() {
-  const [route, setRoute] = useState<'home' | 'gallery' | 'heavy'>('home');
+  const [show, setShow] = useState(false);
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Code Splitting: Route-based</h1>
-      <nav style={{ marginBottom: '20px' }}>
-        <button onClick={() => setRoute('home')}>Home</button>
-        <button onClick={() => setRoute('gallery')}>Gallery</button>
-        <button onClick={() => setRoute('heavy')}>Heavy</button>
-      </nav>
+      <h1>Code Splitting: Preloading & Error Handling</h1>
+      <button onMouseEnter={preload} onClick={() => setShow(true)}>
+        Hover to preload, click to show
+      </button>
       
-      <Suspense fallback={<div>Loading...</div>}>
-        {route === 'home' && <div>Home Page</div>}
-        {route === 'gallery' && <Gallery />}
-        {route === 'heavy' && <Heavy />}
-      </Suspense>
+      {show && (
+        <ErrorBoundary fallback={<div>Failed to load</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Heavy />
+          </Suspense>
+        </ErrorBoundary>
+      )}
     </div>
   );
 }
