@@ -1,20 +1,25 @@
 import { lazy, Suspense, useState } from 'react';
 
-const HeavyComponent = lazy(() => import('./HeavyComponent'));
+const Gallery = lazy(() => import('./Gallery'));
+const Heavy = lazy(() => import('./HeavyComponent'));
 
 function App() {
-  const [show, setShow] = useState(false);
+  const [route, setRoute] = useState<'home' | 'gallery' | 'heavy'>('home');
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Code Splitting: Basic Lazy Loading</h1>
-      <button onClick={() => setShow(true)}>Load Component</button>
+      <h1>Code Splitting: Route-based</h1>
+      <nav style={{ marginBottom: '20px' }}>
+        <button onClick={() => setRoute('home')}>Home</button>
+        <button onClick={() => setRoute('gallery')}>Gallery</button>
+        <button onClick={() => setRoute('heavy')}>Heavy</button>
+      </nav>
       
-      {show && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <HeavyComponent />
-        </Suspense>
-      )}
+      <Suspense fallback={<div>Loading...</div>}>
+        {route === 'home' && <div>Home Page</div>}
+        {route === 'gallery' && <Gallery />}
+        {route === 'heavy' && <Heavy />}
+      </Suspense>
     </div>
   );
 }
