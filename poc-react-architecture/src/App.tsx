@@ -1,27 +1,28 @@
-import { useRef, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 
 function App() {
-  const nameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    alert(JSON.stringify({ name: nameRef.current?.value, email: emailRef.current?.value }));
+    alert(JSON.stringify({ name, email }));
   };
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Uncontrolled Components</h1>
-      <p>Using refs, DOM manages state</p>
+      <h1>Controlled Components</h1>
+      <p>React state manages value</p>
       
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '10px' }}>
           <label>Name:</label>
-          <input ref={nameRef} type="text" style={{ marginLeft: '10px', padding: '5px' }} />
+          <input value={name} onChange={e => setName(e.target.value)} style={{ marginLeft: '10px', padding: '5px' }} />
+          <p style={{ fontSize: '12px', color: '#666' }}>Current: {name || '(empty)'}</p>
         </div>
         <div style={{ marginBottom: '10px' }}>
           <label>Email:</label>
-          <input ref={emailRef} type="email" style={{ marginLeft: '10px', padding: '5px' }} />
+          <input value={email} onChange={e => setEmail(e.target.value)} style={{ marginLeft: '10px', padding: '5px' }} />
         </div>
         <button type="submit" style={{ padding: '8px 16px' }}>Submit</button>
       </form>
