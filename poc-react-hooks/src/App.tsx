@@ -5,6 +5,7 @@ import LayoutEffectExample from "./components/LayoutEffectExample";
 import NameInput from "./components/NameInput";
 import { ThemeContext, ThemeProvider } from './contexts/ThemeContext';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
+import { TodoContext, TodoProvider } from './contexts/TodoContext';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -138,16 +139,126 @@ function AuthDemo() {
   );
 }
 
+function TodoApp() {
+  const context = useContext(TodoContext);
+  const [inputText, setInputText] = useState('');
+
+  if (!context) {
+    throw new Error('TodoApp must be used within TodoProvider');
+  }
+
+  const { todos, dispatch } = context;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputText.trim()) {
+      dispatch({ type: 'ADD_TODO', text: inputText });
+      setInputText('');
+    }
+  };
+
+  const completedCount = todos.filter(t => t.completed).length;
+  const activeCount = todos.length - completedCount;
+
+  return (
+    <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1>useContext + useReducer - Todo List</h1>
+
+      <form onSubmit={handleSubmit} style={{ marginBottom: '30px' }}>
+        <input
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Add a new todo..."
+          style={{ padding: '10px', width: '70%', fontSize: '16px' }}
+        />
+        <button
+          type="submit"
+          style={{ padding: '10px 20px', marginLeft: '10px', cursor: 'pointer' }}
+        >
+          Add
+        </button>
+      </form>
+
+      <div style={{ marginBottom: '20px' }}>
+        <span>Active: {activeCount}</span>
+        <span style={{ marginLeft: '20px' }}>Completed: {completedCount}</span>
+        {completedCount > 0 && (
+          <button
+            onClick={() => dispatch({ type: 'CLEAR_COMPLETED' })}
+            style={{ marginLeft: '20px', padding: '5px 10px', cursor: 'pointer' }}
+          >
+            Clear Completed
+          </button>
+        )}
+      </div>
+
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {todos.map(todo => (
+          <li
+            key={todo.id}
+            style={{
+              padding: '15px',
+              marginBottom: '10px',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '4px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={() => dispatch({ type: 'TOGGLE_TODO', id: todo.id })}
+                style={{ marginRight: '10px' }}
+              />
+              <span style={{
+                textDecoration: todo.completed ? 'line-through' : 'none',
+                color: todo.completed ? '#999' : '#000'
+              }}>
+                {todo.text}
+              </span>
+            </div>
+            <button
+              onClick={() => dispatch({ type: 'DELETE_TODO', id: todo.id })}
+              style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#ff4444', color: 'white', border: 'none', borderRadius: '4px' }}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {todos.length === 0 && (
+        <p style={{ textAlign: 'center', color: '#999' }}>No todos yet. Add one above!</p>
+      )}
+
+      <div style={{ marginTop: '40px', textAlign: 'left' }}>
+        <h3>useContext + useReducer Pattern:</h3>
+        <ul>
+          <li>useReducer manages complex state logic (like Redux)</li>
+          <li>Context makes the state and dispatch available globally</li>
+          <li>Reducer centralizes state updates with predictable actions</li>
+          <li>Perfect for global state management without external libraries</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
-    <AuthProvider>
-      <AuthDemo />
+    <TodoProvider>
+      <TodoApp />
       {/* Previous examples */}
+      {/* <AuthProvider><AuthDemo /></AuthProvider> */}
       {/* <ThemeProvider><ThemeDisplay /></ThemeProvider> */}
       {/* <NameInput />
       <Counter />
       <LayoutEffectExample /> */}
-    </AuthProvider>
+    </TodoProvider>
   );
 }
 
