@@ -7,6 +7,7 @@ import { ThemeContext, ThemeProvider } from './contexts/ThemeContext';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 import { TodoContext, TodoProvider } from './contexts/TodoContext';
 import FancyInput, { FancyInputHandle } from './components/FancyInput';
+import { useOnlineStatus, useUser } from './hooks/useOnlineStatus';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -134,6 +135,65 @@ function AuthDemo() {
           <li>Each context manages different concerns (theme, auth, etc)</li>
           <li>Components can use multiple contexts via multiple useContext calls</li>
           <li>Prevents prop drilling for cross-cutting concerns</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function DebugValueDemo() {
+  const isOnline = useOnlineStatus();
+  const [userId, setUserId] = useState(1);
+  const { user, loading } = useUser(userId);
+
+  return (
+    <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1>useDebugValue Example</h1>
+
+      <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#f0f8ff', borderRadius: '8px' }}>
+        <h2>Online Status</h2>
+        <p style={{ fontSize: '18px' }}>
+          Status: <strong style={{ color: isOnline ? 'green' : 'red' }}>
+            {isOnline ? 'Online' : 'Offline'}
+          </strong>
+        </p>
+        <p style={{ fontSize: '14px', color: '#666' }}>
+          Open React DevTools to see "useOnlineStatus" hook with custom debug value
+        </p>
+      </div>
+
+      <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#f0fff0', borderRadius: '8px' }}>
+        <h2>User Data</h2>
+        <div style={{ marginBottom: '15px' }}>
+          <label>Select User ID: </label>
+          <select value={userId} onChange={(e) => setUserId(Number(e.target.value))} style={{ padding: '5px' }}>
+            <option value={1}>User 1</option>
+            <option value={2}>User 2</option>
+            <option value={3}>User 3</option>
+          </select>
+        </div>
+
+        {loading ? (
+          <p>Loading user...</p>
+        ) : (
+          <div>
+            <p><strong>ID:</strong> {user?.id}</p>
+            <p><strong>Name:</strong> {user?.name}</p>
+          </div>
+        )}
+
+        <p style={{ fontSize: '14px', color: '#666', marginTop: '15px' }}>
+          Open React DevTools to see "useUser" hook with formatted debug value
+        </p>
+      </div>
+
+      <div style={{ marginTop: '40px', textAlign: 'left' }}>
+        <h3>How useDebugValue works:</h3>
+        <ul>
+          <li><strong>Purpose:</strong> Adds custom labels to custom hooks in React DevTools</li>
+          <li><strong>Visibility:</strong> Only visible in React DevTools, not in production</li>
+          <li><strong>Performance:</strong> Formatter function only runs when DevTools is open</li>
+          <li><strong>Best practice:</strong> Use in shared/library hooks for better debugging experience</li>
         </ul>
       </div>
     </div>
@@ -306,8 +366,9 @@ function TodoApp() {
 function App() {
   return (
     <div>
-      <ImperativeDemo />
+      <DebugValueDemo />
       {/* Previous examples */}
+      {/* <ImperativeDemo /> */}
       {/* <TodoProvider><TodoApp /></TodoProvider> */}
       {/* <AuthProvider><AuthDemo /></AuthProvider> */}
       {/* <ThemeProvider><ThemeDisplay /></ThemeProvider> */}
