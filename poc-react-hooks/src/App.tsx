@@ -1,4 +1,4 @@
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useId } from 'react';
 import "./App.css";
 import Counter from "./components/Counter";
 import LayoutEffectExample from "./components/LayoutEffectExample";
@@ -136,6 +136,78 @@ function AuthDemo() {
           <li>Components can use multiple contexts via multiple useContext calls</li>
           <li>Prevents prop drilling for cross-cutting concerns</li>
         </ul>
+      </div>
+    </div>
+  );
+}
+
+function UseIdDemo() {
+  // useId generates unique IDs for accessibility
+  const emailId = useId();
+  const passwordId = useId();
+  const descriptionId = useId();
+
+  const [formData, setFormData] = useState({ email: '', password: '' });
+
+  return (
+    <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1>useId Example</h1>
+      <p id={descriptionId} style={{ color: '#666', marginBottom: '30px' }}>
+        useId generates unique, stable IDs for accessibility attributes
+      </p>
+
+      <form style={{ marginBottom: '30px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <label htmlFor={emailId} style={{ display: 'block', marginBottom: '5px' }}>
+            Email Address
+          </label>
+          <input
+            id={emailId}
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+            aria-describedby={descriptionId}
+            style={{ padding: '10px', width: '100%', boxSizing: 'border-box' }}
+          />
+          <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+            Input ID: <code>{emailId}</code>
+          </small>
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <label htmlFor={passwordId} style={{ display: 'block', marginBottom: '5px' }}>
+            Password
+          </label>
+          <input
+            id={passwordId}
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+            style={{ padding: '10px', width: '100%', boxSizing: 'border-box' }}
+          />
+          <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+            Input ID: <code>{passwordId}</code>
+          </small>
+        </div>
+
+        <button type="submit" style={{ padding: '10px 20px', cursor: 'pointer' }}>
+          Submit
+        </button>
+      </form>
+
+      <div style={{ marginTop: '40px', textAlign: 'left' }}>
+        <h3>Why useId is important:</h3>
+        <ul>
+          <li><strong>Accessibility:</strong> Links labels to inputs via htmlFor/id</li>
+          <li><strong>Server-side rendering:</strong> IDs match between server and client (no hydration mismatch)</li>
+          <li><strong>Unique:</strong> Guaranteed unique even with multiple instances of same component</li>
+          <li><strong>Stable:</strong> Same ID on every render (unlike Math.random)</li>
+          <li><strong>React 18+:</strong> Part of concurrent rendering features</li>
+        </ul>
+
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
+          <strong>Note:</strong> Without useId, you'd need to manage IDs manually or use libraries like uuid. useId ensures IDs work correctly with SSR and Concurrent Features.
+        </div>
       </div>
     </div>
   );
@@ -366,8 +438,9 @@ function TodoApp() {
 function App() {
   return (
     <div>
-      <DebugValueDemo />
+      <UseIdDemo />
       {/* Previous examples */}
+      {/* <DebugValueDemo /> */}
       {/* <ImperativeDemo /> */}
       {/* <TodoProvider><TodoApp /></TodoProvider> */}
       {/* <AuthProvider><AuthDemo /></AuthProvider> */}
