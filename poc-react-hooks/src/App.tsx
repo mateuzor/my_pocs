@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import "./App.css";
 import Counter from "./components/Counter";
 import LayoutEffectExample from "./components/LayoutEffectExample";
@@ -6,6 +6,7 @@ import NameInput from "./components/NameInput";
 import { ThemeContext, ThemeProvider } from './contexts/ThemeContext';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 import { TodoContext, TodoProvider } from './contexts/TodoContext';
+import FancyInput, { FancyInputHandle } from './components/FancyInput';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -139,6 +140,60 @@ function AuthDemo() {
   );
 }
 
+function ImperativeDemo() {
+  const inputRef = useRef<FancyInputHandle>(null);
+
+  return (
+    <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1>useImperativeHandle + forwardRef</h1>
+
+      <div style={{ marginBottom: '30px' }}>
+        <FancyInput ref={inputRef} placeholder="Type something..." />
+      </div>
+
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <button
+          onClick={() => inputRef.current?.focus()}
+          style={{ padding: '10px 20px', cursor: 'pointer' }}
+        >
+          Focus Input
+        </button>
+        <button
+          onClick={() => inputRef.current?.clear()}
+          style={{ padding: '10px 20px', cursor: 'pointer' }}
+        >
+          Clear Input
+        </button>
+        <button
+          onClick={() => inputRef.current?.setValue('Hello from parent!')}
+          style={{ padding: '10px 20px', cursor: 'pointer' }}
+        >
+          Set Value
+        </button>
+        <button
+          onClick={() => {
+            const value = inputRef.current?.getValue();
+            alert(`Current value: ${value}`);
+          }}
+          style={{ padding: '10px 20px', cursor: 'pointer' }}
+        >
+          Get Value
+        </button>
+      </div>
+
+      <div style={{ marginTop: '40px', textAlign: 'left' }}>
+        <h3>How it works:</h3>
+        <ul>
+          <li><strong>forwardRef:</strong> Allows parent to pass ref to child component</li>
+          <li><strong>useImperativeHandle:</strong> Customizes what ref exposes to parent</li>
+          <li><strong>Use case:</strong> Expose imperative methods (focus, clear, etc) to parent</li>
+          <li><strong>Best practice:</strong> Use sparingly - prefer declarative props when possible</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function TodoApp() {
   const context = useContext(TodoContext);
   const [inputText, setInputText] = useState('');
@@ -250,15 +305,16 @@ function TodoApp() {
 
 function App() {
   return (
-    <TodoProvider>
-      <TodoApp />
+    <div>
+      <ImperativeDemo />
       {/* Previous examples */}
+      {/* <TodoProvider><TodoApp /></TodoProvider> */}
       {/* <AuthProvider><AuthDemo /></AuthProvider> */}
       {/* <ThemeProvider><ThemeDisplay /></ThemeProvider> */}
       {/* <NameInput />
       <Counter />
       <LayoutEffectExample /> */}
-    </TodoProvider>
+    </div>
   );
 }
 
