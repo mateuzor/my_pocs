@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useId, useDeferredValue, useMemo } from 'react';
+import { useContext, useState, useRef, useId, useDeferredValue, useMemo, useTransition } from 'react';
 import "./App.css";
 import Counter from "./components/Counter";
 import LayoutEffectExample from "./components/LayoutEffectExample";
@@ -136,6 +136,171 @@ function AuthDemo() {
           <li>Components can use multiple contexts via multiple useContext calls</li>
           <li>Prevents prop drilling for cross-cutting concerns</li>
         </ul>
+      </div>
+    </div>
+  );
+}
+
+function UseTransitionDemo() {
+  const [isPending, startTransition] = useTransition();
+  const [tab, setTab] = useState<'about' | 'posts' | 'contact'>('about');
+
+  // Function to generate expensive content
+  function ExpensivePostList() {
+    const items = [];
+    // Simulate expensive rendering with many items
+    for (let i = 0; i < 500; i++) {
+      items.push(
+        <div key={i} style={{
+          padding: '15px',
+          marginBottom: '10px',
+          backgroundColor: '#f9f9f9',
+          borderRadius: '4px',
+          border: '1px solid #ddd'
+        }}>
+          <h4 style={{ margin: '0 0 8px 0' }}>Post Title #{i + 1}</h4>
+          <p style={{ margin: 0, color: '#666' }}>
+            This is post content #{i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          </p>
+        </div>
+      );
+    }
+    return <div>{items}</div>;
+  }
+
+  function handleTabChange(newTab: 'about' | 'posts' | 'contact') {
+    // Using startTransition to make tab switching non-blocking
+    startTransition(() => {
+      setTab(newTab);
+    });
+  }
+
+  return (
+    <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
+      <h1>useTransition Example</h1>
+
+      {/* Tab Navigation */}
+      <div style={{ marginBottom: '30px', display: 'flex', gap: '10px', borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>
+        <button
+          onClick={() => handleTabChange('about')}
+          disabled={isPending}
+          style={{
+            padding: '10px 20px',
+            cursor: isPending ? 'wait' : 'pointer',
+            backgroundColor: tab === 'about' ? '#4CAF50' : '#f0f0f0',
+            color: tab === 'about' ? 'white' : 'black',
+            border: 'none',
+            borderRadius: '4px',
+            fontWeight: tab === 'about' ? 'bold' : 'normal',
+            opacity: isPending ? 0.6 : 1
+          }}
+        >
+          About
+        </button>
+        <button
+          onClick={() => handleTabChange('posts')}
+          disabled={isPending}
+          style={{
+            padding: '10px 20px',
+            cursor: isPending ? 'wait' : 'pointer',
+            backgroundColor: tab === 'posts' ? '#4CAF50' : '#f0f0f0',
+            color: tab === 'posts' ? 'white' : 'black',
+            border: 'none',
+            borderRadius: '4px',
+            fontWeight: tab === 'posts' ? 'bold' : 'normal',
+            opacity: isPending ? 0.6 : 1
+          }}
+        >
+          Posts (Slow) {isPending && '⏳'}
+        </button>
+        <button
+          onClick={() => handleTabChange('contact')}
+          disabled={isPending}
+          style={{
+            padding: '10px 20px',
+            cursor: isPending ? 'wait' : 'pointer',
+            backgroundColor: tab === 'contact' ? '#4CAF50' : '#f0f0f0',
+            color: tab === 'contact' ? 'white' : 'black',
+            border: 'none',
+            borderRadius: '4px',
+            fontWeight: tab === 'contact' ? 'bold' : 'normal',
+            opacity: isPending ? 0.6 : 1
+          }}
+        >
+          Contact
+        </button>
+      </div>
+
+      {isPending && (
+        <div style={{ padding: '15px', backgroundColor: '#fff3cd', borderRadius: '4px', marginBottom: '20px' }}>
+          ⏳ Loading content... (UI stays responsive)
+        </div>
+      )}
+
+      {/* Tab Content */}
+      <div style={{
+        opacity: isPending ? 0.7 : 1,
+        transition: 'opacity 0.2s',
+        maxHeight: '500px',
+        overflowY: 'auto',
+        border: '1px solid #ddd',
+        padding: '20px',
+        borderRadius: '4px'
+      }}>
+        {tab === 'about' && (
+          <div>
+            <h2>About Tab</h2>
+            <p>This is a lightweight tab that renders quickly.</p>
+            <p>Notice how switching to this tab is instant, even when coming from the slow Posts tab.</p>
+          </div>
+        )}
+
+        {tab === 'posts' && (
+          <div>
+            <h2>Posts Tab (Expensive Rendering)</h2>
+            <p style={{ marginBottom: '20px' }}>This tab renders 500 post items, simulating expensive rendering.</p>
+            <ExpensivePostList />
+          </div>
+        )}
+
+        {tab === 'contact' && (
+          <div>
+            <h2>Contact Tab</h2>
+            <p>Email: contact@example.com</p>
+            <p>Phone: (555) 123-4567</p>
+            <p>Address: 123 Main St, City, State 12345</p>
+          </div>
+        )}
+      </div>
+
+      <div style={{ marginTop: '40px', textAlign: 'left' }}>
+        <h3>How useTransition works:</h3>
+        <ul>
+          <li><strong>Non-blocking updates:</strong> State updates wrapped in startTransition don't block the UI</li>
+          <li><strong>isPending flag:</strong> Indicates when a transition is in progress</li>
+          <li><strong>User feedback:</strong> Can show loading states while keeping UI responsive</li>
+          <li><strong>Priority:</strong> Urgent updates (like typing) interrupt non-urgent transitions</li>
+          <li><strong>React 18 Concurrent:</strong> Works with concurrent rendering features</li>
+        </ul>
+
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e3f2fd', borderRadius: '4px' }}>
+          <strong>Try it:</strong> Click the "Posts (Slow)" tab. Notice how:
+          <ul style={{ marginTop: '10px' }}>
+            <li>The button clicks still work immediately</li>
+            <li>The previous tab content stays visible while loading</li>
+            <li>The isPending indicator shows loading state</li>
+            <li>You can click other tabs while Posts is loading</li>
+          </ul>
+        </div>
+
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
+          <strong>useTransition vs useDeferredValue:</strong>
+          <ul style={{ marginTop: '10px' }}>
+            <li><strong>useTransition:</strong> Wraps state update code - use when you control the setState call</li>
+            <li><strong>useDeferredValue:</strong> Wraps state value - use when you receive value from props/context</li>
+            <li>Both achieve non-blocking updates with different APIs</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
@@ -521,8 +686,9 @@ function TodoApp() {
 function App() {
   return (
     <div>
-      <UseDeferredValueDemo />
+      <UseTransitionDemo />
       {/* Previous examples */}
+      {/* <UseDeferredValueDemo /> */}
       {/* <UseIdDemo /> */}
       {/* <DebugValueDemo /> */}
       {/* <ImperativeDemo /> */}
