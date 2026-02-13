@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useId } from 'react';
+import { useContext, useState, useRef, useId, useDeferredValue, useMemo } from 'react';
 import "./App.css";
 import Counter from "./components/Counter";
 import LayoutEffectExample from "./components/LayoutEffectExample";
@@ -136,6 +136,89 @@ function AuthDemo() {
           <li>Components can use multiple contexts via multiple useContext calls</li>
           <li>Prevents prop drilling for cross-cutting concerns</li>
         </ul>
+      </div>
+    </div>
+  );
+}
+
+function UseDeferredValueDemo() {
+  const [input, setInput] = useState('');
+  const deferredInput = useDeferredValue(input);
+
+  // Simulate expensive computation
+  const filteredItems = useMemo(() => {
+    const items = Array.from({ length: 10000 }, (_, i) => `Item ${i + 1}`);
+
+    // Simulate slow filtering
+    const start = Date.now();
+    while (Date.now() - start < 50) {
+      // Artificial delay
+    }
+
+    return items.filter(item =>
+      item.toLowerCase().includes(deferredInput.toLowerCase())
+    );
+  }, [deferredInput]);
+
+  const isStale = input !== deferredInput;
+
+  return (
+    <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
+      <h1>useDeferredValue Example</h1>
+
+      <div style={{ marginBottom: '30px' }}>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Search items..."
+          style={{
+            padding: '12px',
+            fontSize: '16px',
+            width: '100%',
+            boxSizing: 'border-box',
+            border: '2px solid #4CAF50'
+          }}
+        />
+        <p style={{ marginTop: '10px', color: '#666' }}>
+          {isStale ? '⏳ Updating results...' : '✓ Results up to date'}
+        </p>
+      </div>
+
+      <div style={{
+        maxHeight: '400px',
+        overflowY: 'auto',
+        border: '1px solid #ddd',
+        padding: '15px',
+        opacity: isStale ? 0.6 : 1,
+        transition: 'opacity 0.2s'
+      }}>
+        <p><strong>Found {filteredItems.length} items</strong></p>
+        {filteredItems.slice(0, 50).map((item, index) => (
+          <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
+            {item}
+          </div>
+        ))}
+        {filteredItems.length > 50 && (
+          <p style={{ marginTop: '10px', color: '#666' }}>
+            ...and {filteredItems.length - 50} more items
+          </p>
+        )}
+      </div>
+
+      <div style={{ marginTop: '40px', textAlign: 'left' }}>
+        <h3>How useDeferredValue works:</h3>
+        <ul>
+          <li><strong>Defers updates:</strong> Shows stale value while new value is being computed</li>
+          <li><strong>Non-blocking:</strong> Input remains responsive even with expensive operations</li>
+          <li><strong>React 18 Concurrent:</strong> Works with concurrent rendering</li>
+          <li><strong>Use case:</strong> Search filters, live previews, heavy computations</li>
+          <li><strong>Difference from debounce:</strong> useDeferredValue lets React decide when to update based on available resources</li>
+        </ul>
+
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e3f2fd', borderRadius: '4px' }}>
+          <strong>Try it:</strong> Type quickly in the search box. Notice how the input stays responsive while the list updates with a slight delay.
+        </div>
       </div>
     </div>
   );
@@ -438,8 +521,9 @@ function TodoApp() {
 function App() {
   return (
     <div>
-      <UseIdDemo />
+      <UseDeferredValueDemo />
       {/* Previous examples */}
+      {/* <UseIdDemo /> */}
       {/* <DebugValueDemo /> */}
       {/* <ImperativeDemo /> */}
       {/* <TodoProvider><TodoApp /></TodoProvider> */}
