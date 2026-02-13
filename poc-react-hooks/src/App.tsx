@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useId, useDeferredValue, useMemo, useTransition } from 'react';
+import { useContext, useState, useRef, useId, useDeferredValue, useMemo, useTransition, useSyncExternalStore } from 'react';
 import "./App.css";
 import Counter from "./components/Counter";
 import LayoutEffectExample from "./components/LayoutEffectExample";
@@ -136,6 +136,195 @@ function AuthDemo() {
           <li>Components can use multiple contexts via multiple useContext calls</li>
           <li>Prevents prop drilling for cross-cutting concerns</li>
         </ul>
+      </div>
+    </div>
+  );
+}
+
+// Custom hook using useSyncExternalStore to subscribe to window width
+function useWindowWidth() {
+  const width = useSyncExternalStore(
+    // subscribe function - called when component mounts
+    (callback) => {
+      window.addEventListener('resize', callback);
+      return () => window.removeEventListener('resize', callback);
+    },
+    // getSnapshot function - returns current value
+    () => window.innerWidth,
+    // getServerSnapshot (optional) - for SSR
+    () => 0
+  );
+  return width;
+}
+
+// Custom hook to subscribe to localStorage
+function useLocalStorage(key: string) {
+  const value = useSyncExternalStore(
+    (callback) => {
+      // Listen to storage events from other tabs/windows
+      window.addEventListener('storage', callback);
+      // Custom event for same-tab updates
+      window.addEventListener('local-storage', callback);
+      return () => {
+        window.removeEventListener('storage', callback);
+        window.removeEventListener('local-storage', callback);
+      };
+    },
+    () => localStorage.getItem(key),
+    () => null // SSR
+  );
+  return value;
+}
+
+function UseSyncExternalStoreDemo() {
+  const windowWidth = useWindowWidth();
+  const storedValue = useLocalStorage('demo-key');
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSave = () => {
+    localStorage.setItem('demo-key', inputValue);
+    // Dispatch custom event to notify same-tab listeners
+    window.dispatchEvent(new Event('local-storage'));
+    setInputValue('');
+  };
+
+  const handleClear = () => {
+    localStorage.removeItem('demo-key');
+    window.dispatchEvent(new Event('local-storage'));
+  };
+
+  // Determine screen size category
+  let sizeCategory = 'Mobile';
+  if (windowWidth >= 1024) sizeCategory = 'Desktop';
+  else if (windowWidth >= 768) sizeCategory = 'Tablet';
+
+  return (
+    <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
+      <h1>useSyncExternalStore Example</h1>
+
+      {/* Window Width Demo */}
+      <div style={{
+        marginBottom: '30px',
+        padding: '20px',
+        backgroundColor: '#e3f2fd',
+        borderRadius: '8px'
+      }}>
+        <h2>Window Width Subscription</h2>
+        <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#1976d2' }}>
+          {windowWidth}px
+        </p>
+        <p style={{ fontSize: '18px', color: '#666' }}>
+          Screen Category: <strong>{sizeCategory}</strong>
+        </p>
+        <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+          Try resizing your browser window to see the value update in real-time!
+        </p>
+      </div>
+
+      {/* localStorage Demo */}
+      <div style={{
+        marginBottom: '30px',
+        padding: '20px',
+        backgroundColor: '#f3e5f5',
+        borderRadius: '8px'
+      }}>
+        <h2>localStorage Subscription</h2>
+        <div style={{ marginBottom: '15px' }}>
+          <p style={{ marginBottom: '10px' }}>Current stored value:</p>
+          <div style={{
+            padding: '15px',
+            backgroundColor: 'white',
+            borderRadius: '4px',
+            border: '2px solid #9c27b0',
+            minHeight: '40px',
+            fontFamily: 'monospace'
+          }}>
+            {storedValue || <em style={{ color: '#999' }}>(empty)</em>}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Enter a value..."
+            style={{
+              padding: '10px',
+              fontSize: '16px',
+              width: '100%',
+              boxSizing: 'border-box',
+              marginBottom: '10px'
+            }}
+          />
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              onClick={handleSave}
+              disabled={!inputValue}
+              style={{
+                padding: '10px 20px',
+                cursor: inputValue ? 'pointer' : 'not-allowed',
+                backgroundColor: inputValue ? '#9c27b0' : '#ccc',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                flex: 1
+              }}
+            >
+              Save to localStorage
+            </button>
+            <button
+              onClick={handleClear}
+              disabled={!storedValue}
+              style={{
+                padding: '10px 20px',
+                cursor: storedValue ? 'pointer' : 'not-allowed',
+                backgroundColor: storedValue ? '#d32f2f' : '#ccc',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px'
+              }}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <p style={{ fontSize: '14px', color: '#666' }}>
+          💡 Open this page in another tab and change the value there - this tab will update automatically!
+        </p>
+      </div>
+
+      {/* Explanation */}
+      <div style={{ marginTop: '40px', textAlign: 'left' }}>
+        <h3>How useSyncExternalStore works:</h3>
+        <ul>
+          <li><strong>External stores:</strong> Synchronizes React state with external data sources</li>
+          <li><strong>subscribe:</strong> Function that registers a listener and returns cleanup</li>
+          <li><strong>getSnapshot:</strong> Returns the current value from the external store</li>
+          <li><strong>getServerSnapshot:</strong> Optional snapshot for SSR (server-side rendering)</li>
+          <li><strong>Automatic updates:</strong> Component re-renders when external store changes</li>
+          <li><strong>React 18:</strong> Works with concurrent features and tearing prevention</li>
+        </ul>
+
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
+          <strong>Use cases:</strong>
+          <ul style={{ marginTop: '10px', marginBottom: 0 }}>
+            <li>Browser APIs (window size, online status, geolocation)</li>
+            <li>External state management libraries (Redux, MobX, Zustand)</li>
+            <li>WebSocket connections</li>
+            <li>localStorage/sessionStorage</li>
+            <li>Any mutable external data source</li>
+          </ul>
+        </div>
+
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
+          <strong>Before React 18:</strong>
+          <p style={{ marginTop: '10px', marginBottom: 0 }}>
+            Libraries had to use useEffect + useState to sync with external stores, which could cause tearing
+            in concurrent mode. useSyncExternalStore provides a safe, built-in way to do this.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -686,8 +875,9 @@ function TodoApp() {
 function App() {
   return (
     <div>
-      <UseTransitionDemo />
+      <UseSyncExternalStoreDemo />
       {/* Previous examples */}
+      {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
       {/* <UseIdDemo /> */}
       {/* <DebugValueDemo /> */}
