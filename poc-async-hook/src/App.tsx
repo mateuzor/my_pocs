@@ -1,11 +1,13 @@
 import "./App.css";
-import FetchGetDemo from "./components/FetchGetDemo";
+import FetchMutationsDemo from "./components/FetchMutationsDemo";
+// import FetchGetDemo from "./components/FetchGetDemo";
 // import ExampleComponent from "./components/ExampleComponent";
 
 function App() {
   return (
     <div className="App">
-      <FetchGetDemo />
+      <FetchMutationsDemo />
+      {/* <FetchGetDemo /> */}
       {/* <ExampleComponent /> */}
     </div>
   );
