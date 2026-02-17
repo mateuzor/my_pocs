@@ -1,5 +1,6 @@
 import "./App.css";
-import FetchTimeoutDemo from "./components/FetchTimeoutDemo";
+import UseFetchDemo from "./components/UseFetchDemo";
+// import FetchTimeoutDemo from "./components/FetchTimeoutDemo";
 // import FetchAbortDemo from "./components/FetchAbortDemo";
 // import FetchErrorHandlingDemo from "./components/FetchErrorHandlingDemo";
 // import FetchMutationsDemo from "./components/FetchMutationsDemo";
@@ -9,7 +10,8 @@ import FetchTimeoutDemo from "./components/FetchTimeoutDemo";
 function App() {
   return (
     <div className="App">
-      <FetchTimeoutDemo />
+      <UseFetchDemo />
+      {/* <FetchTimeoutDemo /> */}
       {/* <FetchAbortDemo /> */}
       {/* <FetchErrorHandlingDemo /> */}
       {/* <FetchMutationsDemo /> */}
