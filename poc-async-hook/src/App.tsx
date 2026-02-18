@@ -1,5 +1,6 @@
 import "./App.css";
-import AxiosInterceptorsDemo from "./components/AxiosInterceptorsDemo";
+import AxiosInstancesDemo from "./components/AxiosInstancesDemo";
+// import AxiosInterceptorsDemo from "./components/AxiosInterceptorsDemo";
 // import AxiosGetDemo from "./components/AxiosGetDemo";
 // import UseFetchDemo from "./components/UseFetchDemo";
 // import FetchTimeoutDemo from "./components/FetchTimeoutDemo";
@@ -12,7 +13,8 @@ import AxiosInterceptorsDemo from "./components/AxiosInterceptorsDemo";
 function App() {
   return (
     <div className="App">
-      <AxiosInterceptorsDemo />
+      <AxiosInstancesDemo />
+      {/* <AxiosInterceptorsDemo /> */}
       {/* <AxiosGetDemo /> */}
       {/* <UseFetchDemo /> */}
       {/* <FetchTimeoutDemo /> */}
