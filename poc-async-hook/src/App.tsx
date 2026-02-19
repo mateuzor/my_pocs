@@ -1,5 +1,6 @@
 import "./App.css";
-import AxiosRetryDemo from "./components/AxiosRetryDemo";
+import AxiosTypescriptDemo from "./components/AxiosTypescriptDemo";
+// import AxiosRetryDemo from "./components/AxiosRetryDemo";
 // import AxiosCancelDemo from "./components/AxiosCancelDemo";
 // import AxiosInstancesDemo from "./components/AxiosInstancesDemo";
 // import AxiosInterceptorsDemo from "./components/AxiosInterceptorsDemo";
@@ -15,7 +16,8 @@ import AxiosRetryDemo from "./components/AxiosRetryDemo";
 function App() {
   return (
     <div className="App">
-      <AxiosRetryDemo />
+      <AxiosTypescriptDemo />
+      {/* <AxiosRetryDemo /> */}
       {/* <AxiosCancelDemo /> */}
       {/* <AxiosInstancesDemo /> */}
       {/* <AxiosInterceptorsDemo /> */}
