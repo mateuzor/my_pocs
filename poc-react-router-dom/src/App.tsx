@@ -25,6 +25,7 @@ import {
   UserAreaPage,
   AdminPanelPage,
 } from "./pages/RoleBasedRoute";
+import RouteTransitionsDemo from "./pages/RouteTransitionsDemo";
 import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
 import "./App.css";
@@ -76,6 +77,9 @@ function App() {
           <Route element={<RoleBasedRoute allowedRoles={["admin"]} redirectTo="/role-demo" />}>
             <Route path="role-admin" element={<AdminPanelPage />} />
           </Route>
+
+          {/* Demo: Animated route transitions — sub-routes at /transitions/* */}
+          <Route path="transitions/*" element={<RouteTransitionsDemo />} />
 
           {/* path="*" pega qualquer rota não mapeada (404) */}
           <Route path="*" element={<NotFound />} />
