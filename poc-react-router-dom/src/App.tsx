@@ -17,6 +17,14 @@ import {
   LoginPage,
   ProtectedDashboard,
 } from "./pages/ProtectedRoute";
+import {
+  RoleAuthProvider,
+  RoleBasedRoute,
+  RoleDemoPage,
+  PublicAreaPage,
+  UserAreaPage,
+  AdminPanelPage,
+} from "./pages/RoleBasedRoute";
 import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
 import "./App.css";
@@ -30,40 +38,55 @@ function App() {
 
   return (
     <AuthProvider>
-      <Routes location={background || location}>
-        <Route path="/" element={<Layout />}>
-          {/* index = rota filha padrão dentro do Layout (equivale a "/") */}
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="users" element={<Users />} />
-          <Route path="users/:userId" element={<UserDetails />} />
-          <Route path="admin" element={<Admin />} />
-          <Route path="long" element={<LongContent />} />
-          {/* Rota com loader function - dados carregados antes de renderizar */}
-          <Route path="products" element={<Products />} loader={productsLoader} />
-          {/* Rota com action function - processa formulários sem useState */}
-          <Route path="contact" element={<Contact />} action={contactAction} />
-          {/* Rotas demonstrando navegação programática com state */}
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="success" element={<Success />} />
+      <RoleAuthProvider>
+        <Routes location={background || location}>
+          <Route path="/" element={<Layout />}>
+            {/* index = rota filha padrão dentro do Layout (equivale a "/") */}
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="users" element={<Users />} />
+            <Route path="users/:userId" element={<UserDetails />} />
+            <Route path="admin" element={<Admin />} />
+            <Route path="long" element={<LongContent />} />
+            {/* Rota com loader function - dados carregados antes de renderizar */}
+            <Route path="products" element={<Products />} loader={productsLoader} />
+            {/* Rota com action function - processa formulários sem useState */}
+            <Route path="contact" element={<Contact />} action={contactAction} />
+            {/* Rotas demonstrando navegação programática com state */}
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="success" element={<Success />} />
 
-          {/* Demo: Login page for protected routes */}
-          <Route path="login-demo" element={<LoginPage />} />
+            {/* Demo: Login page for protected routes */}
+            <Route path="login-demo" element={<LoginPage />} />
 
-          {/* Demo: Protected routes — redirect to /login-demo if not authenticated */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="protected-dashboard" element={<ProtectedDashboard />} />
+            {/* Demo: Protected routes — redirect to /login-demo if not authenticated */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="protected-dashboard" element={<ProtectedDashboard />} />
+            </Route>
           </Route>
-        </Route>
-        {/* path="*" pega qualquer rota não mapeada (404) */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      {/* se existe background, renderizamos a rota atual por cima */}
-      {background && (
-        <Routes>
-          <Route path="/users/:userId" element={<UserDetails />} />
+
+          {/* Demo: Role-based routes — rendered outside Layout to avoid nesting issues */}
+          <Route path="role-demo" element={<RoleDemoPage />} />
+          <Route path="role-public" element={<PublicAreaPage />} />
+
+          {/* User and Admin routes protected by RoleBasedRoute */}
+          <Route element={<RoleBasedRoute allowedRoles={["user", "admin"]} redirectTo="/role-demo" />}>
+            <Route path="role-user" element={<UserAreaPage />} />
+          </Route>
+          <Route element={<RoleBasedRoute allowedRoles={["admin"]} redirectTo="/role-demo" />}>
+            <Route path="role-admin" element={<AdminPanelPage />} />
+          </Route>
+
+          {/* path="*" pega qualquer rota não mapeada (404) */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
-      )}
+        {/* se existe background, renderizamos a rota atual por cima */}
+        {background && (
+          <Routes>
+            <Route path="/users/:userId" element={<UserDetails />} />
+          </Routes>
+        )}
+      </RoleAuthProvider>
     </AuthProvider>
   );
 }
