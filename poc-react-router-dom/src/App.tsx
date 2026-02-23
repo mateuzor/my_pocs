@@ -11,6 +11,12 @@ import Products from "./pages/Products";
 import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import Success from "./pages/Success";
+import {
+  AuthProvider,
+  ProtectedRoute,
+  LoginPage,
+  ProtectedDashboard,
+} from "./pages/ProtectedRoute";
 import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
 import "./App.css";
@@ -23,7 +29,7 @@ function App() {
   const background = state?.background;
 
   return (
-    <>
+    <AuthProvider>
       <Routes location={background || location}>
         <Route path="/" element={<Layout />}>
           {/* index = rota filha padrão dentro do Layout (equivale a "/") */}
@@ -40,6 +46,14 @@ function App() {
           {/* Rotas demonstrando navegação programática com state */}
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="success" element={<Success />} />
+
+          {/* Demo: Login page for protected routes */}
+          <Route path="login-demo" element={<LoginPage />} />
+
+          {/* Demo: Protected routes — redirect to /login-demo if not authenticated */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="protected-dashboard" element={<ProtectedDashboard />} />
+          </Route>
         </Route>
         {/* path="*" pega qualquer rota não mapeada (404) */}
         <Route path="*" element={<NotFound />} />
@@ -50,7 +64,7 @@ function App() {
           <Route path="/users/:userId" element={<UserDetails />} />
         </Routes>
       )}
-    </>
+    </AuthProvider>
   );
 }
 
