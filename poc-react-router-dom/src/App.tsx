@@ -26,6 +26,7 @@ import {
   AdminPanelPage,
 } from "./pages/RoleBasedRoute";
 import RouteTransitionsDemo from "./pages/RouteTransitionsDemo";
+import BreadcrumbsDemo from "./pages/BreadcrumbsDemo";
 import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
 import "./App.css";
@@ -80,6 +81,9 @@ function App() {
 
           {/* Demo: Animated route transitions — sub-routes at /transitions/* */}
           <Route path="transitions/*" element={<RouteTransitionsDemo />} />
+
+          {/* Demo: Dynamic breadcrumbs using useLocation and useMatches */}
+          <Route path="breadcrumbs/*" element={<BreadcrumbsDemo />} />
 
           {/* path="*" pega qualquer rota não mapeada (404) */}
           <Route path="*" element={<NotFound />} />
