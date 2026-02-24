@@ -28,6 +28,10 @@ import {
 import RouteTransitionsDemo from "./pages/RouteTransitionsDemo";
 import BreadcrumbsDemo from "./pages/BreadcrumbsDemo";
 import MultiStepForm from "./pages/MultiStepForm";
+import {
+  RouterErrorElement,
+  RouteErrorBoundaryDemo,
+} from "./pages/RouteErrorBoundary";
 import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
 import "./App.css";
@@ -89,7 +93,14 @@ function App() {
           {/* Demo: Multi-step form with route-based navigation */}
           <Route path="multi-step-form/*" element={<MultiStepForm />} />
 
-          {/* path="*" pega qualquer rota não mapeada (404) */}
+          {/* Demo: Route error boundaries and custom 404 — errorElement catches loader/action errors */}
+          <Route
+            path="error-boundary-demo"
+            element={<RouteErrorBoundaryDemo />}
+            errorElement={<RouterErrorElement />}
+          />
+
+          {/* path="*" pega qualquer rota não mapeada (404) — updated to proper 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* se existe background, renderizamos a rota atual por cima */}
