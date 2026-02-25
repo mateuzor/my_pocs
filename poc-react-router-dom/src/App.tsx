@@ -34,6 +34,8 @@ import {
 } from "./pages/RouteErrorBoundary";
 import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
+import { UsersQuery } from "./pages/UsersQuery";
+import { UserDetailsQuery } from "./pages/UserDetailsQuery";
 import "./App.css";
 
 function App() {
@@ -62,6 +64,10 @@ function App() {
             {/* Rotas demonstrando navegação programática com state */}
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="success" element={<Success />} />
+
+            {/* TanStack Query demos */}
+            <Route path="users-query" element={<UsersQuery />} />
+            <Route path="users-query/:userId" element={<UserDetailsQuery />} />
 
             {/* Demo: Login page for protected routes */}
             <Route path="login-demo" element={<LoginPage />} />
