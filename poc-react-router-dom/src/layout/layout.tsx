@@ -14,6 +14,12 @@ export default function Layout() {
         <NavLink to="/dashboard">Dashboard</NavLink>
         <NavLink to="/long">Long Page</NavLink>
         <NavLink to="/admin">Admin</NavLink>
+        <NavLink to="/users-query">Users (Query)</NavLink>
+        <NavLink to="/posts-list">Posts</NavLink>
+        <NavLink to="/create-post">Create Post</NavLink>
+        <NavLink to="/optimistic">Optimistic</NavLink>
+        <NavLink to="/paginated-posts">Paginated</NavLink>
+        <NavLink to="/infinite-posts">Infinite</NavLink>
       </nav>
 
       <hr style={{ marginBottom: 16 }} />

@@ -36,6 +36,13 @@ import { productsLoader } from "./loaders/productsLoader";
 import { contactAction } from "./actions/contactAction";
 import { UsersQuery } from "./pages/UsersQuery";
 import { UserDetailsQuery } from "./pages/UserDetailsQuery";
+import { CreatePostQuery } from "./pages/CreatePostQuery";
+import { MutationSuccess } from "./pages/MutationSuccess";
+import { PostsListQuery } from "./pages/PostsListQuery";
+import { OptimisticUpdate } from "./pages/OptimisticUpdate";
+import { PaginatedPostsQuery } from "./pages/PaginatedPostsQuery";
+import { InfinitePostsQuery } from "./pages/InfinitePostsQuery";
+import { PostDetailQuery } from "./pages/PostDetailQuery";
 import "./App.css";
 
 function App() {
@@ -68,6 +75,13 @@ function App() {
             {/* TanStack Query demos */}
             <Route path="users-query" element={<UsersQuery />} />
             <Route path="users-query/:userId" element={<UserDetailsQuery />} />
+            <Route path="create-post" element={<CreatePostQuery />} />
+            <Route path="mutation-success" element={<MutationSuccess />} />
+            <Route path="posts-list" element={<PostsListQuery />} />
+            <Route path="posts/:postId" element={<PostDetailQuery />} />
+            <Route path="optimistic" element={<OptimisticUpdate />} />
+            <Route path="paginated-posts" element={<PaginatedPostsQuery />} />
+            <Route path="infinite-posts" element={<InfinitePostsQuery />} />
 
             {/* Demo: Login page for protected routes */}
             <Route path="login-demo" element={<LoginPage />} />
