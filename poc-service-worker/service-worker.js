@@ -102,3 +102,36 @@ async function staleWhileRevalidate(request, cacheName) {
   // Return cached immediately if available; otherwise wait for network
   return cached || networkFetch;
 }
+
+// --- Background Sync ---
+// When the browser regains connectivity, it fires the 'sync' event
+// This allows us to retry operations that failed while offline
+self.addEventListener("sync", (event) => {
+  console.log("[SW] Sync event fired, tag:", event.tag);
+
+  if (event.tag === "sync-pending-requests") {
+    // waitUntil keeps the SW alive until the sync completes
+    event.waitUntil(syncPendingRequests());
+  }
+});
+
+// Process all queued requests stored in the cache while offline
+async function syncPendingRequests() {
+  const cache = await caches.open("pending-requests");
+  const requests = await cache.keys();
+
+  console.log(`[SW] Syncing ${requests.length} pending request(s)`);
+
+  return Promise.all(
+    requests.map(async (request) => {
+      try {
+        await fetch(request);
+        // Remove from queue after successful sync
+        await cache.delete(request);
+        console.log("[SW] Synced:", request.url);
+      } catch (err) {
+        console.error("[SW] Sync failed for:", request.url, err);
+      }
+    })
+  );
+}

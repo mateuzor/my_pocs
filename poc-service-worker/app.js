@@ -27,3 +27,40 @@ function updateStatus() {
 // Listen for online/offline events to update the UI in real time
 window.addEventListener("online", updateStatus);
 window.addEventListener("offline", updateStatus);
+
+// Handle form submission — queue if offline, send immediately if online
+async function handleFormSubmit(event) {
+  event.preventDefault();
+  const message = document.getElementById("message-input")?.value;
+  if (!message) return;
+
+  if (!navigator.onLine) {
+    // Store the request in a dedicated cache to be synced later
+    const cache = await caches.open("pending-requests");
+    const fakeRequest = new Request("/api/messages", {
+      method: "POST",
+      body: JSON.stringify({ message, timestamp: Date.now() }),
+      headers: { "Content-Type": "application/json" },
+    });
+    await cache.put(fakeRequest, new Response("pending"));
+
+    // Register a background sync — browser will call SW sync event when online
+    const reg = await navigator.serviceWorker.ready;
+    if ("sync" in reg) {
+      await reg.sync.register("sync-pending-requests");
+      console.log("[App] Background sync registered");
+    }
+
+    alert("You are offline. Your message will be sent when you reconnect.");
+  } else {
+    // Online: send immediately
+    console.log("[App] Sending message:", message);
+    alert("Message sent: " + message);
+  }
+}
+
+// Attach submit handler after DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("sync-form");
+  if (form) form.addEventListener("submit", handleFormSubmit);
+});
