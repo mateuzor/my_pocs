@@ -1,7 +1,7 @@
 const STATIC_CACHE = "poc-static-v2";
 const API_CACHE = "poc-api-v2";
 
-const STATIC_FILES = ["/", "/index.html", "/styles.css", "/app.js"];
+const STATIC_FILES = ["/", "/index.html", "/styles.css", "/app.js", "/offline.html"];
 
 // --- Install: pre-cache all static assets ---
 self.addEventListener("install", (event) => {
@@ -77,7 +77,14 @@ async function networkFirst(request, cacheName) {
     return response;
   } catch {
     const cached = await caches.match(request);
-    return cached || new Response("Offline", { status: 503 });
+    if (cached) return cached;
+
+    // If this is a navigation request (HTML page), show the offline fallback
+    if (request.mode === "navigate") {
+      return caches.match("/offline.html");
+    }
+
+    return new Response("Offline", { status: 503 });
   }
 }
 
