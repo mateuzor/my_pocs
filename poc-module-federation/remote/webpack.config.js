@@ -25,6 +25,7 @@ module.exports = {
       filename: "remoteEntry.js",
       exposes: {
         "./Button": "./src/Button",
+        "./Card": "./src/Card",  // expose Card as a second federated module
       },
       shared: {
         react: {
