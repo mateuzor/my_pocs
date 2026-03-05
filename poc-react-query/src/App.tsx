@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PaginationExample from "./components/PaginationExample";
 import { SWRBasicDemo } from "./components/SWRBasicDemo";
 import { SWRConfigDemo } from "./components/SWRConfigDemo";
+import { SWRMutationDemo } from "./components/SWRMutationDemo";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,6 +18,7 @@ export default function App() {
       <PaginationExample />
       <SWRBasicDemo />
       <SWRConfigDemo />
+      <SWRMutationDemo />
     </QueryClientProvider>
   );
 }
