@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>sessionStorage Demo</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+    input, button { padding: 0.4rem 0.8rem; margin: 0.25rem; }
+    .item { display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 1px solid #eee; }
+    .note { background: #fffbeb; border: 1px solid #f6e05e; padding: 0.75rem; border-radius: 6px; font-size: 0.9rem; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <h2>sessionStorage — Interactive Demo</h2>
+
+  <!-- KEY difference from localStorage: sessionStorage is scoped to the TAB -->
+  <!-- Opening this page in a new tab starts with a completely empty storage -->
+  <div class="note">
+    <strong>Try this:</strong> Open this page in a second tab. Items stored here won't appear there — sessionStorage is isolated per tab.
+  </div>
+
+  <div>
+    <input id="ss-key" placeholder="key" style="width:120px" />
+    <input id="ss-value" placeholder="value" style="width:180px" />
+    <button onclick="ssSet()">Set</button>
+    <button onclick="ssClear()">Clear All</button>
+  </div>
+
+  <div id="ss-items" style="margin-top:1rem"></div>
+
+  <h3 style="margin-top:2rem">When to use sessionStorage vs localStorage</h3>
+  <table style="border-collapse:collapse; width:100%; font-size:0.9rem">
+    <tr style="background:#f7fafc">
+      <th style="padding:0.5rem; border:1px solid #e2e8f0; text-align:left"></th>
+      <th style="padding:0.5rem; border:1px solid #e2e8f0">localStorage</th>
+      <th style="padding:0.5rem; border:1px solid #e2e8f0">sessionStorage</th>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0">Persists after tab close</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">No</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0">Shared across tabs</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">No</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0">Storage limit</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">~5 MB</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">~5 MB</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0">Use case</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Preferences, tokens</td>
+      <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Form drafts, wizard state</td>
+    </tr>
+  </table>
+
+  <script>
+    function ssSet() {
+      const key = document.getElementById('ss-key').value.trim();
+      const value = document.getElementById('ss-value').value.trim();
+      if (!key) return;
+      sessionStorage.setItem(key, value);
+      renderItems();
+    }
+
+    function ssDelete(key) {
+      sessionStorage.removeItem(key);
+      renderItems();
+    }
+
+    function ssClear() {
+      sessionStorage.clear();
+      renderItems();
+    }
+
+    function renderItems() {
+      const container = document.getElementById('ss-items');
+      container.innerHTML = '';
+
+      if (sessionStorage.length === 0) {
+        container.innerHTML = '<p style="color:#aaa">No items stored in this tab.</p>';
+        return;
+      }
+
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        const value = sessionStorage.getItem(key);
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `<span><strong>${key}</strong>: ${value}</span><button onclick="ssDelete('${key}')">Delete</button>`;
+        container.appendChild(div);
+      }
+    }
+
+    renderItems();
+  </script>
+</body>
+</html>
