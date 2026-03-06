@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>localStorage Demo</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+    input, button { padding: 0.4rem 0.8rem; margin: 0.25rem; }
+    .item { display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 1px solid #eee; }
+    .badge { font-size: 0.75rem; background: #e2e8f0; padding: 0.2rem 0.5rem; border-radius: 4px; }
+    #quota { color: #888; font-size: 0.85rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h2>localStorage — Interactive Demo</h2>
+
+  <!-- localStorage persists across sessions: data survives tab/browser close -->
+  <div>
+    <input id="ls-key" placeholder="key" style="width:120px" />
+    <input id="ls-value" placeholder="value" style="width:180px" />
+    <button onclick="lsSet()">Set</button>
+    <button onclick="lsClear()">Clear All</button>
+  </div>
+
+  <div id="ls-items" style="margin-top:1rem"></div>
+  <div id="quota"></div>
+
+  <script>
+    function lsSet() {
+      const key = document.getElementById('ls-key').value.trim();
+      const value = document.getElementById('ls-value').value.trim();
+      if (!key) return;
+
+      // localStorage only stores strings — objects must be JSON-serialised
+      localStorage.setItem(key, value);
+      renderItems();
+    }
+
+    function lsDelete(key) {
+      localStorage.removeItem(key);
+      renderItems();
+    }
+
+    function lsClear() {
+      localStorage.clear();
+      renderItems();
+    }
+
+    function renderItems() {
+      const container = document.getElementById('ls-items');
+      container.innerHTML = '';
+
+      if (localStorage.length === 0) {
+        container.innerHTML = '<p style="color:#aaa">No items stored.</p>';
+        updateQuota();
+        return;
+      }
+
+      // Iterate all keys in localStorage
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <span><strong>${key}</strong>: ${value}</span>
+          <button onclick="lsDelete('${key}')">Delete</button>
+        `;
+        container.appendChild(div);
+      }
+
+      updateQuota();
+    }
+
+    function updateQuota() {
+      // Estimate used storage by summing all key+value lengths (each char = 2 bytes in UTF-16)
+      let used = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        used += (key.length + localStorage.getItem(key).length) * 2;
+      }
+      document.getElementById('quota').textContent =
+        `Estimated usage: ${(used / 1024).toFixed(2)} KB (limit ~5 MB per origin)`;
+    }
+
+    // storage event fires in OTHER tabs when localStorage changes
+    // This is how you sync state across tabs without a server
+    window.addEventListener('storage', (e) => {
+      console.log(`[storage event] key="${e.key}" changed in another tab`);
+      renderItems();
+    });
+
+    renderItems();
+  </script>
+</body>
+</html>
