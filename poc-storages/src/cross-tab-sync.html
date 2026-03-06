@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cross-Tab Sync</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+    button { padding: 0.4rem 1rem; margin: 0.25rem; }
+    #log { background: #1a1a1a; color: #00ff00; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; min-height: 120px; margin-top: 1rem; }
+    .note { background: #ebf8ff; border: 1px solid #90cdf4; padding: 0.75rem; border-radius: 6px; font-size: 0.9rem; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <h2>Cross-Tab Sync via storage event</h2>
+
+  <div class="note">
+    <strong>How to test:</strong> Open this page in two tabs side by side. Click a button in one tab and watch the other tab update instantly — no WebSocket, no polling.
+  </div>
+
+  <!-- Buttons broadcast state changes via localStorage -->
+  <button onclick="broadcast('status', 'online')">Set Online</button>
+  <button onclick="broadcast('status', 'away')">Set Away</button>
+  <button onclick="broadcast('status', 'offline')">Set Offline</button>
+
+  <div id="current" style="margin-top:1rem; font-size:1.1rem"></div>
+  <div id="log"></div>
+
+  <script>
+    function broadcast(key, value) {
+      // Writing to localStorage triggers the 'storage' event in all other open tabs
+      // This is the simplest cross-tab communication mechanism in the browser
+      localStorage.setItem(key, value);
+      logMessage(`[this tab] set "${key}" = "${value}"`);
+      updateDisplay();
+    }
+
+    // The 'storage' event fires ONLY in tabs OTHER than the one that made the change
+    // This prevents the originating tab from receiving its own events
+    window.addEventListener('storage', (event) => {
+      logMessage(`[storage event] key="${event.key}" | old="${event.oldValue}" → new="${event.newValue}"`);
+      updateDisplay();
+    });
+
+    function updateDisplay() {
+      const status = localStorage.getItem('status') || 'unknown';
+      const colors = { online: '#38a169', away: '#d69e2e', offline: '#e53e3e', unknown: '#718096' };
+      document.getElementById('current').innerHTML =
+        `Current status: <span style="color:${colors[status] || '#000'}; font-weight:bold">${status}</span>`;
+    }
+
+    function logMessage(msg) {
+      const log = document.getElementById('log');
+      const time = new Date().toLocaleTimeString();
+      log.innerHTML = `[${time}] ${msg}\n` + log.innerHTML;
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
