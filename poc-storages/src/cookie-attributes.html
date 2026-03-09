@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookie Attributes</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
+    .card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    .card h3 { margin-top: 0; }
+    code { background: #f7fafc; padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.9rem; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-left: 0.5rem; }
+    .secure { background: #c6f6d5; color: #276749; }
+    .warning { background: #feebc8; color: #744210; }
+    .danger { background: #fed7d7; color: #742a2a; }
+    button { padding: 0.4rem 1rem; margin: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h2>Cookie Security Attributes</h2>
+
+  <!-- HttpOnly: prevents JavaScript from reading the cookie — only the server can -->
+  <div class="card">
+    <h3>HttpOnly <span class="badge secure">Server-side only</span></h3>
+    <p>Set by server via <code>Set-Cookie: token=abc; HttpOnly</code></p>
+    <p>JavaScript <strong>cannot</strong> read HttpOnly cookies via <code>document.cookie</code>. This protects session tokens from XSS attacks.</p>
+    <p style="color:#888; font-size:0.85rem">Cannot be demonstrated in client-side JS — by design, the browser hides these cookies from JavaScript.</p>
+  </div>
+
+  <!-- Secure: cookie is only sent over HTTPS, never plain HTTP -->
+  <div class="card">
+    <h3>Secure <span class="badge warning">HTTPS only</span></h3>
+    <p>A cookie with the <code>Secure</code> flag is only transmitted over encrypted (HTTPS) connections. Prevents interception over HTTP.</p>
+    <button onclick="setSecureCookie()">Try setting Secure cookie</button>
+    <div id="secure-result" style="margin-top:0.5rem; font-size:0.9rem"></div>
+  </div>
+
+  <!-- SameSite: controls when cookies are sent on cross-site requests -->
+  <div class="card">
+    <h3>SameSite</h3>
+    <table style="border-collapse:collapse; width:100%; font-size:0.9rem">
+      <tr style="background:#f7fafc">
+        <th style="padding:0.5rem; border:1px solid #e2e8f0; text-align:left">Value</th>
+        <th style="padding:0.5rem; border:1px solid #e2e8f0">Sent on same-site</th>
+        <th style="padding:0.5rem; border:1px solid #e2e8f0">Sent on cross-site navigation</th>
+        <th style="padding:0.5rem; border:1px solid #e2e8f0">Sent on cross-site subrequest</th>
+        <th style="padding:0.5rem; border:1px solid #e2e8f0">CSRF protection</th>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0"><code>Strict</code></td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">No</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">No</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Strong</td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0"><code>Lax</code> (default)</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes (GET only)</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">No</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Moderate</td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0"><code>None</code></td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">Yes</td>
+        <td style="padding:0.5rem; border:1px solid #e2e8f0; text-align:center">None (requires Secure)</td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    function setSecureCookie() {
+      // The Secure flag makes the cookie only transmit over HTTPS
+      // On localhost (HTTP), the browser may still set it — but in production it won't send over HTTP
+      document.cookie = 'secure-demo=value123; path=/; SameSite=Strict; Secure';
+      const result = document.getElementById('secure-result');
+      const allCookies = document.cookie;
+      if (allCookies.includes('secure-demo')) {
+        result.innerHTML = '<span style="color:green">Cookie set. On HTTP in production, it would be blocked.</span>';
+      } else {
+        result.innerHTML = '<span style="color:orange">Cookie blocked — Secure flag requires HTTPS.</span>';
+      }
+    }
+  </script>
+</body>
+</html>
