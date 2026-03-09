@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Storage Comparison</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+    th, td { padding: 0.6rem 0.8rem; border: 1px solid #e2e8f0; text-align: left; }
+    th { background: #f7fafc; }
+    tr:hover { background: #fafafa; }
+    .yes { color: #38a169; font-weight: bold; }
+    .no { color: #e53e3e; }
+    .partial { color: #d69e2e; }
+    h3 { margin-top: 2rem; }
+    .use-case { background: #f7fafc; border-radius: 6px; padding: 0.75rem 1rem; margin: 0.5rem 0; }
+    .use-case strong { display: block; margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h2>Browser Storage — Full Comparison</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>localStorage</th>
+        <th>sessionStorage</th>
+        <th>Cookie</th>
+        <th>IndexedDB</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Capacity</td><td>~5 MB</td><td>~5 MB</td><td>~4 KB</td><td>Hundreds of MB</td></tr>
+      <tr><td>Persists after tab close</td><td class="yes">Yes</td><td class="no">No</td><td class="partial">Depends (expiry)</td><td class="yes">Yes</td></tr>
+      <tr><td>Shared across tabs</td><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+      <tr><td>Sent to server with requests</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes (auto)</td><td class="no">No</td></tr>
+      <tr><td>Accessible from JavaScript</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="partial">Only non-HttpOnly</td><td class="yes">Yes</td></tr>
+      <tr><td>Structured data (non-string)</td><td class="no">No (JSON.stringify)</td><td class="no">No (JSON.stringify)</td><td class="no">No</td><td class="yes">Yes (objects, files)</td></tr>
+      <tr><td>Queryable / indexed</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+      <tr><td>API complexity</td><td>Simple</td><td>Simple</td><td>Awkward</td><td>Complex (async)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>When to use each</h3>
+
+  <div class="use-case">
+    <strong>localStorage</strong>
+    User preferences (theme, language), non-sensitive tokens, UI state that should survive navigation and tab close.
+  </div>
+  <div class="use-case">
+    <strong>sessionStorage</strong>
+    Multi-step form data, wizard progress, tab-specific state you want discarded when the tab closes.
+  </div>
+  <div class="use-case">
+    <strong>Cookies</strong>
+    Session tokens (HttpOnly + Secure), authentication state that the server needs to read, cross-subdomain sharing.
+  </div>
+  <div class="use-case">
+    <strong>IndexedDB</strong>
+    Large datasets, offline-first apps, structured data that needs querying, file/blob caching, anything over 5 MB.
+  </div>
+
+  <p style="margin-top:2rem">
+    <a href="local-storage.html">← localStorage demo</a> |
+    <a href="session-storage.html">sessionStorage demo</a> |
+    <a href="cookies.html">Cookies demo</a>
+  </p>
+</body>
+</html>
