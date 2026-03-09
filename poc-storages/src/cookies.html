@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookies Demo</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
+    input, select, button { padding: 0.4rem 0.8rem; margin: 0.25rem; }
+    .cookie-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid #eee; }
+    .attrs { font-size: 0.8rem; color: #888; }
+  </style>
+</head>
+<body>
+  <h2>Cookies — Interactive Demo</h2>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; max-width:500px">
+    <input id="ck-name" placeholder="name" />
+    <input id="ck-value" placeholder="value" />
+    <input id="ck-days" type="number" placeholder="expires (days)" min="0" />
+    <input id="ck-path" placeholder="path (default: /)" />
+    <select id="ck-samesite">
+      <option value="Lax">SameSite=Lax</option>
+      <option value="Strict">SameSite=Strict</option>
+      <option value="None">SameSite=None</option>
+    </select>
+    <button onclick="setCookie()">Set Cookie</button>
+  </div>
+
+  <div id="cookie-list" style="margin-top:1.5rem"></div>
+
+  <script>
+    // Cookies are set via document.cookie — despite looking like a string,
+    // each assignment ADDS or UPDATES one cookie, it doesn't replace all cookies
+    function setCookie() {
+      const name = document.getElementById('ck-name').value.trim();
+      const value = document.getElementById('ck-value').value.trim();
+      const days = parseInt(document.getElementById('ck-days').value) || 0;
+      const path = document.getElementById('ck-path').value.trim() || '/';
+      const sameSite = document.getElementById('ck-samesite').value;
+
+      if (!name) return;
+
+      let cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
+      cookie += `; path=${path}`;
+      cookie += `; SameSite=${sameSite}`;
+
+      if (days > 0) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        cookie += `; expires=${expires}`;
+      }
+
+      // Session cookie (no expires) vs persistent cookie (with expires)
+      document.cookie = cookie;
+      renderCookies();
+    }
+
+    // To DELETE a cookie: set same name/path with an expiry date in the past
+    function deleteCookie(name) {
+      document.cookie = `${encodeURIComponent(name)}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+      renderCookies();
+    }
+
+    // document.cookie returns ALL cookies as a single semicolon-separated string
+    function parseCookies() {
+      return document.cookie.split(';').reduce((acc, pair) => {
+        const [k, v] = pair.trim().split('=');
+        if (k) acc[decodeURIComponent(k)] = decodeURIComponent(v || '');
+        return acc;
+      }, {});
+    }
+
+    function renderCookies() {
+      const container = document.getElementById('cookie-list');
+      const cookies = parseCookies();
+      const keys = Object.keys(cookies);
+
+      if (keys.length === 0) {
+        container.innerHTML = '<p style="color:#aaa">No cookies set.</p>';
+        return;
+      }
+
+      container.innerHTML = keys.map(name => `
+        <div class="cookie-row">
+          <div>
+            <strong>${name}</strong> = ${cookies[name]}
+          </div>
+          <button onclick="deleteCookie('${name}')">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    renderCookies();
+  </script>
+</body>
+</html>
