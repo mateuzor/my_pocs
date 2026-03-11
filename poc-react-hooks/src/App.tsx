@@ -10,6 +10,7 @@ import FancyInput, { FancyInputHandle } from './components/FancyInput';
 import { useOnlineStatus, useUser } from './hooks/useOnlineStatus';
 import { DragDropBasic } from './components/DragDropBasic';
 import { DragDropSortable } from './components/DragDropSortable';
+import { DragDropFiles } from './components/DragDropFiles';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -880,6 +881,7 @@ function App() {
       <UseSyncExternalStoreDemo />
       <DragDropBasic />
       <DragDropSortable />
+      <DragDropFiles />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
