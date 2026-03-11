@@ -9,6 +9,7 @@ import { TodoContext, TodoProvider } from './contexts/TodoContext';
 import FancyInput, { FancyInputHandle } from './components/FancyInput';
 import { useOnlineStatus, useUser } from './hooks/useOnlineStatus';
 import { DragDropBasic } from './components/DragDropBasic';
+import { DragDropSortable } from './components/DragDropSortable';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -878,6 +879,7 @@ function App() {
     <div>
       <UseSyncExternalStoreDemo />
       <DragDropBasic />
+      <DragDropSortable />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
