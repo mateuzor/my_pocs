@@ -8,6 +8,7 @@ import { AuthContext, AuthProvider } from './contexts/AuthContext';
 import { TodoContext, TodoProvider } from './contexts/TodoContext';
 import FancyInput, { FancyInputHandle } from './components/FancyInput';
 import { useOnlineStatus, useUser } from './hooks/useOnlineStatus';
+import { DragDropBasic } from './components/DragDropBasic';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -876,6 +877,7 @@ function App() {
   return (
     <div>
       <UseSyncExternalStoreDemo />
+      <DragDropBasic />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
