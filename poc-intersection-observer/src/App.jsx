@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import LazyComponent from "./components/LazyComponent";
 import { InfiniteScroll } from "./components/InfiniteScroll";
 import { StickyHeader } from "./components/StickyHeader";
+import { RevealOnScroll } from "./components/RevealOnScroll";
 
 function App() {
   const [allPokemons, setAllPokemons] = useState([]);
@@ -26,6 +27,7 @@ function App() {
     <div className="App">
       <InfiniteScroll />
       <StickyHeader />
+      <RevealOnScroll />
       {allPokemons.map(({ name, id }, index) => {
         return (
           <div key={name}>
