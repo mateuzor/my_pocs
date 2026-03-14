@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import LazyComponent from "./components/LazyComponent";
 import { InfiniteScroll } from "./components/InfiniteScroll";
+import { StickyHeader } from "./components/StickyHeader";
 
 function App() {
   const [allPokemons, setAllPokemons] = useState([]);
@@ -24,6 +25,7 @@ function App() {
   return (
     <div className="App">
       <InfiniteScroll />
+      <StickyHeader />
       {allPokemons.map(({ name, id }, index) => {
         return (
           <div key={name}>
