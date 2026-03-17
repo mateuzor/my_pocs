@@ -11,6 +11,7 @@ import { useOnlineStatus, useUser } from './hooks/useOnlineStatus';
 import { DragDropBasic } from './components/DragDropBasic';
 import { DragDropSortable } from './components/DragDropSortable';
 import { DragDropFiles } from './components/DragDropFiles';
+import { CanvasDraw } from './components/CanvasDraw';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -882,6 +883,7 @@ function App() {
       <DragDropBasic />
       <DragDropSortable />
       <DragDropFiles />
+      <CanvasDraw />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
