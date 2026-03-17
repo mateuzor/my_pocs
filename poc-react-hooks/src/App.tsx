@@ -13,6 +13,7 @@ import { DragDropSortable } from './components/DragDropSortable';
 import { DragDropFiles } from './components/DragDropFiles';
 import { CanvasDraw } from './components/CanvasDraw';
 import { CanvasChart } from './components/CanvasChart';
+import { CanvasParticles } from './components/CanvasParticles';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -886,6 +887,7 @@ function App() {
       <DragDropFiles />
       <CanvasDraw />
       <CanvasChart />
+      <CanvasParticles />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
