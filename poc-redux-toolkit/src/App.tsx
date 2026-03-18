@@ -5,6 +5,7 @@ import { increment, amountAdded } from "./features/counter/counter-slice";
 import { useAppDispatch, userAppSelector } from "./app/hooks";
 import { useFetchBreedsQuery } from "./features/dogs/dogs-api-slice";
 import { PostsList } from "./features/posts/PostsList";
+import { Cart } from "./features/cart/Cart";
 
 function App() {
   const count = userAppSelector((state) => state.counter.value);
@@ -64,6 +65,7 @@ function App() {
         </table>
       </header>
       <PostsList />
+      <Cart />
     </div>
   );
 }
