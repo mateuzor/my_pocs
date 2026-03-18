@@ -6,6 +6,7 @@ import { useAppDispatch, userAppSelector } from "./app/hooks";
 import { useFetchBreedsQuery } from "./features/dogs/dogs-api-slice";
 import { PostsList } from "./features/posts/PostsList";
 import { Cart } from "./features/cart/Cart";
+import { CartSummary } from "./features/cart/CartSummary";
 
 function App() {
   const count = userAppSelector((state) => state.counter.value);
@@ -66,6 +67,7 @@ function App() {
       </header>
       <PostsList />
       <Cart />
+      <CartSummary />
     </div>
   );
 }
