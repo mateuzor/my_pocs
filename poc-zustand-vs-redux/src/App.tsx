@@ -1,6 +1,7 @@
 import { Route, Routes, Link, Navigate } from "react-router-dom";
 import CounterZustand from "./zustand/CounterZustand";
 import CounterRedux from "./redux/CounterRedux";
+import { TodoZustand } from "./zustand/TodoZustand";
 
 export default function App() {
   return (
@@ -15,7 +16,7 @@ export default function App() {
       </div>
       <Routes>
         <Route path="/" element={<Navigate to="/zustand" replace />} />
-        <Route path="/zustand" element={<CounterZustand />} />
+        <Route path="/zustand" element={<><CounterZustand /><TodoZustand /></>} />
         <Route path="/redux" element={<CounterRedux />} />
         <Route path="*" element={<Navigate to="/zustand" replace />} />
       </Routes>
