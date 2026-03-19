@@ -3,6 +3,7 @@ import CounterZustand from "./zustand/CounterZustand";
 import CounterRedux from "./redux/CounterRedux";
 import { TodoZustand } from "./zustand/TodoZustand";
 import { AppStoreDemo } from "./zustand/AppStoreDemo";
+import { Comparison } from "./components/Comparison";
 
 export default function App() {
   return (
@@ -17,7 +18,7 @@ export default function App() {
       </div>
       <Routes>
         <Route path="/" element={<Navigate to="/zustand" replace />} />
-        <Route path="/zustand" element={<><CounterZustand /><TodoZustand /><AppStoreDemo /></>} />
+        <Route path="/zustand" element={<><CounterZustand /><TodoZustand /><AppStoreDemo /><Comparison /></>} />
         <Route path="/redux" element={<CounterRedux />} />
         <Route path="*" element={<Navigate to="/zustand" replace />} />
       </Routes>
