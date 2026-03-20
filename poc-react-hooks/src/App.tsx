@@ -15,6 +15,7 @@ import { CanvasDraw } from './components/CanvasDraw';
 import { CanvasChart } from './components/CanvasChart';
 import { CanvasParticles } from './components/CanvasParticles';
 import { WebComponentBasic } from './components/WebComponentBasic';
+import { WebComponentShadow } from './components/WebComponentShadow';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -890,6 +891,7 @@ function App() {
       <CanvasChart />
       <CanvasParticles />
       <WebComponentBasic />
+      <WebComponentShadow />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
