@@ -14,6 +14,7 @@ import { DragDropFiles } from './components/DragDropFiles';
 import { CanvasDraw } from './components/CanvasDraw';
 import { CanvasChart } from './components/CanvasChart';
 import { CanvasParticles } from './components/CanvasParticles';
+import { WebComponentBasic } from './components/WebComponentBasic';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -888,6 +889,7 @@ function App() {
       <CanvasDraw />
       <CanvasChart />
       <CanvasParticles />
+      <WebComponentBasic />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
