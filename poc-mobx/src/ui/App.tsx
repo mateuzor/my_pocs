@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite'
 import { todoStore } from '../stores/TodoStore'
 import { TodoList } from './TodoList'
 import CounterView from './CounterView'
+import ReactionView from './ReactionView'
 
 export const App = observer(function App() {
   const s = todoStore
@@ -46,6 +47,7 @@ export const App = observer(function App() {
       </section>
 
       <CounterView />
+      <ReactionView />
       <TodoList />
       <p className="hint">
         Try: add tasks, toggle them, filter by status, search by title or tag (e.g., "work").
