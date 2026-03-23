@@ -3,6 +3,7 @@ import React from 'react'
 import { observer } from 'mobx-react-lite'
 import { todoStore } from '../stores/TodoStore'
 import { TodoList } from './TodoList'
+import CounterView from './CounterView'
 
 export const App = observer(function App() {
   const s = todoStore
@@ -44,6 +45,7 @@ export const App = observer(function App() {
         <button onClick={() => s.clearCompleted()} aria-label="clear-completed">Clear completed</button>
       </section>
 
+      <CounterView />
       <TodoList />
       <p className="hint">
         Try: add tasks, toggle them, filter by status, search by title or tag (e.g., "work").
