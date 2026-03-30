@@ -6,6 +6,7 @@ import { AppStoreDemo } from "./zustand/AppStoreDemo";
 import { Comparison } from "./components/Comparison";
 import { JotaiBasic } from "./jotai/JotaiBasic";
 import { RecoilAtoms } from "./recoil/RecoilAtoms";
+import { RecoilSelectors } from "./recoil/RecoilSelectors";
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
       </div>
       <Routes>
         <Route path="/" element={<Navigate to="/zustand" replace />} />
-        <Route path="/zustand" element={<><CounterZustand /><TodoZustand /><AppStoreDemo /><Comparison /><JotaiBasic /><RecoilAtoms /></>} />
+        <Route path="/zustand" element={<><CounterZustand /><TodoZustand /><AppStoreDemo /><Comparison /><JotaiBasic /><RecoilAtoms /><RecoilSelectors /></>} />
         <Route path="/redux" element={<CounterRedux />} />
         <Route path="*" element={<Navigate to="/zustand" replace />} />
       </Routes>
