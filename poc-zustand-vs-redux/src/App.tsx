@@ -14,6 +14,7 @@ import { CounterActor } from "./xstate/CounterActor";
 import { ParallelStates } from "./xstate/ParallelStates";
 import { TimerMachine } from "./xstate/TimerMachine";
 import { RecoilVsJotai } from "./recoil/RecoilVsJotai";
+import { XStateComparison } from "./xstate/XStateComparison";
 
 export default function App() {
   return (
@@ -28,7 +29,7 @@ export default function App() {
       </div>
       <Routes>
         <Route path="/" element={<Navigate to="/zustand" replace />} />
-        <Route path="/zustand" element={<><CounterZustand /><TodoZustand /><AppStoreDemo /><Comparison /><JotaiBasic /><RecoilAtoms /><RecoilSelectors /><TrafficLight /><AuthMachine /><FetchMachine /><CounterActor /><ParallelStates /><TimerMachine /><RecoilVsJotai /></>} />
+        <Route path="/zustand" element={<><CounterZustand /><TodoZustand /><AppStoreDemo /><Comparison /><JotaiBasic /><RecoilAtoms /><RecoilSelectors /><TrafficLight /><AuthMachine /><FetchMachine /><CounterActor /><ParallelStates /><TimerMachine /><RecoilVsJotai /><XStateComparison /></>} />
         <Route path="/redux" element={<CounterRedux />} />
         <Route path="*" element={<Navigate to="/zustand" replace />} />
       </Routes>
