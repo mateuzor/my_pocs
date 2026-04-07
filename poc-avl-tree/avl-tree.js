@@ -158,20 +158,6 @@ class AVLTree {
       : this._search(node.right, value);
   }
 
-  // Retorna todos os valores em ordem crescente (percurso in-order: esq → raiz → dir)
-  inOrder() {
-    const result = [];
-    this._inOrder(this.root, result);
-    return result;
-  }
-
-  _inOrder(node, result) {
-    if (!node) return;
-    this._inOrder(node.left, result);
-    result.push(node.value);
-    this._inOrder(node.right, result);
-  }
-
 }
 
 // --- Demo ---
@@ -184,10 +170,8 @@ const values = [10, 20, 30, 40, 50, 25];
 console.log('Inserindo:', values);
 values.forEach(v => tree.insert(v));
 
-console.log('\nPercurso in-order:', tree.inOrder());
 console.log('Busca por 25:', tree.search(25));
 console.log('Busca por 99:', tree.search(99));
 
 console.log('\nRemovendo 40...');
 tree.delete(40);
-console.log('In-order após remoção:', tree.inOrder());
