@@ -3,6 +3,7 @@ import { ThemeContext } from "./contexts/ThemeContext";
 import { AuthContext } from "./contexts/AuthContext";
 import { LanguageContext } from "./contexts/LanguageContext";
 import CustomHooksDemo from "./components/CustomHooksDemo";
+import PerformanceDemo from "./components/PerformanceDemo";
 
 const translations = {
   en: { welcome: "Welcome", login: "Login", logout: "Logout", theme: "Toggle Theme" },
@@ -40,6 +41,7 @@ export default function App() {
         </select>
       </div>
       <CustomHooksDemo />
+      <PerformanceDemo />
     </div>
   );
 }
