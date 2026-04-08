@@ -1,8 +1,8 @@
-
 import React, { useContext } from "react";
 import { ThemeContext } from "./contexts/ThemeContext";
 import { AuthContext } from "./contexts/AuthContext";
 import { LanguageContext } from "./contexts/LanguageContext";
+import CustomHooksDemo from "./components/CustomHooksDemo";
 
 const translations = {
   en: { welcome: "Welcome", login: "Login", logout: "Logout", theme: "Toggle Theme" },
@@ -19,22 +19,19 @@ export default function App() {
     <div style={{
       background: theme === "dark" ? "#333" : "#eee",
       color: theme === "dark" ? "#eee" : "#333",
-      height: "100vh",
+      minHeight: "100vh",
       padding: "2rem",
       display: "flex",
       flexDirection: "column",
       gap: "1rem"
     }}>
       <h1>{t.welcome}{user ? `, ${user.name}` : ""}!</h1>
-
       {user ? (
         <button onClick={logout}>{t.logout}</button>
       ) : (
         <button onClick={() => login("Mateus")}>{t.login}</button>
       )}
-
       <button onClick={toggleTheme}>{t.theme}</button>
-
       <div>
         <label>Language: </label>
         <select value={language} onChange={(e) => switchLanguage(e.target.value)}>
@@ -42,6 +39,7 @@ export default function App() {
           <option value="pt">Português</option>
         </select>
       </div>
+      <CustomHooksDemo />
     </div>
   );
 }
