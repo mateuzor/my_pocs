@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useWebSocket } from './hooks/useWebSocket';
 
-// Color for each connection state — gives instant visual feedback
 const STATUS_COLOR = {
   connecting: '#d69e2e',
   open: '#38a169',
@@ -11,7 +10,7 @@ const STATUS_COLOR = {
 
 export default function App() {
   const [input, setInput] = useState('');
-  const { messages, status, send, clearMessages } = useWebSocket('ws://localhost:4000');
+  const { messages, status, retryCount, send, clearMessages } = useWebSocket('ws://localhost:4000');
 
   const handleSend = () => {
     if (input.trim()) {
@@ -29,7 +28,10 @@ export default function App() {
           width: 10, height: 10, borderRadius: '50%',
           background: STATUS_COLOR[status], display: 'inline-block',
         }} />
-        <span style={{ fontSize: '0.85rem', color: '#555' }}>Status: {status}</span>
+        <span style={{ fontSize: '0.85rem', color: '#555' }}>
+          Status: {status}
+          {retryCount > 0 && ` (reconnect attempt ${retryCount})`}
+        </span>
         <button style={{ marginLeft: 'auto', fontSize: '0.8rem' }} onClick={clearMessages}>Clear</button>
       </div>
 
