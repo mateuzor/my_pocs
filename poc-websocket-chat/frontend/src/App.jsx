@@ -1,49 +1,60 @@
+import { useState } from 'react';
+import { useWebSocket } from './hooks/useWebSocket';
 
-import { useEffect, useState } from 'react';
+// Color for each connection state — gives instant visual feedback
+const STATUS_COLOR = {
+  connecting: '#d69e2e',
+  open: '#38a169',
+  closed: '#718096',
+  error: '#e53e3e',
+};
 
-function App() {
-  const [socket, setSocket] = useState(null);
-  const [messages, setMessages] = useState([]);
+export default function App() {
   const [input, setInput] = useState('');
+  const { messages, status, send, clearMessages } = useWebSocket('ws://localhost:4000');
 
-  useEffect(() => {
-    const ws = new WebSocket('ws://localhost:4000');
-    setSocket(ws);
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      const prefix = data.system ? '' : `${data.sender}: `;
-      setMessages((prev) => [...prev, `${prefix}${data.message}`]);
-    };
-
-    return () => ws.close();
-  }, []);
-
-  const sendMessage = () => {
-    if (socket && input.trim()) {
-      socket.send(input);
+  const handleSend = () => {
+    if (input.trim()) {
+      send(input);
       setInput('');
     }
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Chat com WebSocket</h2>
+    <div style={{ padding: 20, maxWidth: 600 }}>
+      <h2>WebSocket Chat</h2>
+
+      <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{
+          width: 10, height: 10, borderRadius: '50%',
+          background: STATUS_COLOR[status], display: 'inline-block',
+        }} />
+        <span style={{ fontSize: '0.85rem', color: '#555' }}>Status: {status}</span>
+        <button style={{ marginLeft: 'auto', fontSize: '0.8rem' }} onClick={clearMessages}>Clear</button>
+      </div>
+
       <div style={{ marginBottom: 12 }}>
         <input
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Digite uma mensagem"
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleSend()}
+          placeholder="Type a message..."
+          style={{ marginRight: 8, padding: '0.4rem' }}
         />
-        <button onClick={sendMessage}>Enviar</button>
+        <button onClick={handleSend} disabled={status !== 'open'}>Send</button>
       </div>
-      <ul>
-        {messages.map((msg, i) => (
-          <li key={i}>{msg}</li>
+
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {messages.map(msg => (
+          <li key={msg.id} style={{
+            padding: '0.4rem 0.75rem', marginBottom: '0.25rem',
+            background: msg.text.startsWith('[system]') ? '#fffbeb' : '#f7fafc',
+            borderRadius: '6px', fontSize: '0.9rem',
+          }}>
+            {msg.text}
+          </li>
         ))}
       </ul>
     </div>
   );
 }
-
-export default App;
