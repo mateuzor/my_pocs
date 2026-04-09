@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useWebSocket } from './hooks/useWebSocket';
 
 const STATUS_COLOR = {
@@ -10,14 +10,29 @@ const STATUS_COLOR = {
 
 export default function App() {
   const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimerRef = useRef(null);
+
   const { messages, status, retryCount, send, clearMessages } = useWebSocket('ws://localhost:4000');
 
   const handleSend = () => {
     if (input.trim()) {
       send(input);
       setInput('');
+      setIsTyping(false);
+      clearTimeout(typingTimerRef.current);
     }
   };
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+    setIsTyping(true);
+    // Auto-hide the typing indicator after 1.5s of no keystrokes
+    clearTimeout(typingTimerRef.current);
+    typingTimerRef.current = setTimeout(() => setIsTyping(false), 1500);
+  };
+
+  useEffect(() => () => clearTimeout(typingTimerRef.current), []);
 
   return (
     <div style={{ padding: 20, maxWidth: 600 }}>
@@ -35,15 +50,24 @@ export default function App() {
         <button style={{ marginLeft: 'auto', fontSize: '0.8rem' }} onClick={clearMessages}>Clear</button>
       </div>
 
-      <div style={{ marginBottom: 12 }}>
+      <div style={{ marginBottom: 4 }}>
         <input
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={handleInputChange}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
           placeholder="Type a message..."
           style={{ marginRight: 8, padding: '0.4rem' }}
         />
         <button onClick={handleSend} disabled={status !== 'open'}>Send</button>
+      </div>
+
+      {/* Typing indicator — shows while user is actively typing, hides after 1.5s idle */}
+      <div style={{ height: 20, marginBottom: 8 }}>
+        {isTyping && (
+          <span style={{ fontSize: '0.8rem', color: '#718096', fontStyle: 'italic' }}>
+            You are typing...
+          </span>
+        )}
       </div>
 
       <ul style={{ listStyle: 'none', padding: 0 }}>
