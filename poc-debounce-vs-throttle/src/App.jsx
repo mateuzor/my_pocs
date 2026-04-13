@@ -1,6 +1,7 @@
 import React from "react";
 import DebounceInput from "./components/DebounceInput";
 import ThrottleScroll from "./components/ThrottleScroll";
+import SearchWithDebounce from "./components/SearchWithDebounce";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       <h1>Debounce vs Throttle</h1>
       <DebounceInput />
       <ThrottleScroll />
+      <SearchWithDebounce />
     </div>
   );
 }
