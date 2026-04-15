@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import beachImage from "./images/beach.jpg";
 import "./App.css";
+import AriaDemo from "./AriaDemo";
 
 export default function AccessibleApp() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -105,6 +106,8 @@ export default function AccessibleApp() {
           </button>
         </div>
       )}
+
+      <AriaDemo />
 
       <footer role="contentinfo">
         <p>&copy; 2025 Web Accessibility</p>
