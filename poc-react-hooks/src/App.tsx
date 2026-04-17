@@ -16,6 +16,7 @@ import { CanvasChart } from './components/CanvasChart';
 import { CanvasParticles } from './components/CanvasParticles';
 import { WebComponentBasic } from './components/WebComponentBasic';
 import { WebComponentShadow } from './components/WebComponentShadow';
+import { IntersectionObserverDemo } from './components/IntersectionObserverDemo';
 
 function ThemeDisplay() {
   const context = useContext(ThemeContext);
@@ -892,6 +893,7 @@ function App() {
       <CanvasParticles />
       <WebComponentBasic />
       <WebComponentShadow />
+      <IntersectionObserverDemo />
       {/* Previous examples */}
       {/* <UseTransitionDemo /> */}
       {/* <UseDeferredValueDemo /> */}
