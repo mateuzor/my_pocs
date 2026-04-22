@@ -1,0 +1,75 @@
+---
+// Static comparison page — no JS needed, pure server-rendered HTML
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Astro vs Next.js — Comparison</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 800px; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+    th, td { padding: 0.6rem 1rem; border: 1px solid #e2e8f0; text-align: left; }
+    th { background: #f7fafc; font-weight: 600; }
+    .good { color: #276749; }
+    .neutral { color: #744210; }
+    .bad { color: #c53030; }
+  </style>
+</head>
+<body>
+  <h1>Astro vs Next.js</h1>
+  <p>Both are full-stack JS frameworks with SSR, but they have different default philosophies.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Astro</th>
+        <th>Next.js</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Default rendering</td>
+        <td class="good">Static HTML, zero JS</td>
+        <td class="neutral">Server Components (React tree)</td>
+      </tr>
+      <tr>
+        <td>JS shipped by default</td>
+        <td class="good">Zero (opt-in per island)</td>
+        <td class="neutral">React runtime + page bundle</td>
+      </tr>
+      <tr>
+        <td>Interactivity model</td>
+        <td>Islands (partial hydration)</td>
+        <td>Full React tree (selective with RSC)</td>
+      </tr>
+      <tr>
+        <td>Framework support</td>
+        <td class="good">React, Vue, Svelte, Solid (mix)</td>
+        <td>React only</td>
+      </tr>
+      <tr>
+        <td>API routes</td>
+        <td class="neutral">Endpoints (not full server)</td>
+        <td class="good">Full API routes + Server Actions</td>
+      </tr>
+      <tr>
+        <td>Best for</td>
+        <td>Content-heavy sites, blogs, docs</td>
+        <td>Apps with lots of interactivity</td>
+      </tr>
+      <tr>
+        <td>Data fetching</td>
+        <td>Top-level await in .astro files</td>
+        <td>fetch() in Server Components</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:1.5rem; font-size:0.85rem; color:#555">
+    Rule of thumb: choose Astro for marketing sites, docs, and blogs where most content is static.
+    Choose Next.js for apps that need a lot of client-side state and complex data flows.
+  </p>
+</body>
+</html>
