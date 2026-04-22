@@ -1,0 +1,59 @@
+---
+// Astro Islands: interactive React/Vue/Svelte components embedded in otherwise
+// static HTML. Each island is independently hydrated — the rest is zero JS.
+//
+// client: directives control WHEN the island downloads and hydrates:
+// client:load    — hydrate immediately on page load (highest priority)
+// client:idle    — hydrate when the browser is idle (requestIdleCallback)
+// client:visible — hydrate when the component scrolls into view (IntersectionObserver)
+// client:only    — skip SSR entirely, render only in browser (like React SPA)
+//
+// Without a client: directive, the component renders to static HTML — no JS shipped.
+import CounterReact from "../components/Counter";
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Astro Islands — Hydration Strategies</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 700px; }
+    .island { border: 2px dashed #cbd5e0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    .label { font-size: 0.75rem; color: #718096; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Astro Island Hydration Strategies</h1>
+  <p>Each section below is a React component with a different hydration strategy.</p>
+
+  <div class="island">
+    <div class="label">client:load — hydrates immediately</div>
+    <!-- This component downloads and hydrates as soon as the page loads -->
+    <CounterReact client:load />
+  </div>
+
+  <div class="island">
+    <div class="label">client:idle — hydrates when browser is idle</div>
+    <!-- Lower priority: waits until the browser has nothing else to do -->
+    <CounterReact client:idle />
+  </div>
+
+  <div class="island">
+    <div class="label">no directive — static HTML only, zero JS</div>
+    <!-- No hydration: rendered to HTML on build, interactive features do NOT work -->
+    <CounterReact />
+    <p style="font-size:0.8rem; color:#c53030;">Button does not respond — no JS was sent.</p>
+  </div>
+
+  <div class="island">
+    <div class="label">client:visible — hydrates when scrolled into view</div>
+    <!-- Best for below-the-fold content: saves bandwidth on initial load -->
+    <CounterReact client:visible />
+  </div>
+
+  <p style="font-size:0.85rem; color:#555; margin-top:2rem">
+    Total JS sent to browser = only the islands that have a client: directive.
+    Static islands = zero JS = zero hydration cost.
+  </p>
+</body>
+</html>
