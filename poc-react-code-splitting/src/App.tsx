@@ -4,6 +4,7 @@ import { MemoDemo } from "./components/MemoDemo";
 import { CallbackDemo } from "./components/CallbackDemo";
 import { ProfilerDemo } from "./components/ProfilerDemo";
 import MillionBasic from "./components/MillionBasic";
+import MillionBenchmark from "./components/MillionBenchmark";
 // import HeavyComponent from "./components/HeavyComponent";
 
 const HeavyComponent = lazy(() => import("./components/HeavyComponent")); // dynamic import for code splitting
@@ -18,6 +19,7 @@ function App() {
       <CallbackDemo />
       <ProfilerDemo />
       <MillionBasic />
+      <MillionBenchmark />
       // fallback will render when the component is being get
       <Suspense fallback={<h3>...Loading</h3>}>
         {" "}
