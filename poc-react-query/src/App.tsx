@@ -4,19 +4,17 @@ import { SWRBasicDemo } from "./components/SWRBasicDemo";
 import { SWRConfigDemo } from "./components/SWRConfigDemo";
 import { SWRMutationDemo } from "./components/SWRMutationDemo";
 import { TableBasic } from "./components/TableBasic";
+import { TableWithFilter } from "./components/TableWithFilter";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: true,
-    },
-  },
+  defaultOptions: { queries: { refetchOnWindowFocus: true } },
 });
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TableBasic />
+      <TableWithFilter />
       <PaginationExample />
       <SWRBasicDemo />
       <SWRConfigDemo />
