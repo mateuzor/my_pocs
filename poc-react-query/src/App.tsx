@@ -3,6 +3,7 @@ import PaginationExample from "./components/PaginationExample";
 import { SWRBasicDemo } from "./components/SWRBasicDemo";
 import { SWRConfigDemo } from "./components/SWRConfigDemo";
 import { SWRMutationDemo } from "./components/SWRMutationDemo";
+import { TableBasic } from "./components/TableBasic";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,6 +16,7 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <TableBasic />
       <PaginationExample />
       <SWRBasicDemo />
       <SWRConfigDemo />
