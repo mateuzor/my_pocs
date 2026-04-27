@@ -5,6 +5,7 @@ import { SWRConfigDemo } from "./components/SWRConfigDemo";
 import { SWRMutationDemo } from "./components/SWRMutationDemo";
 import { TableBasic } from "./components/TableBasic";
 import { TableWithFilter } from "./components/TableWithFilter";
+import { TableWithPagination } from "./components/TableWithPagination";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -15,6 +16,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TableBasic />
       <TableWithFilter />
+      <TableWithPagination />
       <PaginationExample />
       <SWRBasicDemo />
       <SWRConfigDemo />
