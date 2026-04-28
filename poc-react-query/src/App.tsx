@@ -7,6 +7,7 @@ import { TableBasic } from "./components/TableBasic";
 import { TableWithFilter } from "./components/TableWithFilter";
 import { TableWithPagination } from "./components/TableWithPagination";
 import { TableWithSelection } from "./components/TableWithSelection";
+import { VirtualList } from "./components/VirtualList";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -19,6 +20,7 @@ export default function App() {
       <TableWithFilter />
       <TableWithPagination />
       <TableWithSelection />
+      <VirtualList />
       <PaginationExample />
       <SWRBasicDemo />
       <SWRConfigDemo />
