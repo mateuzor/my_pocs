@@ -8,6 +8,7 @@ import { TableWithFilter } from "./components/TableWithFilter";
 import { TableWithPagination } from "./components/TableWithPagination";
 import { TableWithSelection } from "./components/TableWithSelection";
 import { VirtualList } from "./components/VirtualList";
+import { VirtualComparison } from "./components/VirtualComparison";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -21,6 +22,7 @@ export default function App() {
       <TableWithPagination />
       <TableWithSelection />
       <VirtualList />
+      <VirtualComparison />
       <PaginationExample />
       <SWRBasicDemo />
       <SWRConfigDemo />
