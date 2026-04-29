@@ -10,6 +10,7 @@ import { TableWithSelection } from "./components/TableWithSelection";
 import { VirtualList } from "./components/VirtualList";
 import { VirtualComparison } from "./components/VirtualComparison";
 import { QueryBasic } from "./components/QueryBasic";
+import { QueryMutation } from "./components/QueryMutation";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -29,6 +30,7 @@ export default function App() {
       <SWRConfigDemo />
       <SWRMutationDemo />
       <QueryBasic />
+      <QueryMutation />
     </QueryClientProvider>
   );
 }
