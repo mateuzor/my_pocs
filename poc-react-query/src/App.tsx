@@ -9,6 +9,7 @@ import { TableWithPagination } from "./components/TableWithPagination";
 import { TableWithSelection } from "./components/TableWithSelection";
 import { VirtualList } from "./components/VirtualList";
 import { VirtualComparison } from "./components/VirtualComparison";
+import { QueryBasic } from "./components/QueryBasic";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -27,6 +28,7 @@ export default function App() {
       <SWRBasicDemo />
       <SWRConfigDemo />
       <SWRMutationDemo />
+      <QueryBasic />
     </QueryClientProvider>
   );
 }
