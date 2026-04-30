@@ -11,6 +11,7 @@ import { VirtualList } from "./components/VirtualList";
 import { VirtualComparison } from "./components/VirtualComparison";
 import { QueryBasic } from "./components/QueryBasic";
 import { QueryMutation } from "./components/QueryMutation";
+import { QueryOptimistic } from "./components/QueryOptimistic";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -31,6 +32,7 @@ export default function App() {
       <SWRMutationDemo />
       <QueryBasic />
       <QueryMutation />
+      <QueryOptimistic />
     </QueryClientProvider>
   );
 }
