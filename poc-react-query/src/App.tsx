@@ -12,6 +12,7 @@ import { VirtualComparison } from "./components/VirtualComparison";
 import { QueryBasic } from "./components/QueryBasic";
 import { QueryMutation } from "./components/QueryMutation";
 import { QueryOptimistic } from "./components/QueryOptimistic";
+import { QueryInfinite } from "./components/QueryInfinite";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -33,6 +34,7 @@ export default function App() {
       <QueryBasic />
       <QueryMutation />
       <QueryOptimistic />
+      <QueryInfinite />
     </QueryClientProvider>
   );
 }
