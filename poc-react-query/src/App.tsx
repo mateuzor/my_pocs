@@ -13,6 +13,7 @@ import { QueryBasic } from "./components/QueryBasic";
 import { QueryMutation } from "./components/QueryMutation";
 import { QueryOptimistic } from "./components/QueryOptimistic";
 import { QueryInfinite } from "./components/QueryInfinite";
+import { QueryDependent } from "./components/QueryDependent";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -35,6 +36,7 @@ export default function App() {
       <QueryMutation />
       <QueryOptimistic />
       <QueryInfinite />
+      <QueryDependent />
     </QueryClientProvider>
   );
 }
