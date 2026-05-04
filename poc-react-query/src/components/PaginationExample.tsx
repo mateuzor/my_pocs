@@ -1,5 +1,4 @@
 import React from "react";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import useDogs from "../hooks/useDogs";
 
 function PaginationExample() {
@@ -40,7 +39,6 @@ function PaginationExample() {
         Next Page
       </button>
       {isFetching ? <span> Loading...</span> : null}{" "}
-      <ReactQueryDevtools initialIsOpen />
     </div>
   );
 }

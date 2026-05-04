@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import PaginationExample from "./components/PaginationExample";
 import { SWRBasicDemo } from "./components/SWRBasicDemo";
 import { SWRConfigDemo } from "./components/SWRConfigDemo";
@@ -16,6 +17,7 @@ import { QueryInfinite } from "./components/QueryInfinite";
 import { QueryDependent } from "./components/QueryDependent";
 import { QueryCacheConfig } from "./components/QueryCacheConfig";
 import { QueryPrefetch } from "./components/QueryPrefetch";
+import { QueryDevtools } from "./components/QueryDevtools";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -41,6 +43,8 @@ export default function App() {
       <QueryDependent />
       <QueryCacheConfig />
       <QueryPrefetch />
+      <QueryDevtools />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
