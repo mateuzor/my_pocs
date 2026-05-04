@@ -15,6 +15,7 @@ import { QueryOptimistic } from "./components/QueryOptimistic";
 import { QueryInfinite } from "./components/QueryInfinite";
 import { QueryDependent } from "./components/QueryDependent";
 import { QueryCacheConfig } from "./components/QueryCacheConfig";
+import { QueryPrefetch } from "./components/QueryPrefetch";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -39,6 +40,7 @@ export default function App() {
       <QueryInfinite />
       <QueryDependent />
       <QueryCacheConfig />
+      <QueryPrefetch />
     </QueryClientProvider>
   );
 }
