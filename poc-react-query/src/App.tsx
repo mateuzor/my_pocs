@@ -18,6 +18,7 @@ import { QueryDependent } from "./components/QueryDependent";
 import { QueryCacheConfig } from "./components/QueryCacheConfig";
 import { QueryPrefetch } from "./components/QueryPrefetch";
 import { QueryDevtools } from "./components/QueryDevtools";
+import { VirtualGrid } from "./components/VirtualGrid";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -44,6 +45,7 @@ export default function App() {
       <QueryCacheConfig />
       <QueryPrefetch />
       <QueryDevtools />
+      <VirtualGrid />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
