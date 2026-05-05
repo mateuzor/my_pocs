@@ -19,6 +19,7 @@ import { QueryCacheConfig } from "./components/QueryCacheConfig";
 import { QueryPrefetch } from "./components/QueryPrefetch";
 import { QueryDevtools } from "./components/QueryDevtools";
 import { VirtualGrid } from "./components/VirtualGrid";
+import { InfiniteVirtualList } from "./components/InfiniteVirtualList";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -46,6 +47,7 @@ export default function App() {
       <QueryPrefetch />
       <QueryDevtools />
       <VirtualGrid />
+      <InfiniteVirtualList />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
