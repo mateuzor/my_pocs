@@ -21,6 +21,7 @@ import { QueryDevtools } from "./components/QueryDevtools";
 import { VirtualGrid } from "./components/VirtualGrid";
 import { InfiniteVirtualList } from "./components/InfiniteVirtualList";
 import { FormBasic } from "./components/FormBasic";
+import { FormAsync } from "./components/FormAsync";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
@@ -50,6 +51,7 @@ export default function App() {
       <VirtualGrid />
       <InfiniteVirtualList />
       <FormBasic />
+      <FormAsync />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
