@@ -1,50 +1,44 @@
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
+import { tasksRoutes } from './tasks';
 
 // Elysia is a TypeScript-first web framework built on top of Bun.
 // Its main selling point is METHOD CHAINING with automatic TYPE INFERENCE:
 // you write a route once and Elysia infers the parameter types automatically —
 // no manual `req.params as { id: string }` casts or separate type files.
 
-// Each .get/.post/.put/.delete call returns the same Elysia instance with
-// the new route appended to its type. This is what makes Eden (the type-safe
-// client we'll see in commit 4) possible.
-
 const app = new Elysia()
-  // Plain route — handler receives a `context` object with everything you need
   .get('/', () => 'Hello from Elysia')
 
-  // Route with path params — `:id` is automatically typed as string in `params.id`
-  // Notice we don't declare any types — Elysia infers them from the path itself
-  .get('/tasks/:id', ({ params }) => {
-    // params.id has type `string` automatically
-    return { id: params.id, title: `Task ${params.id}` };
+  // Path params are typed automatically — `params.id` is inferred as string
+  .get('/echo/:id', ({ params }) => ({ id: params.id }))
+
+  // Query string is also typed — `query.q` is string | undefined
+  .get('/search', ({ query }) => ({ results: [], query: query.q ?? '' }))
+
+  // .use mounts another Elysia instance — type information is preserved.
+  // The tasks routes are defined in src/tasks.ts and use TypeBox schemas
+  // for body/params/query validation.
+  .use(tasksRoutes)
+
+  // Global error handler — runs whenever a route throws or fails validation
+  // VALIDATION errors come through here with code === 'VALIDATION'
+  .onError(({ code, error, set }) => {
+    if (code === 'VALIDATION') {
+      set.status = 422;
+      return { error: 'Validation failed', details: error.message };
+    }
+    if (code === 'NOT_FOUND') {
+      set.status = 404;
+      return { error: 'Route not found' };
+    }
+    set.status = 500;
+    return { error: 'Internal server error' };
   })
 
-  // Multiple path params, also fully inferred
-  .get('/users/:userId/posts/:postId', ({ params }) => {
-    // both params.userId and params.postId are typed as string
-    return { userId: params.userId, postId: params.postId };
-  })
-
-  // Query string is also typed — `query.q` is inferred as string | undefined
-  .get('/search', ({ query }) => {
-    return { results: [], query: query.q ?? '' };
-  })
-
-  // POST handler — `body` is typed as unknown by default until we add validation
-  // (we'll fix this in commit 2 with TypeBox schemas)
-  .post('/tasks', ({ body }) => {
-    return { created: true, received: body };
-  })
-
-  // Returning different status codes via the `set` context property
-  .get('/admin', ({ set }) => {
-    set.status = 401;
-    return { error: 'Unauthorized' };
-  })
-
-  // .listen returns the running server — Bun gives us native HTTP performance
   .listen(3000);
 
-// Logging the server URL so you can confirm it's running
 console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
+
+// Suppress unused-import warning — `t` is re-exported for convenience in tests
+export type App = typeof app;
+void t;
