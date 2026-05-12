@@ -1,28 +1,66 @@
 import { Elysia, t } from 'elysia';
 import { tasksRoutes } from './tasks';
+import { Logger, parseAuthHeader } from './services';
 
-// Elysia is a TypeScript-first web framework built on top of Bun.
-// Its main selling point is METHOD CHAINING with automatic TYPE INFERENCE:
-// you write a route once and Elysia infers the parameter types automatically —
-// no manual `req.params as { id: string }` casts or separate type files.
+// CONTEXT SYSTEM: how Elysia injects dependencies into route handlers.
+//
+// Three primitives, each with a distinct lifecycle:
+//
+//   .decorate(name, value)  — STATIC INJECTION (singletons)
+//     Created once when the app starts. Use for services like loggers,
+//     database clients, external API SDKs. Same instance shared across all requests.
+//
+//   .state(name, value)     — MUTABLE SHARED STATE
+//     Lives in the `store` object. Persists across requests but is mutable.
+//     Good for counters, in-memory caches, or feature flags loaded at boot.
+//
+//   .derive(fn)             — PER-REQUEST DERIVED VALUES
+//     Function runs at the start of every request. Use for values computed
+//     from request data: parsed auth, request ID, decoded JWT payload, etc.
+//
+// All three are TYPE-SAFE — TypeScript knows what's available on `context`
+// inside every handler with no manual typing.
 
 const app = new Elysia()
-  .get('/', () => 'Hello from Elysia')
+  // Inject a singleton logger — available as `logger` in every handler
+  .decorate('logger', new Logger())
 
-  // Path params are typed automatically — `params.id` is inferred as string
+  // Add mutable state — accessed via `store` on the context
+  .state('requestCount', 0)
+
+  // Run per-request: parse the Authorization header into a user object
+  // The return value is merged into context — `user` is available in handlers
+  .derive(({ headers }) => {
+    const user = parseAuthHeader(headers.authorization);
+    return { user };
+  })
+
+  // Handler now receives logger, store, and user in addition to the usual stuff
+  .get('/', ({ logger, store, user }) => {
+    store.requestCount++;
+    logger.info(`Hit / — total requests: ${store.requestCount}`);
+    return {
+      message: 'Hello from Elysia',
+      requestCount: store.requestCount,
+      // user is { username: string } | null depending on the Auth header
+      authenticatedAs: user?.username ?? 'anonymous',
+    };
+  })
+
+  // Route that uses derive() output for "authentication"
+  .get('/me', ({ user, error }) => {
+    if (!user) return error(401, { message: 'Send Authorization: Bearer <username>' });
+    return { username: user.username };
+  })
+
+  // Echo route — typed via inference, no schema needed
   .get('/echo/:id', ({ params }) => ({ id: params.id }))
 
-  // Query string is also typed — `query.q` is string | undefined
-  .get('/search', ({ query }) => ({ results: [], query: query.q ?? '' }))
-
-  // .use mounts another Elysia instance — type information is preserved.
-  // The tasks routes are defined in src/tasks.ts and use TypeBox schemas
-  // for body/params/query validation.
   .use(tasksRoutes)
 
-  // Global error handler — runs whenever a route throws or fails validation
-  // VALIDATION errors come through here with code === 'VALIDATION'
-  .onError(({ code, error, set }) => {
+  .onError(({ code, error, set, logger }) => {
+    // logger is available here too — decorated context flows into onError
+    logger.error(`Request failed [${code}]`, error);
     if (code === 'VALIDATION') {
       set.status = 422;
       return { error: 'Validation failed', details: error.message };
@@ -39,6 +77,5 @@ const app = new Elysia()
 
 console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
 
-// Suppress unused-import warning — `t` is re-exported for convenience in tests
 export type App = typeof app;
 void t;
