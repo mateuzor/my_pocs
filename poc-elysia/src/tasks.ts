@@ -22,7 +22,22 @@ const tasks: Task[] = [
 ];
 let nextId = 3;
 
-export const tasksRoutes = new Elysia({ prefix: '/tasks' })
+// Shared schemas — declaring them once and reusing keeps the OpenAPI output consistent.
+// The Swagger plugin reads these to generate the docs.
+const TaskSchema = t.Object({
+  id: t.Number(),
+  title: t.String(),
+  completed: t.Boolean(),
+  priority: t.Union([t.Literal('low'), t.Literal('medium'), t.Literal('high')]),
+});
+
+const PriorityLiteral = t.Union([
+  t.Literal('low'),
+  t.Literal('medium'),
+  t.Literal('high'),
+]);
+
+export const tasksRoutes = new Elysia({ prefix: '/tasks', tags: ['tasks'] })
   // GET /tasks?completed=true — query validation
   .get(
     '/',
@@ -38,6 +53,13 @@ export const tasksRoutes = new Elysia({ prefix: '/tasks' })
         // t.Optional makes the field optional; otherwise required
         completed: t.Optional(t.Boolean()),
       }),
+      // `response` validates the OUTGOING payload AND feeds the OpenAPI docs
+      response: t.Array(TaskSchema),
+      // `detail` is metadata for Swagger UI — summary, description, tags
+      detail: {
+        summary: 'List tasks',
+        description: 'Returns all tasks, optionally filtered by completion status.',
+      },
     }
   )
 
@@ -55,6 +77,13 @@ export const tasksRoutes = new Elysia({ prefix: '/tasks' })
       params: t.Object({
         id: t.Numeric(), // auto-coerces "42" → 42, fails with 422 if not numeric
       }),
+      // Multiple response schemas — keyed by HTTP status code.
+      // Each status appears as a separate response in the Swagger docs.
+      response: {
+        200: TaskSchema,
+        404: t.Object({ message: t.String() }),
+      },
+      detail: { summary: 'Get task by id' },
     }
   )
 
@@ -78,13 +107,10 @@ export const tasksRoutes = new Elysia({ prefix: '/tasks' })
       body: t.Object({
         // t.String with constraints — minLength is enforced at runtime
         title: t.String({ minLength: 1, maxLength: 100 }),
-        // t.Union of literals = enum
-        priority: t.Union([
-          t.Literal('low'),
-          t.Literal('medium'),
-          t.Literal('high'),
-        ]),
+        priority: PriorityLiteral,
       }),
+      response: TaskSchema,
+      detail: { summary: 'Create a task' },
     }
   )
 
@@ -104,9 +130,14 @@ export const tasksRoutes = new Elysia({ prefix: '/tasks' })
         t.Object({
           title: t.String({ minLength: 1, maxLength: 100 }),
           completed: t.Boolean(),
-          priority: t.Union([t.Literal('low'), t.Literal('medium'), t.Literal('high')]),
+          priority: PriorityLiteral,
         })
       ),
+      response: {
+        200: TaskSchema,
+        404: t.Object({ message: t.String() }),
+      },
+      detail: { summary: 'Update a task' },
     }
   )
 
@@ -121,5 +152,10 @@ export const tasksRoutes = new Elysia({ prefix: '/tasks' })
     },
     {
       params: t.Object({ id: t.Numeric() }),
+      response: {
+        200: TaskSchema,
+        404: t.Object({ message: t.String() }),
+      },
+      detail: { summary: 'Delete a task' },
     }
   );

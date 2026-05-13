@@ -1,4 +1,5 @@
 import { Elysia, t } from 'elysia';
+import { swagger } from '@elysiajs/swagger';
 import { tasksRoutes } from './tasks';
 import { Logger, parseAuthHeader } from './services';
 import { hooksDemo } from './hooks-demo';
@@ -23,6 +24,24 @@ import { hooksDemo } from './hooks-demo';
 // inside every handler with no manual typing.
 
 const app = new Elysia()
+  // SWAGGER PLUGIN — generates an interactive OpenAPI UI at /swagger.
+  // It reads the schemas you declared (body, params, query, response) and
+  // the `detail` metadata on each route — no extra documentation files needed.
+  // This is the killer combo with TypeBox: one schema → validation + types + docs.
+  .use(
+    swagger({
+      path: '/swagger',
+      documentation: {
+        info: {
+          title: 'POC Elysia API',
+          version: '1.0.0',
+          description: 'Tasks CRUD demonstrating TypeBox + Swagger integration',
+        },
+        tags: [{ name: 'tasks', description: 'Task management endpoints' }],
+      },
+    })
+  )
+
   // Inject a singleton logger — available as `logger` in every handler
   .decorate('logger', new Logger())
 
