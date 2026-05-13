@@ -1,6 +1,7 @@
 import { Elysia, t } from 'elysia';
 import { tasksRoutes } from './tasks';
 import { Logger, parseAuthHeader } from './services';
+import { hooksDemo } from './hooks-demo';
 
 // CONTEXT SYSTEM: how Elysia injects dependencies into route handlers.
 //
@@ -57,6 +58,7 @@ const app = new Elysia()
   .get('/echo/:id', ({ params }) => ({ id: params.id }))
 
   .use(tasksRoutes)
+  .use(hooksDemo)
 
   .onError(({ code, error, set, logger }) => {
     // logger is available here too — decorated context flows into onError
