@@ -1,5 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { swagger } from '@elysiajs/swagger';
+import { cors } from '@elysiajs/cors';
 import { tasksRoutes } from './tasks';
 import { Logger, parseAuthHeader } from './services';
 import { hooksDemo } from './hooks-demo';
@@ -24,6 +25,30 @@ import { hooksDemo } from './hooks-demo';
 // inside every handler with no manual typing.
 
 const app = new Elysia()
+  // CORS PLUGIN — handles preflight (OPTIONS) requests and adds the right
+  // Access-Control-* headers so browsers from another origin can call the API.
+  //
+  // Plugins in Elysia are just .use()'d like sub-apps. They can:
+  //   - register routes (Swagger does — it adds /swagger)
+  //   - attach lifecycle hooks (CORS attaches onRequest/onAfterHandle)
+  //   - decorate context (a JWT plugin would inject `jwt.sign`/`jwt.verify`)
+  //
+  // Composition order matters — CORS goes BEFORE the routes that need it.
+  .use(
+    cors({
+      // List of allowed origins. Use '*' to allow any origin (only safe for public APIs).
+      origin: ['http://localhost:5173', 'http://localhost:3001'],
+      // Methods the API exposes — preflight will reject calls outside this set.
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      // Headers the client is allowed to send. Authorization is needed for our /me route.
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Blocked'],
+      // Send credentials (cookies / Authorization header) on cross-origin requests.
+      credentials: true,
+      // Cache the preflight response so the browser doesn't repeat OPTIONS on every call.
+      maxAge: 86400,
+    })
+  )
+
   // SWAGGER PLUGIN — generates an interactive OpenAPI UI at /swagger.
   // It reads the schemas you declared (body, params, query, response) and
   // the `detail` metadata on each route — no extra documentation files needed.
