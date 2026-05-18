@@ -1,0 +1,4 @@
+_fresh/
+fresh.gen.ts
+.DS_Store
+node_modules
