@@ -21,6 +21,8 @@ export default function Home() {
       <ul>
         <li><a href="/">/ (this page)</a></li>
         <li><a href="/about">/about</a></li>
+        <li><a href="/blog">/blog (nested layout)</a></li>
+        <li><a href="/blog/intro-to-fresh">/blog/[slug] (dynamic route)</a></li>
       </ul>
 
       <p style={{ color: "#666", fontSize: "0.9rem", marginTop: "2rem" }}>
