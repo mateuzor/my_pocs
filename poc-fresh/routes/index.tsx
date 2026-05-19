@@ -23,6 +23,7 @@ export default function Home() {
         <li><a href="/about">/about</a></li>
         <li><a href="/blog">/blog (nested layout)</a></li>
         <li><a href="/blog/intro-to-fresh">/blog/[slug] (dynamic route)</a></li>
+        <li><a href="/counter">/counter (interactive island)</a></li>
       </ul>
 
       <p style={{ color: "#666", fontSize: "0.9rem", marginTop: "2rem" }}>
