@@ -1,5 +1,8 @@
 import { defineConfig } from "$fresh/server.ts";
+import { bannerPlugin } from "./plugins/banner.ts";
 
-// Fresh config — for now this is empty, but it's where plugins go
-// (Tailwind, MDX, etc.) and where we'd configure the build directory.
-export default defineConfig({});
+// Plugins are registered here. Order matters: render() hooks run sequentially,
+// so an earlier plugin's injected scripts appear before later ones in <head>.
+export default defineConfig({
+  plugins: [bannerPlugin],
+});
