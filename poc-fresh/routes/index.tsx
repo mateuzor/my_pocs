@@ -27,6 +27,8 @@ export default function Home() {
         <li><a href="/islands-demo">/islands-demo (multiple islands + shared signal)</a></li>
         <li><a href="/products">/products (handler + form POST)</a></li>
         <li><a href="/api/random">/api/random (JSON-only endpoint)</a></li>
+        <li><a href="/admin">/admin (scoped auth middleware)</a></li>
+        <li><a href="/comparison">/comparison (Fresh vs Next vs Astro)</a></li>
       </ul>
 
       <p style={{ color: "#666", fontSize: "0.9rem", marginTop: "2rem" }}>
