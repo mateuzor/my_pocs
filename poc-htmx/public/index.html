@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTMX POC</title>
+  <!-- HTMX is a SINGLE 14kB script that extends HTML with attributes for
+       AJAX, swap targets, triggers, and partial updates.
+       No build step. No framework. No client-side state machine. -->
+  <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 720px; }
+    button, input { padding: 0.4rem 0.75rem; }
+    .htmx-indicator { display: none; color: #718096; }
+    .htmx-request .htmx-indicator { display: inline; }
+    .htmx-request.htmx-indicator { display: inline; }
+    li { padding: 0.4rem 0; border-bottom: 1px solid #eee; }
+    .card { padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <h1>HTMX POC</h1>
+  <p>
+    HTMX lets you build interactive UIs by adding <code>hx-*</code> attributes
+    to your HTML. The server returns HTML fragments (not JSON), and HTMX swaps
+    them into the page. No JavaScript on the client — and no client state.
+  </p>
+
+  <!-- EXAMPLE 1: Click a button → server returns HTML → swap into target -->
+  <section class="card">
+    <h2>1. hx-get + hx-target</h2>
+    <p>Click the button to fetch a random quote from the server.</p>
+    <button
+      hx-get="/api/quote"
+      hx-target="#quote-output"
+      hx-swap="innerHTML"
+    >
+      Get random quote
+    </button>
+    <span class="htmx-indicator">⏳ loading...</span>
+    <blockquote id="quote-output" style="color: #555; margin-top: 1rem;">
+      (no quote yet)
+    </blockquote>
+  </section>
+
+  <!-- EXAMPLE 2: Form submit with htmx — POST + swap result -->
+  <section class="card">
+    <h2>2. hx-post on a form</h2>
+    <p>Submit a name and the server replies with a personalized greeting.</p>
+    <form hx-post="/api/greet" hx-target="#greeting" hx-swap="innerHTML">
+      <input name="name" placeholder="Your name" required />
+      <button type="submit">Greet me</button>
+    </form>
+    <p id="greeting" style="margin-top: 0.75rem; color: #2b6cb0;"></p>
+  </section>
+
+  <!-- EXAMPLE 3: Live search with hx-trigger="keyup changed delay" -->
+  <section class="card">
+    <h2>3. Live search (debounced)</h2>
+    <p>Server-side filtering as you type — debounced 300ms, only fires on changes.</p>
+    <input
+      type="search"
+      name="q"
+      placeholder="Search frameworks..."
+      hx-get="/api/search"
+      hx-trigger="keyup changed delay:300ms"
+      hx-target="#search-results"
+      style="width: 240px;"
+    />
+    <ul id="search-results" style="list-style: none; padding: 0; margin-top: 0.5rem;"></ul>
+  </section>
+
+  <!-- EXAMPLE 4: Counter with hx-vals — send arbitrary data with the request -->
+  <section class="card">
+    <h2>4. Inline counter with hx-vals</h2>
+    <p>The server keeps the count. Each click sends the current value via hx-vals.</p>
+    <div id="counter" hx-target="this" hx-swap="outerHTML">
+      <span>Count: <strong>0</strong></span>
+      <button
+        hx-post="/api/counter"
+        hx-vals='{"current": 0, "delta": 1}'
+      >+1</button>
+    </div>
+  </section>
+
+  <!-- EXAMPLE 5: Polling with hx-trigger="every 2s" -->
+  <section class="card">
+    <h2>5. Polling (auto-refresh every 2s)</h2>
+    <p>The element re-fetches itself periodically — no setInterval in your code.</p>
+    <div
+      hx-get="/api/time"
+      hx-trigger="load, every 2s"
+      hx-swap="innerHTML"
+    >
+      (loading...)
+    </div>
+  </section>
+</body>
+</html>
