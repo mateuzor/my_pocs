@@ -1,0 +1,17 @@
+{
+  "name": "poc-bun",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/server.ts",
+    "start": "bun run src/server.ts",
+    "test": "bun test",
+    "bench": "bun run src/bench.ts",
+    "build": "bun build src/server.ts --outdir=dist --target=bun"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.4.0"
+  }
+}
