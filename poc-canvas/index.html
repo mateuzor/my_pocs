@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas API POC</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 900px; }
+      canvas { border: 1px solid #cbd5e0; border-radius: 8px; display: block; margin: 0.5rem 0; }
+      section { margin-bottom: 2.5rem; }
+      .controls { display: flex; gap: 0.5rem; margin: 0.5rem 0; }
+      button { padding: 0.4rem 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Canvas API POC</h1>
+    <p>
+      The Canvas API exposes a 2D drawing surface accessed via a CanvasRenderingContext2D.
+      You issue imperative drawing commands (fillRect, arc, drawImage) — no virtual DOM,
+      no React. Perfect for games, data viz, image editors.
+    </p>
+
+    <section>
+      <h2>1. Shapes and paths</h2>
+      <p>Basic primitives: rectangles, circles, lines, gradients.</p>
+      <canvas id="shapes" width="600" height="200"></canvas>
+    </section>
+
+    <section>
+      <h2>2. Animation with requestAnimationFrame</h2>
+      <p>Bouncing balls — the canvas redraws ~60 times per second.</p>
+      <canvas id="bouncing" width="600" height="300"></canvas>
+      <div class="controls">
+        <button id="bouncing-toggle">Pause</button>
+        <button id="bouncing-add">Add ball</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Interactive drawing</h2>
+      <p>Click and drag to draw. Captures pointer events on the canvas.</p>
+      <canvas id="paint" width="600" height="300"></canvas>
+      <div class="controls">
+        <input type="color" id="paint-color" value="#4299e1" />
+        <input type="range" id="paint-size" min="1" max="40" value="8" />
+        <button id="paint-clear">Clear</button>
+      </div>
+    </section>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
