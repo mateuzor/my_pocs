@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drag and Drop API POC</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 900px; }
+      section { margin-bottom: 2.5rem; }
+
+      /* Sortable list */
+      .sortable { list-style: none; padding: 0; }
+      .sortable li {
+        padding: 0.6rem 0.75rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 6px;
+        margin-bottom: 4px;
+        background: white;
+        cursor: grab;
+      }
+      .sortable li:active { cursor: grabbing; }
+      .sortable li.dragging { opacity: 0.4; }
+      .sortable li.drop-target { border-color: #4299e1; background: #ebf8ff; }
+
+      /* Kanban */
+      .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+      .column {
+        background: #f7fafc;
+        border-radius: 8px;
+        padding: 0.75rem;
+        min-height: 200px;
+        border: 2px solid transparent;
+      }
+      .column.over { border-color: #4299e1; background: #ebf8ff; }
+      .column h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+      .card {
+        padding: 0.5rem 0.75rem;
+        background: white;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        cursor: grab;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .card.dragging { opacity: 0.3; }
+
+      /* File drop zone */
+      .dropzone {
+        border: 2px dashed #cbd5e0;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        color: #718096;
+      }
+      .dropzone.over { border-color: #4299e1; background: #ebf8ff; color: #2b6cb0; }
+      #file-list { font-family: monospace; font-size: 0.85rem; margin-top: 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Drag and Drop API POC</h1>
+    <p>
+      The HTML5 Drag and Drop API has a quirky-but-powerful event model.
+      You mark elements with <code>draggable="true"</code>, then listen for
+      <code>dragstart</code>, <code>dragover</code>, <code>drop</code>, etc.
+      The <code>dataTransfer</code> object carries data between the source and target.
+    </p>
+
+    <section>
+      <h2>1. Sortable list</h2>
+      <p>Drag items to reorder. State of the list is reflected in the data attributes.</p>
+      <ul id="sortable" class="sortable">
+        <li draggable="true" data-id="1">📝 Write the spec</li>
+        <li draggable="true" data-id="2">🔧 Build the prototype</li>
+        <li draggable="true" data-id="3">🧪 Test edge cases</li>
+        <li draggable="true" data-id="4">📦 Ship to staging</li>
+        <li draggable="true" data-id="5">🚀 Deploy to prod</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. Kanban board — drag cards between columns</h2>
+      <p>The drop targets are the columns; we read the source card's id from dataTransfer.</p>
+      <div class="board">
+        <div class="column" data-status="todo">
+          <h3>To do</h3>
+          <div class="card" draggable="true" data-id="a">Design new logo</div>
+          <div class="card" draggable="true" data-id="b">Email mockups to client</div>
+        </div>
+        <div class="column" data-status="doing">
+          <h3>In progress</h3>
+          <div class="card" draggable="true" data-id="c">Refactor auth flow</div>
+        </div>
+        <div class="column" data-status="done">
+          <h3>Done</h3>
+          <div class="card" draggable="true" data-id="d">Set up CI</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. File drop zone</h2>
+      <p>Drop one or more files from your OS — dataTransfer.files gives you File objects.</p>
+      <div id="dropzone" class="dropzone">Drop files here</div>
+      <ul id="file-list"></ul>
+    </section>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
