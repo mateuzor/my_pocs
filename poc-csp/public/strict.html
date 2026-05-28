@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Strict CSP — locked down</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 720px; }
+    .good { background: #c6f6d5; padding: 0.75rem; border-radius: 6px; }
+    pre { background: #f7fafc; padding: 0.75rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Page WITH strict CSP</h1>
+  <div class="good">
+    <strong>✅ Locked down.</strong> Open DevTools → Console. Every blocked
+    resource is logged. The server sends a strict
+    <code>Content-Security-Policy</code> header (see the response headers in
+    the Network tab).
+  </div>
+
+  <h2>1. Inline script — BLOCKED</h2>
+  <p>The same inline &lt;script&gt; from lax.html will be rejected:</p>
+  <pre>
+Refused to execute inline script because it violates
+the following Content Security Policy directive: "script-src 'self' ..."
+  </pre>
+  <script>
+    // This will not run — CSP blocks inline scripts when 'unsafe-inline' is absent.
+    console.log('You should not see this in the console.');
+    document.title += ' — script ran';
+  </script>
+
+  <h2>2. External script from a non-allowlisted origin — BLOCKED</h2>
+  <pre>
+Refused to load the script 'https://cdn.jsdelivr.net/...' because it
+violates the following Content Security Policy directive: "script-src 'self'".
+  </pre>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+  <h2>3. Inline event handler — BLOCKED</h2>
+  <p>The <code>onclick="..."</code> attribute is also stripped:</p>
+  <button onclick="alert('this will not fire')">Click me (handler blocked)</button>
+
+  <h2>4. Allowed: an external script from same origin</h2>
+  <p>This script is served from <code>'self'</code>, which IS allowed:</p>
+  <script src="/safe.js"></script>
+  <p id="safe-result">(awaiting safe.js)</p>
+
+  <hr />
+  <a href="/lax.html">← Back to the unprotected page</a>
+</body>
+</html>

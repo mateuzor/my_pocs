@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NO CSP — vulnerable to XSS</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 720px; }
+    .bad { background: #fed7d7; padding: 0.75rem; border-radius: 6px; }
+    pre { background: #f7fafc; padding: 0.75rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Page without CSP</h1>
+  <div class="bad">
+    <strong>⚠️ Vulnerable.</strong> No Content-Security-Policy header is set.
+    Inline scripts, external scripts from any origin, eval(), and inline event
+    handlers all work freely.
+  </div>
+
+  <h2>Inline script (works — should NOT in a real app)</h2>
+  <script>
+    // This inline script runs because no CSP blocks it.
+    console.log('Inline script executed — this is what attackers exploit via XSS.');
+    document.title += ' — script ran';
+  </script>
+
+  <h2>External script from an arbitrary domain (works)</h2>
+  <p>
+    The page below loads a script from <code>cdn.jsdelivr.net</code>.
+    Without CSP, ANY domain can be loaded. With CSP, only allowed sources work.
+  </p>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <p id="lodash-result"></p>
+  <script>
+    document.getElementById('lodash-result').textContent =
+      typeof _ !== 'undefined' ? `_.sum([1,2,3]) = ${_.sum([1, 2, 3])}` : 'lodash failed to load';
+  </script>
+
+  <h2>Inline event handler (works)</h2>
+  <button onclick="alert('XSS-friendly inline handler')">Click me</button>
+
+  <hr />
+  <a href="/strict.html">→ See the same page with strict CSP</a>
+</body>
+</html>
