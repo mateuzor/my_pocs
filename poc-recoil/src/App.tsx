@@ -1,4 +1,5 @@
 import { TodoList } from './components/TodoList';
+import { UserPanel } from './components/UserPanel';
 
 export function App() {
   return (
@@ -6,6 +7,7 @@ export function App() {
       <h1>Recoil POC</h1>
       <p>Atoms (writable units) + selectors (memoized derived state).</p>
       <TodoList />
+      <UserPanel />
     </main>
   );
 }
