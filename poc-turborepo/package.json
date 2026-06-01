@@ -1,0 +1,17 @@
+{
+  "name": "poc-turborepo",
+  "private": true,
+  "version": "0.0.1",
+  "//": "Root of the monorepo. `workspaces` tells the package manager that every",
+  "// ": "folder under apps/* and packages/* is a local package that can depend",
+  "//  ": "on the others by name (e.g. \"@poc/ui\") instead of by relative path.",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}

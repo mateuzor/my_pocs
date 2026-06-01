@@ -1,0 +1,21 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "// tasks": "Each key is a task Turborepo can run across every workspace.",
+  "tasks": {
+    "build": {
+      "// dependsOn": "^build means: build a package's DEPENDENCIES first.",
+      "// ": "Turborepo reads the workspace graph and parallelizes everything",
+      "//  ": "that has no dependency between it, in topological order.",
+      "dependsOn": ["^build"],
+      "// outputs": "Declaring outputs lets Turborepo CACHE them. A second run",
+      "//   ": "with unchanged inputs restores these from cache instead of rebuilding.",
+      "outputs": ["dist/**"]
+    },
+    "lint": {},
+    "dev": {
+      "// cache": "Long-running dev servers must never be cached or batched.",
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
