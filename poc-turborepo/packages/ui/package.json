@@ -1,0 +1,14 @@
+{
+  "name": "@poc/ui",
+  "version": "0.0.1",
+  "private": true,
+  "// main": "Other workspaces import from this entry. Because it lives in the",
+  "// ": "monorepo, `apps/web` depends on \"@poc/ui\": \"*\" and the package manager",
+  "//  ": "symlinks it — edits are picked up instantly, no publish step.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "echo \"linting @poc/ui\""
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "@poc/web",
+  "version": "0.0.1",
+  "private": true,
+  "// dependencies": "Depends on the local @poc/ui workspace by name. Turborepo",
+  "// ": "reads this edge to know it must build @poc/ui BEFORE @poc/web (^build).",
+  "dependencies": {
+    "@poc/ui": "*"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "node ./src/main.ts",
+    "lint": "echo \"linting @poc/web\""
+  }
+}
