@@ -1,4 +1,5 @@
 import { ManualImport } from './ManualImport';
+import { LazyComponent } from './LazyComponent';
 
 export function App() {
   return (
@@ -6,6 +7,7 @@ export function App() {
       <h1>Dynamic import comparison</h1>
       <p>Three ways to split code — open the Network tab and watch the chunks.</p>
       <ManualImport />
+      <LazyComponent />
     </main>
   );
 }
