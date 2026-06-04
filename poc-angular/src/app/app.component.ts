@@ -1,10 +1,9 @@
 import { Component, computed, signal } from '@angular/core';
+import { CounterComponent } from './counter.component';
 
-// Angular 20 — `standalone: true` is now the DEFAULT, so it's gone. A component
-// just declares what it `imports`. Change detection here is driven by signals
-// (the app runs zoneless — see main.ts).
 @Component({
   selector: 'app-root',
+  imports: [CounterComponent],
   template: `
     <main>
       <h1>{{ title }}</h1>
@@ -24,20 +23,30 @@ import { Component, computed, signal } from '@angular/core';
           }
         </ul>
       }
+
+      <h2>Signal inputs / outputs / model()</h2>
+      <!-- [(value)] two-way binds a parent SIGNAL straight to the child model. -->
+      <app-counter label="apples" [(value)]="apples" [max]="5" (reached)="onReached($event)" />
+      <p>apples in parent: {{ apples() }}{{ note() }}</p>
     </main>
   `,
 })
 export class AppComponent {
   title = 'Angular 20 POC';
-  // signal() = reactive state. Reading count() in the template subscribes the
-  // view; writing it is what schedules a re-render in zoneless mode.
   readonly count = signal(0);
-  // computed() = memoized derived signal, recomputed only when count() changes.
   readonly ticks = computed(() =>
     Array.from({ length: this.count() }, (_, i) => i + 1)
   );
 
+  // Two-way bound to the child's model() — both sides share this one signal.
+  readonly apples = signal(2);
+  readonly note = signal('');
+
   inc() {
     this.count.update((n) => n + 1);
+  }
+
+  onReached(n: number) {
+    this.note.set(` — reached max (${n})!`);
   }
 }
