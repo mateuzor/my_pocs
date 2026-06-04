@@ -1,5 +1,6 @@
 import { ManualImport } from './ManualImport';
 import { LazyComponent } from './LazyComponent';
+import { RouteBased } from './RouteBased';
 
 export function App() {
   return (
@@ -8,6 +9,7 @@ export function App() {
       <p>Three ways to split code — open the Network tab and watch the chunks.</p>
       <ManualImport />
       <LazyComponent />
+      <RouteBased />
     </main>
   );
 }
