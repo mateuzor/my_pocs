@@ -1,13 +1,21 @@
 import { Component, computed, signal } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { CounterComponent } from './counter.component';
 import { UsersComponent } from './users.component';
 
 @Component({
   selector: 'app-root',
-  imports: [CounterComponent, UsersComponent],
+  imports: [CounterComponent, UsersComponent, RouterLink, RouterOutlet],
   template: `
     <main>
       <h1>{{ title }}</h1>
+
+      <!-- routerLink navigates without a reload; router-outlet renders the
+           matched route's lazily-loaded component. -->
+      <nav>
+        <a routerLink="/">home</a> | <a routerLink="/dashboard">dashboard</a>
+      </nav>
+      <router-outlet />
 
       <!-- Built-in control flow: @if / @for replace *ngIf / *ngFor.
            @let declares a template-local variable. -->
