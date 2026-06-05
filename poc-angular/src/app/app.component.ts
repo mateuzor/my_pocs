@@ -1,7 +1,8 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CounterComponent } from './counter.component';
 import { UsersComponent } from './users.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,12 @@ import { UsersComponent } from './users.component';
            matched route's lazily-loaded component. -->
       <nav>
         <a routerLink="/">home</a> | <a routerLink="/dashboard">dashboard</a>
+        <!-- toggle auth to see the guard allow vs redirect the dashboard -->
+        @if (auth.isLoggedIn()) {
+          <button (click)="auth.logout()">logout</button>
+        } @else {
+          <button (click)="auth.login()">login</button>
+        }
       </nav>
       <router-outlet />
 
@@ -60,6 +67,9 @@ export class AppComponent {
   // Two-way bound to the child's model() — both sides share this one signal.
   readonly apples = signal(2);
   readonly note = signal('');
+
+  // inject() — the function form of DI; pulls the singleton AuthService.
+  readonly auth = inject(AuthService);
 
   inc() {
     this.count.update((n) => n + 1);
