@@ -1,9 +1,10 @@
 import { Component, computed, signal } from '@angular/core';
 import { CounterComponent } from './counter.component';
+import { UsersComponent } from './users.component';
 
 @Component({
   selector: 'app-root',
-  imports: [CounterComponent],
+  imports: [CounterComponent, UsersComponent],
   template: `
     <main>
       <h1>{{ title }}</h1>
@@ -28,6 +29,16 @@ import { CounterComponent } from './counter.component';
       <!-- [(value)] two-way binds a parent SIGNAL straight to the child model. -->
       <app-counter label="apples" [(value)]="apples" [max]="5" (reached)="onReached($event)" />
       <p>apples in parent: {{ apples() }}{{ note() }}</p>
+
+      <h2>Async with resource() + @defer</h2>
+      <!-- @defer lazy-loads the widget's chunk only when it scrolls into view. -->
+      @defer (on viewport) {
+        <app-users />
+      } @placeholder {
+        <p>scroll down to load the users widget…</p>
+      } @loading {
+        <p>loading widget…</p>
+      }
     </main>
   `,
 })
