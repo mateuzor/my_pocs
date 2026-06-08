@@ -14,7 +14,8 @@ import { AuthService } from './services/auth.service';
       <!-- routerLink navigates without a reload; router-outlet renders the
            matched route's lazily-loaded component. -->
       <nav>
-        <a routerLink="/">home</a> | <a routerLink="/dashboard">dashboard</a>
+        <a routerLink="/">home</a> | <a routerLink="/dashboard">dashboard</a> |
+        <a routerLink="/http">http</a>
         <!-- toggle auth to see the guard allow vs redirect the dashboard -->
         @if (auth.isLoggedIn()) {
           <button (click)="auth.logout()">logout</button>

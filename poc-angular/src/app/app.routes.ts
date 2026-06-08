@@ -15,4 +15,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/dashboard.component').then((m) => m.DashboardComponent),
   },
+  {
+    path: 'http',
+    loadComponent: () =>
+      import('./features/http/http-demo.component').then((m) => m.HttpDemoComponent),
+  },
 ];
