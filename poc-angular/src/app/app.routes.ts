@@ -20,4 +20,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/http/http-demo.component').then((m) => m.HttpDemoComponent),
   },
+  {
+    path: 'forms',
+    loadComponent: () =>
+      import('./features/forms/signup-form.component').then((m) => m.SignupFormComponent),
+  },
 ];
