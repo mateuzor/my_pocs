@@ -17,6 +17,20 @@ no NgModules, no zone.js, signals everywhere.
 | **Functional guards** | `guards/auth.guard.ts` → `CanActivateFn` | Plain function with `inject()`; returns `UrlTree` to redirect. |
 | **Lazy routing** | `app.routes.ts` → `loadComponent` | Each route ships as its own chunk. |
 
+### HTTP & data layer (`features/http/`)
+
+| Piece | File | Idea |
+|-------|------|------|
+| `provideHttpClient()` | `main.ts` | registers HttpClient app-wide, no `HttpClientModule` |
+| Typed service | `users-http.service.ts` | `http.get<ApiUser>()` — typed end-to-end Observable |
+| `toSignal()` | `http-demo.component.ts` | bridge an Observable → signal, auto-unsubscribe |
+| `httpResource()` | `http-demo.component.ts` | v20 declarative HTTP: `value()`/`isLoading()`/`error()` as signals, auto-abort |
+| Functional interceptor | `auth.interceptor.ts` | `HttpInterceptorFn` + `withInterceptors()`; clones req to add auth header, logs req/res |
+
+**Pitch:** `toSignal` is the bridge for existing RxJS/HttpClient code; `httpResource`
+is the new signal-native way to fetch (no service, no subscribe). Interceptors are
+now plain functions that use `inject()` and run in an injection context.
+
 ### Pitch de mentoria
 - **Zoneless is the headline of v20**: without zone.js, Angular relies on signals
   to know what changed — so understanding signals *is* understanding modern CD.
