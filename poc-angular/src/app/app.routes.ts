@@ -25,4 +25,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/forms/signup-form.component').then((m) => m.SignupFormComponent),
   },
+  {
+    path: 'templates',
+    loadComponent: () =>
+      import('./features/templates/templates-demo.component').then(
+        (m) => m.TemplatesDemoComponent
+      ),
+  },
 ];
