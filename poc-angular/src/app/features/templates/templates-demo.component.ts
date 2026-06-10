@@ -7,9 +7,11 @@ import {
   viewChild,
   viewChildren,
 } from '@angular/core';
+import { HeavyWidgetComponent } from './heavy-widget.component';
 
 @Component({
   selector: 'app-templates-demo',
+  imports: [HeavyWidgetComponent],
   template: `
     <h2>Signal queries + afterRenderEffect</h2>
 
@@ -22,6 +24,20 @@ import {
       <button #item>ccc</button>
     </div>
     <p>buttons found by viewChildren: {{ count() }}</p>
+
+    <h2>Advanced &#64;defer triggers</h2>
+    <!-- Load on click, but PREFETCH the chunk as soon as the user hovers the
+         placeholder — so by the time they click it's likely already cached.
+         @loading has a minimum to avoid a flash; @error covers load failure. -->
+    @defer (on interaction; prefetch on hover) {
+      <app-heavy-widget />
+    } @placeholder {
+      <button>click to load widget (hover to prefetch)</button>
+    } @loading (minimum 300ms) {
+      <p>loading widget…</p>
+    } @error {
+      <p>failed to load widget</p>
+    }
   `,
 })
 export class TemplatesDemoComponent {
