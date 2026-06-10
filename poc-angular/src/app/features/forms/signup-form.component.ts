@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { noWhitespace, passwordsMatch, usernameAvailable } from './validators';
 
 // REACTIVE FORMS: the form model lives in TypeScript, not the template. You get
@@ -32,6 +32,17 @@ import { noWhitespace, passwordsMatch, usernameAvailable } from './validators';
         <small>passwords don't match</small>
       }
 
+      <!-- FormArray: a dynamic list of controls. formArrayName binds the array,
+           then each child binds by its numeric index. -->
+      <fieldset formArrayName="skills">
+        <legend>skills</legend>
+        @for (ctrl of skills.controls; track $index) {
+          <input [formControlName]="$index" placeholder="skill" />
+          <button type="button" (click)="removeSkill($index)">×</button>
+        }
+        <button type="button" (click)="addSkill()">+ add skill</button>
+      </fieldset>
+
       <button [disabled]="form.invalid || form.pending">sign up</button>
     </form>
 
@@ -51,10 +62,24 @@ export class SignupFormComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirm: ['', [Validators.required]],
+      skills: this.fb.array<FormControl<string>>([]),
     },
     // group-level validator runs across siblings
     { validators: passwordsMatch }
   );
+
+  // Typed accessor so the template can iterate skills.controls.
+  get skills() {
+    return this.form.controls.skills;
+  }
+
+  addSkill() {
+    this.skills.push(this.fb.nonNullable.control('', Validators.required));
+  }
+
+  removeSkill(i: number) {
+    this.skills.removeAt(i);
+  }
 
   submit() {
     if (this.form.valid) this.submitted = true;

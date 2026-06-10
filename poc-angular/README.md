@@ -31,6 +31,20 @@ no NgModules, no zone.js, signals everywhere.
 is the new signal-native way to fetch (no service, no subscribe). Interceptors are
 now plain functions that use `inject()` and run in an injection context.
 
+### Forms (`features/forms/`)
+
+| Piece | File | Idea |
+|-------|------|------|
+| Typed reactive form | `signup-form.component.ts` | `fb.nonNullable.group()` → `form.value` fully typed, no `\| null` |
+| Sync validator | `validators.ts` → `noWhitespace` | `(control) => errors \| null` |
+| Cross-field validator | `validators.ts` → `passwordsMatch` | attached to the GROUP to compare siblings |
+| Async validator | `validators.ts` → `usernameAvailable` | returns Observable; control goes `PENDING` |
+| Dynamic `FormArray` | `signup-form.component.ts` → `skills` | add/remove controls at runtime, bind by index |
+
+**Pitch:** validators are just functions; sync vs async differ only by return
+type (errors vs Observable-of-errors). Cross-field rules live on the group.
+`FormArray` is how you model variable-length inputs.
+
 ### Pitch de mentoria
 - **Zoneless is the headline of v20**: without zone.js, Angular relies on signals
   to know what changed — so understanding signals *is* understanding modern CD.
