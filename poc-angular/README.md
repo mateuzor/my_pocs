@@ -45,6 +45,20 @@ now plain functions that use `inject()` and run in an injection context.
 type (errors vs Observable-of-errors). Cross-field rules live on the group.
 `FormArray` is how you model variable-length inputs.
 
+### Templates & rendering (`features/templates/`)
+
+| Piece | File | Idea |
+|-------|------|------|
+| `viewChild()` / `viewChildren()` | `templates-demo.component.ts` | signal-based queries replacing `@ViewChild(ren)` |
+| `afterRenderEffect()` | `templates-demo.component.ts` | read layout after paint — no ExpressionChanged error |
+| Advanced `@defer` | `templates-demo.component.ts` | `on interaction; prefetch on hover`, `@loading (minimum)`, `@error` |
+| `@for` context + `@empty` | `templates-demo.component.ts` | `$index/$first/$last/$even`, empty-state block |
+| `@switch` | `templates-demo.component.ts` | `@case` / `@default`, replaces `*ngSwitch` |
+
+**Pitch:** queries are signals now (read after render). `@defer` triggers let you
+tune *when* a chunk loads (and prefetch ahead of the click). `@for` ships first-class
+index/first/last vars and an `@empty` branch — no boilerplate.
+
 ### Pitch de mentoria
 - **Zoneless is the headline of v20**: without zone.js, Angular relies on signals
   to know what changed — so understanding signals *is* understanding modern CD.

@@ -38,6 +38,25 @@ import { HeavyWidgetComponent } from './heavy-widget.component';
     } @error {
       <p>failed to load widget</p>
     }
+
+    <h2>&#64;for context vars + &#64;empty, and &#64;switch</h2>
+    <button (click)="cycle()">cycle status</button>
+    <button (click)="toggleItems()">toggle items</button>
+
+    <ul>
+      <!-- $index / $first / $last / $even are built-in context variables. -->
+      @for (item of rows(); track item.id; let i = $index, first = $first) {
+        <li>{{ i }}: {{ item.label }} @if (first) { <em>(first)</em> }</li>
+      } @empty {
+        <li>no items</li>
+      }
+    </ul>
+
+    @switch (status()) {
+      @case ('active') { <p>🟢 active</p> }
+      @case ('idle') { <p>🟡 idle</p> }
+      @default { <p>⚪ unknown</p> }
+    }
   `,
 })
 export class TemplatesDemoComponent {
@@ -50,6 +69,22 @@ export class TemplatesDemoComponent {
   readonly count = computed(() => this.items().length);
 
   readonly width = signal(0);
+
+  // Data for the @for / @switch demos below.
+  readonly rows = signal([
+    { id: 1, label: 'alpha' },
+    { id: 2, label: 'beta' },
+  ]);
+  readonly status = signal<'active' | 'idle' | 'offline'>('active');
+
+  toggleItems() {
+    this.rows.update((r) => (r.length ? [] : [{ id: 1, label: 'alpha' }, { id: 2, label: 'beta' }]));
+  }
+
+  cycle() {
+    const order = ['active', 'idle', 'offline'] as const;
+    this.status.update((s) => order[(order.indexOf(s) + 1) % order.length]);
+  }
 
   constructor() {
     // afterRenderEffect — runs AFTER the DOM is painted, so it's the safe place
