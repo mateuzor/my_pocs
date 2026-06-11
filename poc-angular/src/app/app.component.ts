@@ -16,7 +16,7 @@ import { AuthService } from './services/auth.service';
       <nav>
         <a routerLink="/">home</a> | <a routerLink="/dashboard">dashboard</a> |
         <a routerLink="/http">http</a> | <a routerLink="/forms">forms</a> |
-        <a routerLink="/templates">templates</a>
+        <a routerLink="/templates">templates</a> | <a routerLink="/extras">extras</a>
         <!-- toggle auth to see the guard allow vs redirect the dashboard -->
         @if (auth.isLoggedIn()) {
           <button (click)="auth.logout()">logout</button>

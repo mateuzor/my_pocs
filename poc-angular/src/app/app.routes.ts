@@ -32,4 +32,9 @@ export const routes: Routes = [
         (m) => m.TemplatesDemoComponent
       ),
   },
+  {
+    path: 'extras',
+    loadComponent: () =>
+      import('./features/extras/extras-demo.component').then((m) => m.ExtrasDemoComponent),
+  },
 ];
