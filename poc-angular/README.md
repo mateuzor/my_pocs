@@ -59,6 +59,19 @@ type (errors vs Observable-of-errors). Cross-field rules live on the group.
 tune *when* a chunk loads (and prefetch ahead of the click). `@for` ships first-class
 index/first/last vars and an `@empty` branch — no boilerplate.
 
+### Directives, pipes & DI (`features/extras/`)
+
+| Piece | File | Idea |
+|-------|------|------|
+| Custom attribute directive | `highlight.directive.ts` | `[appHighlight]` with signal `input()` + `host` binding |
+| Custom pure pipe | `truncate.pipe.ts` | standalone `@Pipe`, re-runs only when the input changes |
+| Content projection | `card.component.ts` | `<ng-content select="...">` named + default slots |
+| `InjectionToken` | `app-config.token.ts` | inject non-class values; default `factory` overridden by `useValue` in `main.ts` |
+
+**Pitch:** directives reuse the component reactivity model (signal inputs +
+host bindings). Pipes are cheap pure transforms. `InjectionToken` is how you put
+config/interfaces into DI; a provider can override the default factory.
+
 ### Pitch de mentoria
 - **Zoneless is the headline of v20**: without zone.js, Angular relies on signals
   to know what changed — so understanding signals *is* understanding modern CD.
