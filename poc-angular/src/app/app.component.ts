@@ -47,7 +47,7 @@ import { AuthService } from './services/auth.service';
       <app-counter label="apples" [(value)]="apples" [max]="5" (reached)="onReached($event)" />
       <p>apples in parent: {{ apples() }}{{ note() }}</p>
 
-      <h2>Async with resource() + @defer</h2>
+      <h2>Async with resource() + &#64;defer</h2>
       <!-- @defer lazy-loads the widget's chunk only when it scrolls into view. -->
       @defer (on viewport) {
         <app-users />

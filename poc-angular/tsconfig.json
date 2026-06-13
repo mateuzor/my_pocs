@@ -11,6 +11,5 @@
   },
   "angularCompilerOptions": {
     "strictTemplates": true
-  },
-  "include": ["src"]
+  }
 }
