@@ -1,12 +1,21 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 
-// A route is just a component$ exported as default from src/routes/**. This one
-// is fully static so far — the interactive bits arrive in the next commits.
 export default component$(() => {
+  // useSignal = a reactive value. Reading count.value in JSX subscribes that
+  // spot in the DOM; writing it updates only that spot — no virtual-DOM diff.
+  const count = useSignal(0);
+
   return (
     <main>
       <h1>Qwik POC</h1>
       <p>Resumable by default — the server ships HTML with serialized state.</p>
+
+      <h2>Lazy event handler</h2>
+      <p>count: {count.value}</p>
+      {/* onClick$ — the `$` makes this handler a SEPARATE lazy chunk. The JS for
+          the click is NOT downloaded on load; it's fetched the instant you click
+          (Qwik prefetches it in the background). That's why initial JS ≈ 0. */}
+      <button onClick$={() => count.value++}>+1</button>
     </main>
   );
 });
