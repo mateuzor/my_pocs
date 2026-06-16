@@ -1,4 +1,5 @@
 import { component$, useSignal } from '@builder.io/qwik';
+import { LazyBox } from '../components/lazy-box';
 
 export default component$(() => {
   // useSignal = a reactive value. Reading count.value in JSX subscribes that
@@ -16,6 +17,9 @@ export default component$(() => {
           the click is NOT downloaded on load; it's fetched the instant you click
           (Qwik prefetches it in the background). That's why initial JS ≈ 0. */}
       <button onClick$={() => count.value++}>+1</button>
+
+      <h2>Lazy child component</h2>
+      <LazyBox label="toggle details" />
     </main>
   );
 });
