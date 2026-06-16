@@ -1,5 +1,6 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { LazyBox } from '../components/lazy-box';
+import { StoreCart } from '../components/store-cart';
 
 export default component$(() => {
   // useSignal = a reactive value. Reading count.value in JSX subscribes that
@@ -20,6 +21,9 @@ export default component$(() => {
 
       <h2>Lazy child component</h2>
       <LazyBox label="toggle details" />
+
+      <h2>Deep reactive store</h2>
+      <StoreCart />
     </main>
   );
 });
