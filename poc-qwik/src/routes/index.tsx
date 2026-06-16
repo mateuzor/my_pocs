@@ -1,6 +1,7 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { LazyBox } from '../components/lazy-box';
 import { StoreCart } from '../components/store-cart';
+import { ComputedTask } from '../components/computed-task';
 
 export default component$(() => {
   // useSignal = a reactive value. Reading count.value in JSX subscribes that
@@ -24,6 +25,9 @@ export default component$(() => {
 
       <h2>Deep reactive store</h2>
       <StoreCart />
+
+      <h2>Computed + task</h2>
+      <ComputedTask />
     </main>
   );
 });
