@@ -22,6 +22,20 @@ Every `$` (`component$`, `onClick$`, `routeLoader$`, `useTask$`…) is a marker 
 **optimizer** turns into a separately-loadable chunk. That's what makes
 fine-grained lazy loading automatic — you don't hand-split anything.
 
+## Qwik City (routing / SSR)
+
+| Piece | File | Idea |
+|-------|------|------|
+| File-based routing | `routes/**/index.tsx` | folder path = URL, zero config |
+| Layout | `routes/layout.tsx` | wraps child routes via `<Slot/>` |
+| `routeLoader$` | `routes/users/[id]/index.tsx` | server-side data, serialized into HTML |
+| `routeAction$` + `<Form>` | `routes/contact/index.tsx` | server form handling, progressively enhanced |
+| Speculative prefetch | `routes/service-worker.ts` + `<ServiceWorkerRegister/>` | caches likely-next chunks |
+
+**Pitch:** loaders/actions run on the server and their data is part of the
+resumable snapshot — no client refetch on load. `<Link>` + the prefetch SW make
+navigation feel instant because the next route's `$` chunks are already cached.
+
 ## Run
 ```bash
 npm install

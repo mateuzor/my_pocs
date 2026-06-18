@@ -1,5 +1,5 @@
 import { component$ } from '@builder.io/qwik';
-import { QwikCityProvider, RouterOutlet } from '@builder.io/qwik-city';
+import { QwikCityProvider, RouterOutlet, ServiceWorkerRegister } from '@builder.io/qwik-city';
 
 // The document root. QwikCityProvider enables routing; RouterOutlet renders the
 // matched route. Crucially: there is NO hydration call anywhere. Qwik serializes
@@ -14,6 +14,9 @@ export default component$(() => {
       </head>
       <body>
         <RouterOutlet />
+        {/* Registers the prefetch service worker: it speculatively caches the
+            $ chunks a user is likely to need next, so interactions feel instant. */}
+        <ServiceWorkerRegister />
       </body>
     </QwikCityProvider>
   );
