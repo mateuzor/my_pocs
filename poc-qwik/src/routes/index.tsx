@@ -3,6 +3,7 @@ import { LazyBox } from '../components/lazy-box';
 import { StoreCart } from '../components/store-cart';
 import { ComputedTask } from '../components/computed-task';
 import { ResourceUser } from '../components/resource-user';
+import { ResumabilityInspector } from '../components/resumability-inspector';
 
 export default component$(() => {
   // useSignal = a reactive value. Reading count.value in JSX subscribes that
@@ -32,6 +33,9 @@ export default component$(() => {
 
       <h2>Async resource</h2>
       <ResourceUser />
+
+      <h2>Resumability inspector</h2>
+      <ResumabilityInspector />
     </main>
   );
 });
