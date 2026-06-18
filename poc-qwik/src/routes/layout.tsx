@@ -9,7 +9,8 @@ export default component$(() => {
     <div>
       <nav>
         <Link href="/">home</Link> | <Link href="/about">about</Link> |
-        <Link href="/users/1">user 1</Link> | <Link href="/contact">contact</Link>
+        <Link href="/users/1">user 1</Link> | <Link href="/contact">contact</Link> |
+        <Link href="/lazy">lazy</Link>
       </nav>
       <hr />
       <Slot />
