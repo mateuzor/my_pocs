@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    // Preact uses the automatic JSX runtime, but the JSX factory is imported
+    // from "preact" instead of "react". This is what lets .tsx files render
+    // Preact VNodes while keeping the familiar React-like syntax.
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": []
+  },
+  "include": ["src"]
+}
