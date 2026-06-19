@@ -36,8 +36,27 @@ fine-grained lazy loading automatic — you don't hand-split anything.
 resumable snapshot — no client refetch on load. `<Link>` + the prefetch SW make
 navigation feel instant because the next route's `$` chunks are already cached.
 
+## When to reach for Qwik (and when not to)
+
+**Great when:** large content/commerce sites where first-load JS and TTI matter
+most; many routes where users touch only a few; SEO + instant interactivity.
+
+**Think twice when:** heavily interactive SPAs where almost all code runs anyway
+(the lazy-loading win shrinks); teams unfamiliar with the `$`/serialization
+mental model; libraries that assume hydration or hold non-serializable state.
+
+| | Qwik | React/Angular SSR | Astro islands |
+|--|------|-------------------|----------------|
+| Client work on load | resume (≈0) | hydrate whole tree | hydrate per island |
+| Granularity | per `$` (function-level) | per app | per island (component) |
+| Data | loader value serialized | refetch / serialize + hydrate | island props |
+
+**One-line pitch:** *Astro defers hydration per island; Qwik removes hydration
+entirely by serializing the whole app and resuming function-by-function.*
+
 ## Run
 ```bash
 npm install
-npm run dev
+npm run dev      # SSR dev server
+npm run build    # client build
 ```
