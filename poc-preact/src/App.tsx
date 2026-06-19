@@ -1,5 +1,6 @@
-// Root component. Kept intentionally tiny for the bootstrap commit — later
-// commits grow this into hooks, signals and routing demos.
+import { Counter } from "./components/Counter";
+
+// Root component. Composes the feature demos added across commits.
 export function App() {
   return (
     <main style={{ fontFamily: "system-ui", maxWidth: 640, margin: "2rem auto" }}>
@@ -8,6 +9,7 @@ export function App() {
         Same JSX/hooks mental model as React, but a ~3kB runtime. Sections get
         added commit by commit.
       </p>
+      <Counter />
     </main>
   );
 }
