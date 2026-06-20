@@ -1,4 +1,5 @@
 import { Counter } from "./components/Counter";
+import { SignalsCart } from "./components/SignalsCart";
 
 // Root component. Composes the feature demos added across commits.
 export function App() {
@@ -10,6 +11,7 @@ export function App() {
         added commit by commit.
       </p>
       <Counter />
+      <SignalsCart />
     </main>
   );
 }
