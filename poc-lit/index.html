@@ -12,6 +12,11 @@
     <!-- Public reactive properties set straight from HTML attributes. -->
     <mc-greeting name="Mateus" step="2"></mc-greeting>
     <mc-todos></mc-todos>
+    <!-- Content is projected into the card's slots; the card owns the styling. -->
+    <mc-card>
+      <span slot="title">Shadow DOM card</span>
+      Styles are <strong>encapsulated</strong> — page CSS can't reach inside.
+    </mc-card>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

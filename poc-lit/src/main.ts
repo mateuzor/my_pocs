@@ -4,3 +4,4 @@
 import "./components/mc-counter";
 import "./components/mc-greeting";
 import "./components/mc-todos";
+import "./components/mc-card";
