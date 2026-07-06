@@ -1,0 +1,7 @@
+Linha 1 — arquivo de exemplo pra demonstrar streams.
+Linha 2 — cada linha é lida em chunks pelo createReadStream.
+Linha 3 — em arquivos grandes de verdade (GB+), streaming evita
+Linha 4 — carregar tudo na memória de uma vez.
+Linha 5 — o pipe() conecta um stream ao outro sem buffering intermediário.
+Linha 6 — o response HTTP é um stream writable — dá pra pipear direto.
+Linha 7 — fim do arquivo de exemplo.

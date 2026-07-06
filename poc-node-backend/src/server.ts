@@ -1,4 +1,9 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { createReadStream, existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Aula 1 — HTTP nativo do Node
 //
@@ -50,6 +55,24 @@ function handler(req: IncomingMessage, res: ServerResponse) {
     return;
   }
 
+  // Aula 2 — STREAMING de arquivo direto pro response
+  // pipe() conecta um Readable ao Writable — nenhum byte fica em memória
+  // além do highWaterMark de cada chunk. Essencial pra arquivos grandes.
+  if (method === 'GET' && url === '/download') {
+    const filePath = join(__dirname, '..', 'data', 'big-file.txt');
+    if (!existsSync(filePath)) {
+      res.writeHead(404).end('Arquivo não encontrado');
+      return;
+    }
+    res.writeHead(200, {
+      'content-type': 'text/plain; charset=utf-8',
+      'content-disposition': 'attachment; filename="big-file.txt"',
+    });
+    // O res HERDA de stream.Writable — dá pra pipear direto
+    createReadStream(filePath).pipe(res);
+    return;
+  }
+
   // 404 padrão
   res.writeHead(404, { 'content-type': 'text/plain' });
   res.end('Rota não encontrada');
@@ -62,5 +85,6 @@ server.listen(PORT, () => {
   console.log('Rotas:');
   console.log(`  GET  /       → hello world`);
   console.log(`  GET  /info   → info do processo`);
-  console.log(`  POST /echo   → devolve o body recebido`);
+  console.log(`  POST /echo     → devolve o body recebido`);
+  console.log(`  GET  /download → stream de arquivo (createReadStream + pipe)`);
 });
