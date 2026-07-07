@@ -1,41 +1,42 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
+import { ZodError } from 'zod';
+import { env } from './env.js';
+import { AppError, NotFoundError, ValidationError } from './errors.js';
+import { createTaskSchema, updateTaskSchema } from './schemas.js';
 
-// Aula 3 — Express: primeiro framework HTTP
+// Aula 4 — Express + Zod + tratamento de erros centralizado
 //
-// O que o Express resolve em relação ao http nativo:
-//   1. Roteamento por método + path (não precisa mais de if/else)
-//   2. Parsing de body JSON (via middleware express.json())
-//   3. res.json(obj), res.status(n) — helpers no lugar de writeHead + JSON.stringify
-//   4. Middlewares — funções que rodam em cascata (req, res, next)
-//   5. Ecossistema gigante de middlewares prontos (cors, helmet, morgan, etc.)
+// Melhorias em relação à aula 3:
+//   - Configuração vem de env.ts (com validação no startup)
+//   - Validação de body/params com Zod (não mais if/else na mão)
+//   - Erros são lançados como AppError e um middleware final formata a resposta
+//   - Async errors funcionam corretamente (asyncHandler wrapper)
 
 const app = express();
-const PORT = 3000;
 
-// -------------------------------------------------------------------
-// Middleware GLOBAL — roda em toda request
-// -------------------------------------------------------------------
-
-// express.json() parseia bodies com Content-Type: application/json
-// e coloca o resultado em req.body. Sem isso, req.body é undefined.
 app.use(express.json());
 
-// Middleware customizado de logging — mostra o padrão (req, res, next)
-// Se não chamar next(), a requisição TRAVA. É como um pipeline manual.
-app.use((req: Request, _res: Response, next: NextFunction) => {
+// Logger — igual antes
+app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   console.log(`→ ${req.method} ${req.url}`);
-  // Interceptar o 'finish' do response pra logar a duração
-  _res.on('finish', () => {
-    console.log(`← ${req.method} ${req.url} ${_res.statusCode} (${Date.now() - start}ms)`);
+  res.on('finish', () => {
+    console.log(`← ${req.method} ${req.url} ${res.statusCode} (${Date.now() - start}ms)`);
   });
   next();
 });
 
 // -------------------------------------------------------------------
-// CRUD de tarefas em memória (banco vem na aula 6)
+// Helper: envolve handlers async pra que erros lançados caiam
+// no middleware de erro global (o Express 4 não pega Promise rejection sozinho)
 // -------------------------------------------------------------------
+type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<unknown>;
+const asyncHandler = (fn: AsyncHandler) => (req: Request, res: Response, next: NextFunction) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
 
+// -------------------------------------------------------------------
+// Storage em memória (banco vem na aula 6)
+// -------------------------------------------------------------------
 interface Task {
   id: number;
   title: string;
@@ -49,73 +50,99 @@ const tasks: Task[] = [
 ];
 let nextId = 3;
 
-// GET /tasks — lista todas
+// -------------------------------------------------------------------
+// Rotas — usando Zod pra validar. Se der pau, o ZodError vai pro handler global.
+// -------------------------------------------------------------------
+
 app.get('/tasks', (_req, res) => {
   res.json(tasks);
 });
 
-// GET /tasks/:id — busca por id
 app.get('/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
   const task = tasks.find((t) => t.id === id);
-  if (!task) return res.status(404).json({ error: 'Task não encontrada' });
+  // Em vez de `return res.status(404)...`, lanço um erro tipado.
+  // O middleware final cuida de virar HTTP response.
+  if (!task) throw new NotFoundError('Task');
   res.json(task);
 });
 
-// POST /tasks — cria nova
 app.post('/tasks', (req, res) => {
-  const { title } = req.body ?? {};
-  // Validação bem básica — vira Zod na próxima aula
-  if (typeof title !== 'string' || title.trim().length === 0) {
-    return res.status(400).json({ error: 'title é obrigatório' });
-  }
+  // .parse() joga ZodError se inválido — o middleware de erro pega
+  const input = createTaskSchema.parse(req.body);
+
   const task: Task = {
     id: nextId++,
-    title: title.trim(),
+    title: input.title,
     done: false,
     createdAt: new Date().toISOString(),
   };
   tasks.push(task);
-  // 201 Created é o status correto pra POST que cria recurso
   res.status(201).json(task);
 });
 
-// PUT /tasks/:id — atualiza
 app.put('/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
   const task = tasks.find((t) => t.id === id);
-  if (!task) return res.status(404).json({ error: 'Task não encontrada' });
+  if (!task) throw new NotFoundError('Task');
 
-  const { title, done } = req.body ?? {};
-  if (typeof title === 'string') task.title = title.trim();
-  if (typeof done === 'boolean') task.done = done;
+  const input = updateTaskSchema.parse(req.body);
+  if (input.title !== undefined) task.title = input.title;
+  if (input.done !== undefined) task.done = input.done;
 
   res.json(task);
 });
 
-// DELETE /tasks/:id — remove
 app.delete('/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
   const idx = tasks.findIndex((t) => t.id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Task não encontrada' });
+  if (idx === -1) throw new NotFoundError('Task');
 
   const [removed] = tasks.splice(idx, 1);
   res.json(removed);
 });
 
 // -------------------------------------------------------------------
-// Handler 404 pra rotas não conhecidas — vai como último middleware
+// 404 pra rotas desconhecidas (antes do error handler)
 // -------------------------------------------------------------------
-app.use((_req, res) => {
-  res.status(404).json({ error: 'Rota não encontrada' });
+app.use((_req, _res, next) => {
+  next(new NotFoundError('Rota'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Express rodando em http://localhost:${PORT}`);
-  console.log('Rotas:');
-  console.log('  GET    /tasks');
-  console.log('  GET    /tasks/:id');
-  console.log('  POST   /tasks       body: { title }');
-  console.log('  PUT    /tasks/:id   body: { title?, done? }');
-  console.log('  DELETE /tasks/:id');
+// -------------------------------------------------------------------
+// Middleware de erro GLOBAL — tem 4 args (err, req, res, next) para o
+// Express reconhecer como error handler. É o ÚLTIMO middleware.
+// -------------------------------------------------------------------
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  // Erros de validação do Zod
+  if (err instanceof ZodError) {
+    const validation = new ValidationError('Payload inválido', err.flatten().fieldErrors);
+    return res.status(validation.statusCode).json({
+      error: validation.code,
+      message: validation.message,
+      issues: validation.issues,
+    });
+  }
+
+  // Erros esperados da app (NotFoundError, ValidationError, etc.)
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      error: err.code,
+      message: err.message,
+    });
+  }
+
+  // Qualquer outra coisa é um bug — log completo, resposta genérica
+  console.error('Erro inesperado:', err);
+  res.status(500).json({
+    error: 'INTERNAL_SERVER_ERROR',
+    message: env.NODE_ENV === 'production' ? 'Algo deu errado' : String(err),
+  });
 });
+
+app.listen(env.PORT, () => {
+  console.log(`Express (${env.NODE_ENV}) rodando em http://localhost:${env.PORT}`);
+});
+
+// asyncHandler exportado — vai ser usado na aula 5 quando os handlers virarem async
+export { asyncHandler };
