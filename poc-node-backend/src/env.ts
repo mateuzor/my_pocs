@@ -12,6 +12,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+  DATABASE_URL: z.string().default('./data/tasks.db'),
 });
 
 const parsed = envSchema.safeParse(process.env);

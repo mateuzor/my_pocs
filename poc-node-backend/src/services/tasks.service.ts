@@ -1,16 +1,17 @@
 import { NotFoundError } from '../errors.js';
+import { tasksRepository } from '../repositories/tasks.repository.js';
 import type { CreateTaskInput, UpdateTaskInput } from '../schemas.js';
 
-// Aula 5 — Camada de SERVIÇO
+// Aula 6 — Service agora delega a persistência ao REPOSITORY.
 //
-// Responsabilidade: regras de negócio + interação com "banco" (por enquanto
-// um array em memória). Não sabe NADA sobre HTTP — não recebe req/res, não
-// retorna status code. Só regras + dados.
+// O service continuou responsável POR:
+//   - regras de negócio (validações que não são de payload — payload já foi
+//     validado pelo Zod no controller)
+//   - orquestração (chamar múltiplos repositórios se precisar)
+//   - erros de domínio (NotFoundError vem daqui, não do repo)
 //
-// Vantagens:
-//   - Reutilizável (worker, CLI, testes chamam direto)
-//   - Testável sem subir servidor HTTP
-//   - Trocável (memória → SQLite → Postgres) sem mudar controller
+// O service NÃO fala SQL. Trocar SQLite por Postgres = mexer só no
+// repository. A assinatura das funções do service não muda.
 
 export interface Task {
   id: number;
@@ -19,46 +20,32 @@ export interface Task {
   createdAt: string;
 }
 
-// "Banco" em memória. Na próxima aula vira SQLite via repository.
-const tasks: Task[] = [
-  { id: 1, title: 'Estudar Node', done: true, createdAt: new Date().toISOString() },
-  { id: 2, title: 'Fazer POC de backend', done: false, createdAt: new Date().toISOString() },
-];
-let nextId = 3;
-
 export const tasksService = {
   list(): Task[] {
-    return tasks;
+    return tasksRepository.findAll();
   },
 
   findById(id: number): Task {
-    const task = tasks.find((t) => t.id === id);
+    const task = tasksRepository.findById(id);
     if (!task) throw new NotFoundError('Task');
     return task;
   },
 
   create(input: CreateTaskInput): Task {
-    const task: Task = {
-      id: nextId++,
-      title: input.title,
-      done: false,
-      createdAt: new Date().toISOString(),
-    };
-    tasks.push(task);
-    return task;
+    return tasksRepository.insert(input.title);
   },
 
   update(id: number, input: UpdateTaskInput): Task {
-    const task = this.findById(id); // reusa a lógica + 404
-    if (input.title !== undefined) task.title = input.title;
-    if (input.done !== undefined) task.done = input.done;
-    return task;
+    // Garante 404 antes de tentar atualizar
+    this.findById(id);
+    const updated = tasksRepository.update(id, input);
+    if (!updated) throw new NotFoundError('Task');
+    return updated;
   },
 
   remove(id: number): Task {
-    const idx = tasks.findIndex((t) => t.id === id);
-    if (idx === -1) throw new NotFoundError('Task');
-    const [removed] = tasks.splice(idx, 1);
+    const removed = tasksRepository.delete(id);
+    if (!removed) throw new NotFoundError('Task');
     return removed;
   },
 };
