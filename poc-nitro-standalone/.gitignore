@@ -1,0 +1,8 @@
+node_modules
+# Nitro build/dev artifacts and generated types
+.nitro
+.output
+# Filesystem storage driver writes here at runtime
+.data
+*.log
+.env

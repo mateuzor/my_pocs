@@ -1,0 +1,6 @@
+{
+  // Nitro generates a tsconfig with all the auto-import + route types under
+  // `.nitro/types` when you run `nitro prepare`. Extending it gives the editor
+  // full type-safety for globals like defineEventHandler, useStorage, etc.
+  "extends": "./.nitro/types/tsconfig.json"
+}

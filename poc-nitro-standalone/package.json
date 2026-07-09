@@ -1,0 +1,20 @@
+{
+  "name": "poc-nitro-standalone",
+  "private": true,
+  "type": "module",
+  "description": "Learning Nitro as a standalone server engine (no Nuxt)",
+  "scripts": {
+    "prepare": "nitro prepare",
+    "dev": "nitro dev",
+    "build": "nitro build",
+    "preview": "node .output/server/index.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "h3": "^1.13.0"
+  },
+  "devDependencies": {
+    "nitropack": "^2.10.4",
+    "vitest": "^2.1.8"
+  }
+}
