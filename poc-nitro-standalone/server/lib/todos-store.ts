@@ -1,26 +1,29 @@
-// A plain module (not a route) used as a temporary in-memory store.
-// Only `routes/`, `api/`, `middleware/` and `plugins/` have special meaning
-// in Nitro; anything else under `server/` is just importable code.
+// Nitro ships a built-in KV abstraction: useStorage(). It returns a driver
+// (in-memory by default) exposing the SAME get/set/getKeys API regardless of
+// the backend — so swapping memory for fs / redis / cloudflare-kv is a
+// one-line config change (see nitro.config.ts), not a code rewrite.
 //
-// Day 4 swaps this Map for Nitro's useStorage() so data survives restarts —
-// keeping it in memory for now lets the routing examples stay focused.
+// This replaces the previous in-memory Map: data now goes through the
+// storage layer, so once we mount a persistent driver it survives restarts.
 export interface Todo {
   id: number;
   title: string;
   done: boolean;
 }
 
-const todos = new Map<number, Todo>([
-  [1, { id: 1, title: "Learn Nitro routing", done: true }],
-  [2, { id: 2, title: "Try the storage layer", done: false }],
-]);
-let nextId = 3;
+// Everything under the "todos" mount. useStorage(base) namespaces the keys.
+const storage = () => useStorage("todos");
 
 export const todoStore = {
-  list: () => [...todos.values()],
-  add: (title: string): Todo => {
-    const todo: Todo = { id: nextId++, title, done: false };
-    todos.set(todo.id, todo);
+  async list(): Promise<Todo[]> {
+    const keys = await storage().getKeys();
+    const items = await Promise.all(keys.map((k) => storage().getItem<Todo>(k)));
+    return items.filter((t): t is Todo => Boolean(t)).sort((a, b) => a.id - b.id);
+  },
+  async add(title: string): Promise<Todo> {
+    const id = Date.now();
+    const todo: Todo = { id, title, done: false };
+    await storage().setItem(`todo:${id}`, todo);
     return todo;
   },
 };
