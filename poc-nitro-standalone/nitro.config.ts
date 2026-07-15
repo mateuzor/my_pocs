@@ -5,13 +5,21 @@ export default defineNitroConfig({
   // Pinning a compatibility date makes builds reproducible.
   compatibilityDate: "2025-07-01",
 
-  // STORAGE MOUNTS (powered by "unstorage").
-  // Mount the "todos" namespace on the filesystem driver: now
-  // useStorage("todos") persists to .data/todos on disk and survives
-  // restarts — and the handler code does NOT change. Swap `driver: "fs"`
-  // for "redis" / "cloudflare-kv" / "vercel-kv" to change backends with
-  // zero code edits. That decoupling is one of Nitro's headline features.
+  // STORAGE MOUNTS (powered by "unstorage"): swap the driver to change the
+  // backend (fs / redis / cloudflare-kv / vercel-kv) with zero code edits.
   storage: {
     todos: { driver: "fs", base: "./.data/todos" },
+  },
+
+  // RUNTIME CONFIG: typed config resolved at runtime. Values here are
+  // defaults; any matching NITRO_* env var overrides them when the server
+  // boots (NITRO_API_SECRET -> apiSecret). Read it with useRuntimeConfig().
+  runtimeConfig: {
+    // Server-only secret — never sent to any client.
+    apiSecret: "dev-secret",
+    // Conventionally "safe to expose" values.
+    public: {
+      appName: "poc-nitro-standalone",
+    },
   },
 });
