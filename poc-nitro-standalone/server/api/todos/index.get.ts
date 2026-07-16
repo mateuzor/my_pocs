@@ -1,7 +1,6 @@
-// `server/api/todos/index.get.ts` -> `GET /api/todos`.
-// The `.get` suffix binds this handler to the GET method ONLY. Nitro derives
-// the HTTP verb from the filename, so a folder holds one file per verb
-// (index.get.ts, index.post.ts, ...) instead of a manual `if method ===`.
+// `GET /api/todos`. Note there is NO import for `ok()` below — it lives in
+// server/utils/ and Nitro auto-imports it. Same mechanism that provides
+// defineEventHandler, useStorage, getQuery, etc.
 import { todoStore } from "../../lib/todos-store";
 
-export default defineEventHandler(() => todoStore.list());
+export default defineEventHandler(async () => ok(await todoStore.list()));
