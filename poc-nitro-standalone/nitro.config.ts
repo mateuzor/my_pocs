@@ -30,5 +30,15 @@ export default defineNitroConfig({
     "/api/**": { headers: { "x-powered-by": "nitro" } },
     // Redirect a whole path from config — no handler file needed.
     "/docs": { redirect: "/" },
+    // Mark a route to be prerendered (see prerender block below).
+    "/hello": { prerender: true },
+  },
+
+  // PRERENDER: routes listed here are rendered to static files at BUILD time
+  // and served with zero server work — ideal for pages that rarely change.
+  // `crawlLinks` follows internal links to discover more pages automatically.
+  prerender: {
+    routes: ["/", "/api/status"],
+    crawlLinks: false,
   },
 });
