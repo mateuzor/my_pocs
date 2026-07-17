@@ -1,0 +1,4 @@
+{
+  "app": "poc-nitro-standalone",
+  "note": "Files in public/ are served as-is from the site root (e.g. /version.json, /robots.txt) with no route handler."
+}
