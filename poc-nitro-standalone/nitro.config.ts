@@ -11,15 +11,24 @@ export default defineNitroConfig({
     todos: { driver: "fs", base: "./.data/todos" },
   },
 
-  // RUNTIME CONFIG: typed config resolved at runtime. Values here are
-  // defaults; any matching NITRO_* env var overrides them when the server
-  // boots (NITRO_API_SECRET -> apiSecret). Read it with useRuntimeConfig().
+  // RUNTIME CONFIG: defaults overridden by NITRO_* env vars at boot.
   runtimeConfig: {
-    // Server-only secret — never sent to any client.
     apiSecret: "dev-secret",
-    // Conventionally "safe to expose" values.
     public: {
       appName: "poc-nitro-standalone",
     },
+  },
+
+  // ROUTE RULES: declarative, per-route behaviour applied WITHOUT editing the
+  // handlers. Patterns support globs. This is the same mechanism Nitro uses
+  // to express hybrid rendering (some routes cached at the edge, some SSR,
+  // some redirected) purely from config.
+  routeRules: {
+    // Add cache headers so a CDN can cache /expensive for 30s.
+    "/expensive": { cache: { maxAge: 30 } },
+    // Attach a header to every /api/* response.
+    "/api/**": { headers: { "x-powered-by": "nitro" } },
+    // Redirect a whole path from config — no handler file needed.
+    "/docs": { redirect: "/" },
   },
 });
