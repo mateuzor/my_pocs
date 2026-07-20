@@ -41,4 +41,14 @@ export default defineNitroConfig({
     routes: ["/", "/api/status"],
     crawlLinks: false,
   },
+
+  // TASKS are still experimental, so opt in explicitly.
+  experimental: {
+    tasks: true,
+  },
+  // Map cron expressions to task names. A running scheduler (or the dev
+  // server) triggers them; here cleanup runs at the top of every hour.
+  scheduledTasks: {
+    "0 * * * *": ["cleanup"],
+  },
 });
