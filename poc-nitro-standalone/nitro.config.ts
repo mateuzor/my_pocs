@@ -43,8 +43,10 @@ export default defineNitroConfig({
   },
 
   // TASKS are still experimental, so opt in explicitly.
+  // openAPI makes Nitro generate an OpenAPI 3 spec + docs UI from the routes.
   experimental: {
     tasks: true,
+    openAPI: true,
   },
   // Map cron expressions to task names. A running scheduler (or the dev
   // server) triggers them; here cleanup runs at the top of every hour.
