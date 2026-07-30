@@ -1,0 +1,12 @@
+node_modules
+.output
+.nitro
+.data
+.vercel
+.netlify
+deck/render
+.wrangler
+~$*.pptx
+
+# The repo root ignores *.sh — but demo.sh IS the demo, so keep it.
+!demo.sh

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nitro v3 — Cache Demo</title>
+    <style>
+      :root {
+        --bg: #0b0e14;
+        --panel: #141922;
+        --line: #232b39;
+        --fg: #e6edf3;
+        --dim: #8b98a9;
+        --net: #f2a03d;
+        --cache: #4ade80;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; padding: 48px 24px; background: var(--bg); color: var(--fg);
+        font: 15px/1.5 ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+        display: flex; justify-content: center;
+      }
+      main { width: 100%; max-width: 720px; }
+      h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.02em; }
+      h1 span { color: var(--net); }
+      p.sub { color: var(--dim); margin: 0 0 32px; }
+      .row { display: flex; gap: 10px; margin-bottom: 24px; }
+      input, button {
+        font: inherit; border-radius: 8px; border: 1px solid var(--line);
+        padding: 11px 14px; background: var(--panel); color: var(--fg);
+      }
+      input { flex: 1; }
+      button {
+        background: var(--net); color: #0b0e14; border: none;
+        font-weight: 650; cursor: pointer; padding: 11px 22px;
+      }
+      button:active { transform: translateY(1px); }
+      button.ghost { background: var(--panel); color: var(--dim); border: 1px solid var(--line); font-weight: 500; }
+      .log { display: flex; flex-direction: column; gap: 8px; }
+      .hit {
+        display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center;
+        background: var(--panel); border: 1px solid var(--line);
+        border-left: 3px solid var(--line); border-radius: 8px; padding: 13px 16px;
+        animation: in 0.18s ease-out;
+      }
+      @keyframes in { from { opacity: 0; transform: translateY(-6px); } }
+      .hit.network { border-left-color: var(--net); }
+      .hit.cache { border-left-color: var(--cache); }
+      .repo { font-family: ui-monospace, monospace; font-size: 13px; color: var(--dim); }
+      .repo b { color: var(--fg); font-weight: 600; }
+      .ms { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 17px; }
+      .network .ms { color: var(--net); }
+      .cache .ms { color: var(--cache); }
+      .tag {
+        font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em;
+        font-weight: 700; padding: 4px 9px; border-radius: 5px;
+      }
+      .network .tag { background: rgba(242,160,61,0.14); color: var(--net); }
+      .cache .tag { background: rgba(74,222,128,0.14); color: var(--cache); }
+      footer { margin-top: 28px; color: var(--dim); font-size: 13px; font-family: ui-monospace, monospace; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Nitro v3 <span>·</span> cached function demo</h1>
+      <p class="sub">
+        First call hits the GitHub API. Every call for the next 60s is served
+        from the storage layer. Same handler, no cache client.
+      </p>
+
+      <div class="row">
+        <input id="repo" value="nitrojs/nitro" spellcheck="false" />
+        <button id="go">Fetch stars</button>
+        <button id="spam" class="ghost">×10</button>
+      </div>
+
+      <div class="log" id="log"></div>
+
+      <footer id="foot">GET /api/stars/:owner/:repo</footer>
+    </main>
+
+    <script type="module">
+      const $ = (id) => document.getElementById(id);
+      const log = $("log");
+
+      async function hit() {
+        const repo = $("repo").value.trim();
+        if (!repo) return;
+        const r = await fetch(`/api/stars/${repo}`);
+        const d = await r.json();
+
+        const el = document.createElement("div");
+        el.className = `hit ${d.source}`;
+        el.innerHTML = `
+          <span class="repo"><b>${d.repo}</b> — ${
+            d.stars === null ? "not found" : d.stars.toLocaleString() + " ★"
+          }</span>
+          <span class="ms">${d.ms} ms</span>
+          <span class="tag">${d.source}</span>`;
+        log.prepend(el);
+        while (log.children.length > 12) log.lastChild.remove();
+      }
+
+      $("go").onclick = hit;
+      $("repo").onkeydown = (e) => e.key === "Enter" && hit();
+      $("spam").onclick = async () => {
+        for (let i = 0; i < 10; i++) await hit();
+      };
+    </script>
+  </body>
+</html>

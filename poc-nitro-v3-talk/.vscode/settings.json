@@ -1,0 +1,29 @@
+{
+  "// ": "Presentation settings. Workspace-scoped, so your other projects are untouched.",
+
+  "editor.fontSize": 18,
+  "editor.lineHeight": 1.6,
+  "editor.minimap.enabled": false,
+  "editor.wordWrap": "off",
+  "editor.renderWhitespace": "none",
+  "editor.stickyScroll.enabled": false,
+  "editor.guides.indentation": false,
+  "breadcrumbs.enabled": false,
+
+  "// files": "Hide build noise so the explorer shows exactly the 7 server files.",
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.output": true,
+    "**/.nitro": true,
+    "**/.data": true,
+    "**/.vercel": true,
+    "**/.netlify": true,
+    "**/deck/render": true,
+    "**/.git": true
+  },
+  "explorer.compactFolders": false,
+  "explorer.sortOrder": "type",
+
+  "workbench.startupEditor": "none",
+  "terminal.integrated.fontSize": 16
+}
