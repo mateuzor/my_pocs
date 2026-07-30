@@ -1,21 +1,31 @@
-# nitro-poc
+# poc-nitro-v3-talk
 
 Proof-of-concept built for a 5-minute talk on **Nitro v3** (`3.0.260610-beta`).
 
 Every number quoted in the deck was measured here. Nothing is copied from
 marketing material.
 
-- **Slides:** [`deck/Nitro-v3-5min.pptx`](deck/Nitro-v3-5min.pptx) — 10 slides, speaker notes on every slide
-- **Talk-day instructions:** [`RUNBOOK.md`](RUNBOOK.md)
-- **Demo driver:** [`demo.sh`](demo.sh)
+> ## 👉 [**TOUR.md** — roteiro do código: o que abrir, em que ordem, o que falar](TOUR.md)
+>
+> É o arquivo que você usa pra treinar. O código entra no **slide 6, aos 1:57**,
+> e dura 110 segundos.
 
-## Run it
+| | |
+|---|---|
+| **Roteiro da demo** | [`TOUR.md`](TOUR.md) — beat a beat, com as falas |
+| **Dia da apresentação** | [`RUNBOOK.md`](RUNBOOK.md) — setup, fallbacks, Q&A, timing |
+| **Slides** | [`deck/Nitro-v3-5min.pptx`](deck/Nitro-v3-5min.pptx) — 9 slides, speaker notes em todos |
+| **Driver da demo** | [`demo.sh`](demo.sh) — `cache` · `time` · `auth` · `build-all` |
+
+## Rodar
 
 ```bash
-nvm use 20                 # Nitro v3 requires Node 20+
+nvm use 20                 # Nitro v3 exige Node 20+
 npm install
-PORT=3100 npm run dev      # 3000 is usually taken
+PORT=3100 npm run dev      # 3000 normalmente está ocupada
 open http://localhost:3100
+
+./demo.sh all              # testa todos os beats de uma vez
 ```
 
 ## What it demonstrates
@@ -77,4 +87,5 @@ pip3 install python-pptx
 python3 deck/build_deck.py
 ```
 
-Rendered previews of all 10 slides are in `deck/render/`.
+Rendered previews of all 9 slides are in [`deck/render/`](deck/render/) (PNG + PDF) — the offline fallback.
+All speaker notes as markdown: [`deck/SPEAKER-NOTES.md`](deck/SPEAKER-NOTES.md).

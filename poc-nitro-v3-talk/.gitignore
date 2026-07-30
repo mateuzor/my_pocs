@@ -4,7 +4,6 @@ node_modules
 .data
 .vercel
 .netlify
-deck/render
 .wrangler
 ~$*.pptx
 

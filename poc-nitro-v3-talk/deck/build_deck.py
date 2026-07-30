@@ -713,6 +713,46 @@ run(p, "Questions?", size=30, color=FG, bold=True)
 
 # ---------------------------------------------------------------- write
 import os
-out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Nitro-v3-5min.pptx")
+here = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(here, "Nitro-v3-5min.pptx")
 prs.save(out)
 print(f"Wrote {out}  ({len(prs.slides.__iter__.__self__._sldIdLst)} slides)")
+
+# Also emit the notes as markdown, so the script survives a machine with no
+# PowerPoint. Generated from the same source — it can never drift out of sync.
+titles = []
+for s in prs.slides:
+    biggest, size = "", 0
+    for sh in s.shapes:
+        if not sh.has_text_frame:
+            continue
+        for p in sh.text_frame.paragraphs:
+            for r in p.runs:
+                if r.font.size and r.font.size > size and r.text.strip():
+                    biggest, size = r.text.strip(), r.font.size
+    titles.append(biggest)
+
+lines = [
+    "# Speaker notes — Nitro v3, 5-minute talk",
+    "",
+    "Gerado automaticamente por `build_deck.py`. **Não edite à mão** — edite o",
+    "script e rode `python3 deck/build_deck.py`.",
+    "",
+    "Fallback para quando não houver PowerPoint na máquina. O roteiro do código",
+    "está em [`../TOUR.md`](../TOUR.md).",
+    "",
+    "> Blocos `— — — if asked:` **não são pra ler** — é munição para o Q&A.",
+    "",
+    "---",
+    "",
+]
+for i, s in enumerate(prs.slides, 1):
+    note = s.notes_slide.notes_text_frame.text.strip()
+    timing = note.split("\n")[0] if note else ""
+    body = "\n".join(note.split("\n")[1:]).strip()
+    lines += [f"## Slide {i} — {titles[i - 1]}", "", f"`{timing}`", "", body, "", "---", ""]
+
+notes_md = os.path.join(here, "SPEAKER-NOTES.md")
+with open(notes_md, "w") as fh:
+    fh.write("\n".join(lines))
+print(f"Wrote {notes_md}")
