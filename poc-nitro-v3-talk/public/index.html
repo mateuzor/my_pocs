@@ -69,7 +69,24 @@
       </p>
 
       <div class="row">
-        <input id="repo" value="nitrojs/nitro" spellcheck="false" />
+        <!-- The datalist is a rehearsal aid: the cache key is the repo name,
+             so picking an unused repo gives a genuine cold call with no restart. -->
+        <input id="repo" value="nitrojs/nitro" spellcheck="false"
+               list="repos" autocomplete="off" />
+        <datalist id="repos">
+          <option value="nitrojs/nitro"></option>
+          <option value="vuejs/core"></option>
+          <option value="sveltejs/svelte"></option>
+          <option value="withastro/astro"></option>
+          <option value="honojs/hono"></option>
+          <option value="unjs/h3"></option>
+          <option value="facebook/react"></option>
+          <option value="denoland/deno"></option>
+          <option value="oven-sh/bun"></option>
+          <option value="rust-lang/rust"></option>
+          <option value="torvalds/linux"></option>
+          <option value="microsoft/TypeScript"></option>
+        </datalist>
         <button id="go">Fetch stars</button>
         <button id="spam" class="ghost">×10</button>
       </div>
