@@ -6,7 +6,9 @@
 #   ./demo.sh time        show route-rule cache: the clock freezes
 #   ./demo.sh auth        show basicAuth with zero auth code
 #   ./demo.sh build-all   build for 5 presets and print sizes
-#   ./demo.sh tree        show the whole server in 6 files
+#   ./demo.sh tree        show the whole server in 7 files
+#   ./demo.sh reset       cold cache again after a rehearsal  <-- READ THIS
+#   ./demo.sh repos       list of repos to use on stage
 #
 # Everything prints big and slow enough to read from the back of a room.
 
@@ -119,11 +121,48 @@ build-all)
   printf '  %sCloudflare is smaller than Node — unenv dropped the Node compat layer.%s\n' "$DIM" "$OFF"
   ;;
 
+reset)
+  say "Getting a cold cache back"
+  rm -rf .data/kv .nitro 2>/dev/null
+  printf '  %s✓%s cleared .data/kv (the visits counter)\n\n' "$GREEN$BOLD" "$OFF"
+  printf '  %sThe star cache is IN MEMORY — clearing files does not touch it.%s\n' "$DIM" "$OFF"
+  printf '  %sTwo ways to get a cold call back:%s\n\n' "$DIM" "$OFF"
+  printf '  %s1. BEST — query a repo you have not used yet.%s\n' "$BOLD" "$OFF"
+  printf '     The cache key is the repo name (getKey: repo), so a new repo\n'
+  printf '     is always a real network call. Reliable 270-360 ms.\n'
+  printf '     Run: %s./demo.sh repos%s to see the list.\n\n' "$CYAN" "$OFF"
+  printf '  %s2. FULL RESET — restart the dev server (Ctrl+C, then npm run dev).%s\n' "$BOLD" "$OFF"
+  printf '     Clears everything, but the first call is often only ~100 ms\n'
+  printf '     because the TCP/DNS connection to GitHub is still warm.\n\n'
+  printf '  %s✗ Waiting for maxAge to expire does NOT work.%s\n' "$RED" "$OFF"
+  printf '    staleMaxAge is -1, so a stale value is served instantly and\n'
+  printf '    revalidated in the background — it still reads "cache".\n'
+  ;;
+
+repos)
+  # Deliberately does NOT probe the server: any request warms the cache,
+  # so a "which ones are cold?" checker would burn the very repos it reports.
+  say "Repos to use on stage"
+  printf '  %sRestarting the dev server makes ALL of these cold again.%s\n' "$DIM" "$OFF"
+  printf '  %sSo: restart before you present, then any of them works.%s\n\n' "$DIM" "$OFF"
+  i=1
+  for r in nitrojs/nitro vuejs/core sveltejs/svelte withastro/astro \
+           honojs/hono unjs/h3 facebook/react denoland/deno oven-sh/bun \
+           rust-lang/rust torvalds/linux microsoft/TypeScript; do
+    printf "  %s%2d.%s %s\n" "$ORANGE" "$i" "$OFF" "$r"
+    i=$((i + 1))
+  done
+  echo
+  printf '  %sRehearsing without restarting? Just work down the list — each%s\n' "$DIM" "$OFF"
+  printf '  %sunused repo is a genuine ~300 ms call (the key is the repo name).%s\n' "$DIM" "$OFF"
+  printf '\n  %sKeep nitrojs/nitro for the real talk — it is the on-topic one.%s\n' "$BOLD" "$OFF"
+  ;;
+
 all)
   "$0" tree; "$0" cache; "$0" time; "$0" auth
   ;;
 
 *)
-  printf '%s\n' "usage: ./demo.sh {dev|tree|cache|time|auth|build-all|all}"
+  printf '%s\n' "usage: ./demo.sh {dev|tree|cache|time|auth|build-all|reset|repos|all}"
   ;;
 esac
