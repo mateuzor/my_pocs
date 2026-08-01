@@ -123,11 +123,37 @@ Aponta pros tamanhos:
 
 ---
 
+## 🔴 Cache quente — a armadilha nº 1 do ensaio
+
+**Se você ensaiar o beat 1 e repetir, a segunda vez não funciona.** O cache fica
+quente e a primeira chamada já volta `0.4 ms / cache` — o efeito que você quer
+mostrar simplesmente não acontece. Isso vai te pegar no primeiro ensaio.
+
+Três fatos, todos testados:
+
+| | |
+|---|---|
+| ✅ **Melhor solução** | Use um **repo que você ainda não consultou**. A chave do cache é o nome do repo (`getKey: repo`), então repo novo = chamada de rede real. Confiável, **270–360 ms**. |
+| ✅ **Reset total** | **Reinicie o dev server** (Ctrl+C, `npm run dev`). O cache é em memória, então limpa tudo. Mas a 1ª chamada costuma dar só **~100 ms**, porque a conexão TCP/DNS com o GitHub continua quente. |
+| ❌ **Não funciona** | Esperar o `maxAge` de 60s expirar. Com `staleMaxAge: -1` o valor velho volta **instantâneo** e revalida atrás — continua lendo `cache`. |
+
+```bash
+./demo.sh reset     # explica tudo isso no terminal
+./demo.sh repos     # lista de 12 repos pra usar
+```
+
+**Na hora da apresentação:** reinicie o dev server pouco antes de subir. Isso
+deixa todos os repos frios de novo, e você usa `nitrojs/nitro` — que é o repo
+on-topic. Guarde ele só pra valer; nos ensaios, desça a lista.
+
+---
+
 ## Como treinar
 
 1. Roda `./demo.sh all` uma vez, só pra ver tudo funcionando ponta a ponta.
 2. Faz a demo inteira **com cronômetro**, sem os slides. Alvo: 110s.
    Passou de 130s? Corta o beat opcional e faz o beat 0 em 5s.
+   **Entre repetições, troque o repo** — senão o beat 1 não funciona.
 3. Repete **com o Presenter View aberto** — o resumo deste roteiro está nas
    speaker notes do slide 6, então na hora você não precisa trocar de janela.
 4. Ensaia a **troca de janelas**: editor → browser → editor → terminal.

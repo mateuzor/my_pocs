@@ -97,6 +97,12 @@ or beat 4 (the presets).
   → Fall back to `./demo.sh time` and `./demo.sh build-all`. Both are fully
   offline. Read ≈300 ms → 0.4 ms off slide 4.
 - **Test the venue wifi first** with `./demo.sh cache`. Green rows = beat 1 is safe.
+- **Warm cache after rehearsing?** Restart the dev server right before you go on —
+  the star cache is in memory, so that makes every repo cold again. Mid-rehearsal,
+  just query a repo you haven't used (the cache key is the repo name).
+  `./demo.sh reset` explains it; `./demo.sh repos` lists 12 to work through.
+  Waiting for `maxAge` to expire does **not** work — `staleMaxAge: -1` serves the
+  stale value instantly and still reads `cache`.
 
 ---
 
