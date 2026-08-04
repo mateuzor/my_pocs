@@ -8,3 +8,4 @@ export const authRouter = Router();
 
 // asyncHandler é obrigatório: o controller é async (bcrypt).
 authRouter.post('/register', asyncHandler(authController.register));
+authRouter.post('/login', asyncHandler(authController.login));

@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { authService } from '../services/auth.service.js';
-import { registerSchema } from '../schemas.js';
+import { registerSchema, loginSchema } from '../schemas.js';
 
 // Aula 8 — Controller de autenticação
 //
@@ -13,5 +13,11 @@ export const authController = {
     const input = registerSchema.parse(req.body);
     const user = await authService.register(input.email, input.password);
     res.status(201).json(user);
+  },
+
+  async login(req: Request, res: Response) {
+    const input = loginSchema.parse(req.body);
+    const { token, user } = await authService.login(input.email, input.password);
+    res.json({ token, user });
   },
 };

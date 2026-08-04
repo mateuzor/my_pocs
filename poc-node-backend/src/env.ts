@@ -13,6 +13,13 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
   DATABASE_URL: z.string().default('./data/tasks.db'),
+
+  // Aula 8 — segredo de assinatura do JWT.
+  // Sem default de propósito em produção: se faltar, a app não sobe. Um
+  // default tipo 'secret' é pior que erro — vira segredo real sem ninguém ver.
+  JWT_SECRET: z.string().min(16, 'JWT_SECRET precisa de no mínimo 16 chars')
+    .default('dev-only-secret-nao-use-em-prod'),
+  JWT_EXPIRES_IN: z.string().default('15m'),
 });
 
 const parsed = envSchema.safeParse(process.env);

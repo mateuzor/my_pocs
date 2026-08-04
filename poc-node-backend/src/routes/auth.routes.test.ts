@@ -77,3 +77,58 @@ describe('POST /auth/register', () => {
     expect(res.status).toBe(400);
   });
 });
+
+describe('POST /auth/login', () => {
+  const credentials = { email: 'mateus@example.com', password: 'senha-forte-123' };
+
+  async function registerUser() {
+    await request(app).post('/auth/register').send(credentials);
+  }
+
+  it('devolve token e user quando as credenciais batem', async () => {
+    await registerUser();
+
+    const res = await request(app).post('/auth/login').send(credentials);
+
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeTypeOf('string');
+    expect(res.body.user).toMatchObject({ id: 1, email: credentials.email });
+    expect(res.body.user).not.toHaveProperty('passwordHash');
+  });
+
+  it('emite um JWT com sub e email no payload', async () => {
+    await registerUser();
+    const res = await request(app).post('/auth/login').send(credentials);
+
+    // Um JWT é header.payload.signature em base64url — dá pra ler o payload
+    // sem o segredo. É exatamente por isso que não se põe dado sensível nele.
+    const [, payloadB64] = res.body.token.split('.');
+    const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString());
+
+    expect(payload.sub).toBe(1);
+    expect(payload.email).toBe(credentials.email);
+    expect(payload.exp).toBeGreaterThan(payload.iat);
+  });
+
+  // Os dois testes abaixo provam que a resposta é IDÊNTICA nos dois casos —
+  // é isso que impede alguém de descobrir quais emails existem.
+  it('senha errada devolve 401 genérico', async () => {
+    await registerUser();
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send({ ...credentials, password: 'senha-errada' });
+
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ error: 'INVALID_CREDENTIALS', message: 'Credenciais inválidas' });
+  });
+
+  it('email inexistente devolve o MESMO 401 genérico', async () => {
+    const res = await request(app)
+      .post('/auth/login')
+      .send({ email: 'ninguem@example.com', password: 'qualquer-senha' });
+
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ error: 'INVALID_CREDENTIALS', message: 'Credenciais inválidas' });
+  });
+});

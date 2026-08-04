@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { usersRepository, type User } from '../repositories/users.repository.js';
 import { AppError } from '../errors.js';
+import { env } from '../env.js';
 
 // Aula 8 — Autenticação: parte 1, senhas
 //
@@ -23,6 +25,23 @@ export class EmailAlreadyExistsError extends AppError {
   }
 }
 
+export class InvalidCredentialsError extends AppError {
+  constructor() {
+    // MENSAGEM GENÉRICA de propósito. Se respondesse "email não existe" vs
+    // "senha errada", a API viraria um oráculo pra descobrir quais emails
+    // estão cadastrados (user enumeration).
+    super('Credenciais inválidas', 401, 'INVALID_CREDENTIALS');
+  }
+}
+
+// O que vai DENTRO do token. Regra: só identificação, nunca dado sensível —
+// o payload de um JWT é apenas base64, qualquer um lê. Assinatura garante
+// que não foi ALTERADO, não que é secreto.
+export interface TokenPayload {
+  sub: number;   // "subject" — id do usuário, nome padrão pela RFC 7519
+  email: string;
+}
+
 export const authService = {
   async register(email: string, password: string): Promise<User> {
     // Checagem amigável — dá uma mensagem melhor que "constraint violation".
@@ -36,5 +55,31 @@ export const authService = {
     // O repositório devolve `User`, que não tem passwordHash — então é
     // impossível vazar o hash na response mesmo se alguém quiser.
     return usersRepository.insert(email, passwordHash);
+  },
+
+  async login(email: string, password: string): Promise<{ token: string; user: User }> {
+    const found = usersRepository.findByEmailWithPassword(email);
+
+    // Mesmo erro nos dois casos (usuário inexistente / senha errada).
+    // bcrypt.compare re-hasheia a senha com o salt embutido no hash guardado
+    // e compara — nunca "descriptografa" nada.
+    if (!found || !(await bcrypt.compare(password, found.passwordHash))) {
+      throw new InvalidCredentialsError();
+    }
+
+    const payload: TokenPayload = { sub: found.id, email: found.email };
+    const token = jwt.sign(payload, env.JWT_SECRET, {
+      expiresIn: env.JWT_EXPIRES_IN as jwt.SignOptions['expiresIn'],
+    });
+
+    // Devolve o user SEM o hash: destructuring descarta passwordHash
+    const { passwordHash: _discard, ...user } = found;
+    return { token, user };
+  },
+
+  verifyToken(token: string): TokenPayload {
+    // jwt.verify JOGA se a assinatura não bate ou se expirou.
+    // Quem traduz isso em 401 é o middleware da próxima etapa.
+    return jwt.verify(token, env.JWT_SECRET) as TokenPayload;
   },
 };
