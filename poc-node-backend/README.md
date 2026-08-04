@@ -10,6 +10,7 @@ Estudos de backend com Node.js — seguindo a estrutura de um curso do zero.
 4. **Aula 4** — Zod para validação, erros tipados, error middleware global, `dotenv`
 5. **Aula 5** — Refactor MVC: `routes/` → `controllers/` → `services/` + middlewares em arquivos próprios
 6. **Aula 6** — Persistência SQLite (`better-sqlite3`) + repository pattern
+7. **Aula 7** — Testes: Vitest (unit com repo mockado) + supertest (integração) + caminhos de erro
 
 ## Estrutura final
 
@@ -44,6 +45,7 @@ npm install
 cp .env.example .env
 npm run db:migrate    # cria a tabela e insere seed
 npm run dev           # Express com hot reload (via tsx watch)
+npm test              # suíte completa (Vitest + supertest, banco em memória)
 
 # Ou o servidor HTTP nativo das aulas 1-2:
 npm run dev:native
