@@ -14,6 +14,13 @@ db.exec(`
     done INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // ISOLAMENTO: cada teste começa com a tabela vazia e o autoincrement zerado.
@@ -21,5 +28,6 @@ db.exec(`
 // o clássico teste que passa sozinho e falha na suíte inteira.
 beforeEach(() => {
   db.exec('DELETE FROM tasks');
-  db.exec("DELETE FROM sqlite_sequence WHERE name = 'tasks'");
+  db.exec('DELETE FROM users');
+  db.exec("DELETE FROM sqlite_sequence WHERE name IN ('tasks', 'users')");
 });

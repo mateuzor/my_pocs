@@ -1,5 +1,6 @@
 import express, { type Express } from 'express';
 import { tasksRouter } from './routes/tasks.routes.js';
+import { authRouter } from './routes/auth.routes.js';
 import { requestLogger } from './middlewares/logger.js';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 
@@ -24,6 +25,7 @@ export function createApp(): Express {
   app.use(requestLogger);
 
   // Routers montados por recurso
+  app.use('/auth', authRouter);
   app.use('/tasks', tasksRouter);
 
   // 404 + error handler ficam por último

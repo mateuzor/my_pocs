@@ -19,6 +19,16 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_tasks_done ON tasks(done);
+
+  -- Aula 8 — usuários. UNIQUE no email é a garantia REAL de unicidade:
+  -- checar "já existe?" no service é uma corrida (dois requests simultâneos
+  -- passam os dois). O banco é quem arbitra de verdade.
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,           -- NUNCA a senha em claro
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // Seed inicial só se tabela estiver vazia
