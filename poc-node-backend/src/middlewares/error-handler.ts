@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { AppError, NotFoundError, ValidationError } from '../errors.js';
 import { env } from '../env.js';
+import { logger } from '../logger.js';
 
 // Aula 5 — Handler de erro em arquivo próprio
 // Continua com 4 args (err, req, res, next) para o Express reconhecer.
@@ -23,7 +24,9 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
     });
   }
 
-  console.error('Erro inesperado:', err);
+  // Aula 9 — erro inesperado vai pro logger COM o request id, não pro
+  // console. É o que permite achar depois qual request causou o 500.
+  logger.error({ err, reqId: (_req as { id?: string }).id }, 'Erro inesperado');
   res.status(500).json({
     error: 'INTERNAL_SERVER_ERROR',
     message: env.NODE_ENV === 'production' ? 'Algo deu errado' : String(err),
