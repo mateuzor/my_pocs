@@ -11,6 +11,7 @@ Estudos de backend com Node.js — seguindo a estrutura de um curso do zero.
 5. **Aula 5** — Refactor MVC: `routes/` → `controllers/` → `services/` + middlewares em arquivos próprios
 6. **Aula 6** — Persistência SQLite (`better-sqlite3`) + repository pattern
 7. **Aula 7** — Testes: Vitest (unit com repo mockado) + supertest (integração) + caminhos de erro
+8. **Aula 8** — Autenticação: bcrypt, JWT, middleware `authenticate`, tasks com dono (isolamento entre usuários)
 
 ## Estrutura final
 
@@ -51,13 +52,35 @@ npm test              # suíte completa (Vitest + supertest, banco em memória)
 npm run dev:native
 ```
 
+> ⚠️ **Vindo da aula 7?** A aula 8 adicionou `tasks.user_id NOT NULL`, e
+> `CREATE TABLE IF NOT EXISTS` **não altera tabela que já existe**. Apague o
+> banco antes: `rm -f data/tasks.db*` e rode `npm run db:migrate` de novo.
+> (É exatamente a dor que Prisma/Drizzle/Knex resolvem com migrations versionadas.)
+
 ## Endpoints
+
+Autenticação — públicos:
+
+- `POST   /auth/register` → cria usuário — body: `{ "email": "...", "password": "min 8 chars" }`
+- `POST   /auth/login`    → devolve `{ token, user }`
+
+Tasks — **exigem** `Authorization: Bearer <token>`, e cada usuário só enxerga as suas:
 
 - `GET    /tasks`         → lista
 - `GET    /tasks/:id`     → busca por id
 - `POST   /tasks`         → cria — body: `{ "title": "..." }`
 - `PUT    /tasks/:id`     → atualiza — body: `{ "title"?, "done"? }`
 - `DELETE /tasks/:id`     → remove
+
+Seed cria `mateus@example.com` / `senha-forte-123`.
+
+```bash
+TOKEN=$(curl -s -X POST localhost:3000/auth/login \
+  -H 'content-type: application/json' \
+  -d '{"email":"mateus@example.com","password":"senha-forte-123"}' | jq -r .token)
+
+curl localhost:3000/tasks -H "Authorization: Bearer $TOKEN"
+```
 
 Erros seguem o formato padrão:
 ```json

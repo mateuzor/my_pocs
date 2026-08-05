@@ -13,34 +13,39 @@ import { createTaskSchema, updateTaskSchema } from '../schemas.js';
 // NÃO tem regra de negócio. Não sabe onde os dados moram.
 // Cada função é fina e vira teste unitário trivial.
 
+// Aula 8 — o id do usuário vem do TOKEN (req.user), nunca do body ou da query.
+// Se viesse do cliente, qualquer um mandaria userId=1 e leria as tasks alheias.
+// O `!` é seguro porque o router só monta estes controllers atrás do
+// middleware `authenticate`, que garante req.user preenchido.
+
 export const tasksController = {
-  list(_req: Request, res: Response) {
-    const items = tasksService.list();
+  list(req: Request, res: Response) {
+    const items = tasksService.list(req.user!.sub);
     res.json(items);
   },
 
   getById(req: Request, res: Response) {
     const id = Number(req.params.id);
-    const task = tasksService.findById(id);
+    const task = tasksService.findById(id, req.user!.sub);
     res.json(task);
   },
 
   create(req: Request, res: Response) {
     const input = createTaskSchema.parse(req.body);
-    const task = tasksService.create(input);
+    const task = tasksService.create(input, req.user!.sub);
     res.status(201).json(task);
   },
 
   update(req: Request, res: Response) {
     const id = Number(req.params.id);
     const input = updateTaskSchema.parse(req.body);
-    const task = tasksService.update(id, input);
+    const task = tasksService.update(id, input, req.user!.sub);
     res.json(task);
   },
 
   remove(req: Request, res: Response) {
     const id = Number(req.params.id);
-    const removed = tasksService.remove(id);
+    const removed = tasksService.remove(id, req.user!.sub);
     res.json(removed);
   },
 };

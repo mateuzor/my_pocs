@@ -12,62 +12,67 @@ import type { Task } from '../services/tasks.service.js';
 // PADRÃO importante do better-sqlite3: statements sempre PREPARADOS
 // (`db.prepare(...)`) — o SQLite compila o SQL uma vez e reutiliza. Isso
 // é performance E segurança (parâmetros vão como bind, não interpolados).
+//
+// Aula 8 — TODA query agora leva `user_id` no WHERE.
+//
+// Este é o ponto mais importante da aula: o escopo por usuário mora no SQL,
+// não numa checagem depois. Se fosse `findById(id)` seguido de
+// `if (task.userId !== user.sub) throw`, bastaria alguém esquecer o if numa
+// rota nova pra virar IDOR — acessar recurso alheio só chutando o id.
+// Do jeito que está, pedir a task de outro usuário simplesmente não retorna nada.
 
-// Linha crua do banco — SQLite não tem boolean, usa 0/1
 interface TaskRow {
   id: number;
   title: string;
   done: number;
+  user_id: number;
   created_at: string;
 }
 
-// Converte a linha em entidade do domínio (com boolean e camelCase)
 function rowToTask(row: TaskRow): Task {
   return {
     id: row.id,
     title: row.title,
     done: row.done === 1,
+    userId: row.user_id,
     createdAt: row.created_at,
   };
 }
 
-// Prepara os statements UMA VEZ na inicialização — reuso em toda call
 const statements = {
-  findAll: db.prepare('SELECT * FROM tasks ORDER BY id'),
-  findById: db.prepare('SELECT * FROM tasks WHERE id = ?'),
-  insert: db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)'),
-  updateTitle: db.prepare('UPDATE tasks SET title = ? WHERE id = ?'),
-  updateDone: db.prepare('UPDATE tasks SET done = ? WHERE id = ?'),
-  delete: db.prepare('DELETE FROM tasks WHERE id = ?'),
+  findAll: db.prepare('SELECT * FROM tasks WHERE user_id = ? ORDER BY id'),
+  findById: db.prepare('SELECT * FROM tasks WHERE id = ? AND user_id = ?'),
+  insert: db.prepare('INSERT INTO tasks (title, done, user_id) VALUES (?, ?, ?)'),
+  updateTitle: db.prepare('UPDATE tasks SET title = ? WHERE id = ? AND user_id = ?'),
+  updateDone: db.prepare('UPDATE tasks SET done = ? WHERE id = ? AND user_id = ?'),
+  delete: db.prepare('DELETE FROM tasks WHERE id = ? AND user_id = ?'),
 };
 
 export const tasksRepository = {
-  findAll(): Task[] {
-    // .all() retorna todas as linhas — tipado com o generic
-    return statements.findAll.all<TaskRow>().map(rowToTask);
+  findAll(userId: number): Task[] {
+    return statements.findAll.all(userId).map((r) => rowToTask(r as TaskRow));
   },
 
-  findById(id: number): Task | null {
-    const row = statements.findById.get(id) as TaskRow | undefined;
+  findById(id: number, userId: number): Task | null {
+    const row = statements.findById.get(id, userId) as TaskRow | undefined;
     return row ? rowToTask(row) : null;
   },
 
-  insert(title: string): Task {
-    // .run() executa e retorna { changes, lastInsertRowid }
-    const result = statements.insert.run(title, 0);
-    return this.findById(Number(result.lastInsertRowid))!;
+  insert(title: string, userId: number): Task {
+    const result = statements.insert.run(title, 0, userId);
+    return this.findById(Number(result.lastInsertRowid), userId)!;
   },
 
-  update(id: number, patch: { title?: string; done?: boolean }): Task | null {
-    if (patch.title !== undefined) statements.updateTitle.run(patch.title, id);
-    if (patch.done !== undefined) statements.updateDone.run(patch.done ? 1 : 0, id);
-    return this.findById(id);
+  update(id: number, userId: number, patch: { title?: string; done?: boolean }): Task | null {
+    if (patch.title !== undefined) statements.updateTitle.run(patch.title, id, userId);
+    if (patch.done !== undefined) statements.updateDone.run(patch.done ? 1 : 0, id, userId);
+    return this.findById(id, userId);
   },
 
-  delete(id: number): Task | null {
-    const task = this.findById(id);
+  delete(id: number, userId: number): Task | null {
+    const task = this.findById(id, userId);
     if (!task) return null;
-    statements.delete.run(id);
+    statements.delete.run(id, userId);
     return task;
   },
 };

@@ -24,10 +24,13 @@ vi.mock('../repositories/tasks.repository.js', () => ({
 
 const repo = vi.mocked(tasksRepository);
 
+const USER_ID = 7;
+
 const fakeTask = {
   id: 1,
   title: 'Estudar Node',
   done: false,
+  userId: USER_ID,
   createdAt: '2026-08-03 07:00:00',
 };
 
@@ -39,8 +42,8 @@ describe('tasksService.list', () => {
   it('repassa o que o repositório devolve', () => {
     repo.findAll.mockReturnValue([fakeTask]);
 
-    expect(tasksService.list()).toEqual([fakeTask]);
-    expect(repo.findAll).toHaveBeenCalledOnce();
+    expect(tasksService.list(USER_ID)).toEqual([fakeTask]);
+    expect(repo.findAll).toHaveBeenCalledWith(USER_ID);
   });
 });
 
@@ -48,7 +51,7 @@ describe('tasksService.findById', () => {
   it('devolve a task quando existe', () => {
     repo.findById.mockReturnValue(fakeTask);
 
-    expect(tasksService.findById(1)).toEqual(fakeTask);
+    expect(tasksService.findById(1, USER_ID)).toEqual(fakeTask);
   });
 
   // A regra de negócio que estamos provando: quem transforma "não achei"
@@ -56,7 +59,7 @@ describe('tasksService.findById', () => {
   it('lança NotFoundError quando o repositório devolve null', () => {
     repo.findById.mockReturnValue(null);
 
-    expect(() => tasksService.findById(99)).toThrow(NotFoundError);
+    expect(() => tasksService.findById(99, USER_ID)).toThrow(NotFoundError);
   });
 });
 
@@ -64,10 +67,10 @@ describe('tasksService.create', () => {
   it('passa só o title adiante', () => {
     repo.insert.mockReturnValue(fakeTask);
 
-    const created = tasksService.create({ title: 'Estudar Node' });
+    const created = tasksService.create({ title: 'Estudar Node' }, USER_ID);
 
     expect(created).toEqual(fakeTask);
-    expect(repo.insert).toHaveBeenCalledWith('Estudar Node');
+    expect(repo.insert).toHaveBeenCalledWith('Estudar Node', USER_ID);
   });
 });
 
@@ -76,7 +79,7 @@ describe('tasksService.update', () => {
     repo.findById.mockReturnValue(fakeTask);
     repo.update.mockReturnValue({ ...fakeTask, done: true });
 
-    const updated = tasksService.update(1, { done: true });
+    const updated = tasksService.update(1, { done: true }, USER_ID);
 
     expect(updated.done).toBe(true);
     // Prova a ordem: findById (guarda de 404) roda antes do update
@@ -86,7 +89,7 @@ describe('tasksService.update', () => {
   it('lança NotFoundError sem nem chamar o update', () => {
     repo.findById.mockReturnValue(null);
 
-    expect(() => tasksService.update(99, { done: true })).toThrow(NotFoundError);
+    expect(() => tasksService.update(99, { done: true }, USER_ID)).toThrow(NotFoundError);
     expect(repo.update).not.toHaveBeenCalled();
   });
 });
@@ -95,6 +98,6 @@ describe('tasksService.remove', () => {
   it('lança NotFoundError quando o delete não encontrou nada', () => {
     repo.delete.mockReturnValue(null);
 
-    expect(() => tasksService.remove(99)).toThrow(NotFoundError);
+    expect(() => tasksService.remove(99, USER_ID)).toThrow(NotFoundError);
   });
 });

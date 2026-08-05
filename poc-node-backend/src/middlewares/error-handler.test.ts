@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../app.js';
+import { authFor } from '../test/helpers.js';
 
 // Aula 7 — Testando os CAMINHOS DE ERRO
 //
@@ -13,9 +14,18 @@ import { createApp } from '../app.js';
 
 const app = createApp();
 
+// Aula 8 — as rotas de /tasks passaram a exigir token, então os testes de
+// validação precisam autenticar antes. O 401 vem ANTES do 400: sem token,
+// a request nem chega no Zod.
+let auth: Awaited<ReturnType<typeof authFor>>;
+
+beforeEach(async () => {
+  auth = await authFor(app);
+});
+
 describe('validação (Zod → 400)', () => {
   it('rejeita title vazio com VALIDATION_ERROR e lista os issues', async () => {
-    const res = await request(app).post('/tasks').send({ title: '' });
+    const res = await request(app).post('/tasks').set('Authorization', auth.header).send({ title: '' });
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe('VALIDATION_ERROR');
@@ -24,14 +34,14 @@ describe('validação (Zod → 400)', () => {
   });
 
   it('rejeita body sem title', async () => {
-    const res = await request(app).post('/tasks').send({});
+    const res = await request(app).post('/tasks').set('Authorization', auth.header).send({});
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe('VALIDATION_ERROR');
   });
 
   it('rejeita done com tipo errado no update', async () => {
-    const res = await request(app).put('/tasks/1').send({ done: 'sim' });
+    const res = await request(app).put('/tasks/1').set('Authorization', auth.header).send({ done: 'sim' });
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe('VALIDATION_ERROR');
@@ -40,7 +50,7 @@ describe('validação (Zod → 400)', () => {
 
 describe('recurso inexistente (NotFoundError → 404)', () => {
   it('GET /tasks/:id de id que não existe', async () => {
-    const res = await request(app).get('/tasks/999');
+    const res = await request(app).get('/tasks/999').set('Authorization', auth.header);
 
     expect(res.status).toBe(404);
     expect(res.body).toEqual({
@@ -50,7 +60,7 @@ describe('recurso inexistente (NotFoundError → 404)', () => {
   });
 
   it('DELETE de id que não existe', async () => {
-    const res = await request(app).delete('/tasks/999');
+    const res = await request(app).delete('/tasks/999').set('Authorization', auth.header);
 
     expect(res.status).toBe(404);
     expect(res.body.error).toBe('NOT_FOUND');
@@ -59,7 +69,7 @@ describe('recurso inexistente (NotFoundError → 404)', () => {
   // A validação de payload roda ANTES do 404 — por isso um PUT inválido
   // num id inexistente devolve 400, não 404. Ordem importa e está testada.
   it('PUT inválido em id inexistente devolve 400, não 404', async () => {
-    const res = await request(app).put('/tasks/999').send({ done: 'sim' });
+    const res = await request(app).put('/tasks/999').set('Authorization', auth.header).send({ done: 'sim' });
 
     expect(res.status).toBe(400);
   });

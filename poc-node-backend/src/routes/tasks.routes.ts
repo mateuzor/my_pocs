@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { tasksController } from '../controllers/tasks.controller.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 // Aula 5 — Camada de ROTAS
 //
@@ -10,6 +11,10 @@ import { tasksController } from '../controllers/tasks.controller.js';
 // vão ser prefixadas em app.use('/tasks', tasksRouter).
 
 export const tasksRouter = Router();
+
+// Aula 8 — protege TODAS as rotas deste router de uma vez.
+// Rota nova adicionada abaixo já nasce autenticada — não dá pra esquecer.
+tasksRouter.use(authenticate);
 
 tasksRouter.get('/', tasksController.list);
 tasksRouter.get('/:id', tasksController.getById);
