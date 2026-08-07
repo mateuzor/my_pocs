@@ -20,6 +20,11 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, 'JWT_SECRET precisa de no mínimo 16 chars')
     .default('dev-only-secret-nao-use-em-prod'),
   JWT_EXPIRES_IN: z.string().default('15m'),
+
+  // Aula 11 — refresh token dura MUITO mais (dias vs minutos). O access
+  // token sai curto pra limitar dano se vazar; o refresh compensa deixando
+  // o usuário logado por dias sem digitar senha.
+  REFRESH_TOKEN_EXPIRES_DAYS: z.coerce.number().int().positive().default(7),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -37,3 +37,9 @@ export const loginSchema = z.object({
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+
+// Aula 11 — Schema do refresh. Recebe só o refresh token no body.
+export const refreshSchema = z.object({
+  refreshToken: z.string().min(1, 'refreshToken obrigatório'),
+});
+export type RefreshInput = z.infer<typeof refreshSchema>;

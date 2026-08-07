@@ -36,6 +36,22 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_tasks_done ON tasks(done);
   -- Toda query de task agora filtra por user_id — sem índice, full scan.
   CREATE INDEX IF NOT EXISTS idx_tasks_user ON tasks(user_id);
+
+  -- Aula 11 — refresh tokens.
+  -- Guardamos SHA-256 do token, não o token em si. Se o banco vazar, os
+  -- tokens não podem ser reusados (mesma lógica de guardar hash de senha).
+  -- revoked_at != NULL = token queimado (logout ou rotação).
+  CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash TEXT NOT NULL UNIQUE,
+    expires_at TEXT NOT NULL,
+    revoked_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_refresh_hash ON refresh_tokens(token_hash);
+  CREATE INDEX IF NOT EXISTS idx_refresh_user ON refresh_tokens(user_id);
 `);
 
 // Seed inicial só se não houver usuário. Agora o seed precisa criar um dono
