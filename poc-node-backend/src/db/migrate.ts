@@ -1,61 +1,36 @@
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import bcrypt from 'bcryptjs';
 import { db } from './connection.js';
 
-// Aula 6 — Migration MANUAL (sem lib de migração)
+// Aula 12 — Migration com Drizzle (versionada)
 //
-// Antes de usar Prisma/Drizzle/Knex, entender o que uma migration é:
-// só um SQL que garante a estrutura do banco. `CREATE TABLE IF NOT EXISTS`
-// é idempotente — dá pra rodar quantas vezes quiser sem quebrar.
+// A grande mudança em relação à aula 6:
+//   ANTES  → `CREATE TABLE IF NOT EXISTS` (idempotente, mas ALTERAR era wipe)
+//   AGORA  → `migrate()` aplica arquivos SQL versionados de ./drizzle/,
+//            rastreando o que já rodou numa tabela __drizzle_migrations.
 //
-// Chame com: `npm run db:migrate` (definido no package.json).
+// Fluxo de trabalho:
+//   1. Mexo em src/db/schema.ts
+//   2. `npm run db:generate` — drizzle-kit compara com o snapshot anterior
+//      e cria drizzle/0001_algum_nome.sql (só o diff)
+//   3. `npm run db:migrate` — aplica os arquivos pendentes
+//   4. Commito o schema TS + o SQL gerado + os metadados
 
 console.log(`Rodando migrations em ${db.name}...`);
 
-// ORDEM IMPORTA: `users` primeiro, porque `tasks.user_id` referencia ela.
-db.exec(`
-  -- Aula 8 — usuários. UNIQUE no email é a garantia REAL de unicidade:
-  -- checar "já existe?" no service é uma corrida (dois requests simultâneos
-  -- passam os dois). O banco é quem arbitra de verdade.
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,               -- NUNCA a senha em claro
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+// drizzle() envolve a conexão better-sqlite3. Aqui só usamos pra migrator;
+// as repositories continuam com SQL cru (não reescrevo tudo).
+const drizzleDb = drizzle(db);
 
-  CREATE TABLE IF NOT EXISTS tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    done INTEGER NOT NULL DEFAULT 0,           -- SQLite não tem bool, uso 0/1
-    -- Aula 8 — dono da task. ON DELETE CASCADE: apagou o usuário, somem as
-    -- tasks dele. Sem isso sobram linhas órfãs apontando pra um id que não existe.
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+migrate(drizzleDb, { migrationsFolder: './drizzle' });
 
-  CREATE INDEX IF NOT EXISTS idx_tasks_done ON tasks(done);
-  -- Toda query de task agora filtra por user_id — sem índice, full scan.
-  CREATE INDEX IF NOT EXISTS idx_tasks_user ON tasks(user_id);
+console.log('Migrations aplicadas.');
 
-  -- Aula 11 — refresh tokens.
-  -- Guardamos SHA-256 do token, não o token em si. Se o banco vazar, os
-  -- tokens não podem ser reusados (mesma lógica de guardar hash de senha).
-  -- revoked_at != NULL = token queimado (logout ou rotação).
-  CREATE TABLE IF NOT EXISTS refresh_tokens (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token_hash TEXT NOT NULL UNIQUE,
-    expires_at TEXT NOT NULL,
-    revoked_at TEXT,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
-
-  CREATE INDEX IF NOT EXISTS idx_refresh_hash ON refresh_tokens(token_hash);
-  CREATE INDEX IF NOT EXISTS idx_refresh_user ON refresh_tokens(user_id);
-`);
-
-// Seed inicial só se não houver usuário. Agora o seed precisa criar um dono
-// antes das tasks, já que user_id é NOT NULL.
+// -------------------------------------------------------------------
+// SEED — só se o banco estiver vazio.
+// Continua usando SQL cru pra manter simetria com o resto da aplicação.
+// -------------------------------------------------------------------
 const users = db.prepare('SELECT COUNT(*) as c FROM users').get() as { c: number };
 if (users.c === 0) {
   const passwordHash = bcrypt.hashSync('senha-forte-123', 10);
@@ -71,5 +46,4 @@ if (users.c === 0) {
   console.log('Seed inserido: 1 usuário (mateus@example.com / senha-forte-123) + 2 tasks.');
 }
 
-console.log('Migrations OK.');
 db.close();
