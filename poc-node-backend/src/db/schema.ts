@@ -47,6 +47,29 @@ export const tasks = sqliteTable(
   })
 );
 
+// Aula 13 — anexos de tasks (arquivos enviados via multipart)
+// Guardamos SÓ os metadados no banco; o arquivo em si mora em disco
+// (ou S3, em prod). Sempre indireto — nunca joga o binário no DB.
+export const attachments = sqliteTable(
+  'attachments',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    taskId: integer('task_id')
+      .notNull()
+      .references(() => tasks.id, { onDelete: 'cascade' }),
+    originalName: text('original_name').notNull(),
+    // Nome gerado ALEATÓRIO no disco. Nunca use o nome que o cliente mandou —
+    // vira path traversal (../../etc/passwd) ou colisão trivial.
+    storedName: text('stored_name').notNull().unique(),
+    mimeType: text('mime_type').notNull(),
+    sizeBytes: integer('size_bytes').notNull(),
+    createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  },
+  (table) => ({
+    taskIdx: index('idx_attachments_task').on(table.taskId),
+  })
+);
+
 // Aula 11 — refresh tokens versionados também
 export const refreshTokens = sqliteTable(
   'refresh_tokens',

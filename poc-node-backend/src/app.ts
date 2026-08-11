@@ -1,6 +1,7 @@
 import express, { type Express } from 'express';
 import { tasksRouter } from './routes/tasks.routes.js';
 import { authRouter } from './routes/auth.routes.js';
+import { attachmentsRouter } from './routes/attachments.routes.js';
 import { requestLogger } from './middlewares/logger.js';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 import { securityHeaders, generalRateLimit, authRateLimit } from './middlewares/security.js';
@@ -32,6 +33,7 @@ export function createApp(): Express {
   // /auth leva o rate limit extra ANTES do router — regra dele fica local.
   app.use('/auth', authRateLimit, authRouter);
   app.use('/tasks', tasksRouter);
+  app.use(attachmentsRouter); // rotas com prefixo próprio (/tasks/:id/attachments e /attachments/:id)
 
   // 404 + error handler ficam por último
   app.use(notFoundHandler);
