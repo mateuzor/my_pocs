@@ -1,17 +1,23 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
+import { HTTPException } from 'hono/http-exception';
+import { zValidator } from '@hono/zod-validator';
+import { createTaskSchema, updateTaskSchema, taskIdParamSchema } from './schemas.js';
 
 // Aula 1 — Hono é um framework HTTP TypeScript-first, ultra-leve (~14kB),
 // portátil (roda em Bun, Deno, Node, Cloudflare Workers, Vercel Edge).
-// A grande sacada: o `Hono` acumula TIPO conforme você encadeia rotas —
-// isso é o que viabiliza o RPC client type-safe (aula 3).
 //
-// Comparação com Express:
-//   - Express usa (req, res, next) mutáveis, resposta imperativa (res.json).
-//   - Hono usa um Context imutável — `c.req.*` pra ler, `return c.json(...)` pra responder.
-//   - Baseado em Web Standards (Request/Response), não em APIs Node-only.
+// Aula 2 — Validação com @hono/zod-validator + tratamento de erros
+//
+// zValidator('json', schema) é um MIDDLEWARE que:
+//   1. valida o body/query/param contra o schema Zod
+//   2. rejeita automaticamente com 400 se inválido
+//   3. TIPA o resultado — dentro do handler, c.req.valid('json') tem o tipo
+//      inferido do schema (sem `as` nem parse manual).
+//
+// A cadeia de tipos é o coração do Hono: cada .use/.get/.post enriquece o
+// tipo do `app`, o que possibilita o RPC client (aula 3).
 
-// Storage em memória (banco vem depois — pra POC de sintaxe basta).
 interface Task {
   id: number;
   title: string;
@@ -23,46 +29,63 @@ const tasks: Task[] = [
 ];
 let nextId = 3;
 
-// Exporto `app` pra o server.ts subir a porta e o cliente RPC (aula 3)
-// derivar o tipo. É o mesmo padrão do createApp do Express.
 export const app = new Hono()
-  // Middleware built-in — loga método/path/status. Substitui pino-http/morgan.
   .use(logger())
 
-  // GET / — resposta simples com c.text()
-  .get('/', (c) => c.text('Hono no ar 🔥'))
+  // ERROR HANDLER GLOBAL — Hono usa .onError, análogo ao middleware de 4 args do Express.
+  // HTTPException é a classe própria do Hono pra erros com status. Qualquer
+  // outro throw vira 500.
+  .onError((err, c) => {
+    if (err instanceof HTTPException) {
+      return c.json({ error: err.message }, err.status);
+    }
+    console.error(err);
+    return c.json({ error: 'INTERNAL_SERVER_ERROR' }, 500);
+  })
 
-  // GET /health — resposta JSON com c.json()
+  .get('/', (c) => c.text('Hono no ar 🔥'))
   .get('/health', (c) => c.json({ status: 'ok', ts: Date.now() }))
 
-  // GET /tasks — path params são tipados via generics do Hono
   .get('/tasks', (c) => c.json(tasks))
 
-  .get('/tasks/:id', (c) => {
-    // c.req.param('id') — em Express seria req.params.id
-    const id = Number(c.req.param('id'));
+  // zValidator('param', schema) valida os path params.
+  // Se `id` não for numérico, retorna 400 antes de chegar no handler.
+  .get('/tasks/:id', zValidator('param', taskIdParamSchema), (c) => {
+    // .valid('param') retorna JÁ tipado — { id: number }
+    const { id } = c.req.valid('param');
     const task = tasks.find((t) => t.id === id);
-    if (!task) return c.json({ error: 'NOT_FOUND' }, 404);
+    if (!task) throw new HTTPException(404, { message: 'Task não encontrada' });
     return c.json(task);
   })
 
-  .post('/tasks', async (c) => {
-    // c.req.json() é async — Web Standards ReadableStream por baixo
-    const body = (await c.req.json()) as { title?: string };
-    if (!body.title?.trim()) return c.json({ error: 'title obrigatório' }, 400);
-
-    const task: Task = { id: nextId++, title: body.title.trim(), done: false };
+  // Múltiplos validators ENCADEIAM — cada um enriquece o tipo do context.
+  .post('/tasks', zValidator('json', createTaskSchema), (c) => {
+    const input = c.req.valid('json'); // { title: string }
+    const task: Task = { id: nextId++, title: input.title, done: false };
     tasks.push(task);
     return c.json(task, 201);
   })
 
-  .delete('/tasks/:id', (c) => {
-    const id = Number(c.req.param('id'));
+  .put(
+    '/tasks/:id',
+    zValidator('param', taskIdParamSchema),
+    zValidator('json', updateTaskSchema),
+    (c) => {
+      const { id } = c.req.valid('param');
+      const input = c.req.valid('json');
+      const task = tasks.find((t) => t.id === id);
+      if (!task) throw new HTTPException(404, { message: 'Task não encontrada' });
+      if (input.title !== undefined) task.title = input.title;
+      if (input.done !== undefined) task.done = input.done;
+      return c.json(task);
+    }
+  )
+
+  .delete('/tasks/:id', zValidator('param', taskIdParamSchema), (c) => {
+    const { id } = c.req.valid('param');
     const idx = tasks.findIndex((t) => t.id === id);
-    if (idx === -1) return c.json({ error: 'NOT_FOUND' }, 404);
+    if (idx === -1) throw new HTTPException(404, { message: 'Task não encontrada' });
     return c.json(tasks.splice(idx, 1)[0]);
   });
 
-// TypeScript já sabe todas as rotas — o TIPO do `app` codifica cada endpoint.
-// Isso é a base do RPC client que vai aparecer na aula 3.
 export type AppType = typeof app;
