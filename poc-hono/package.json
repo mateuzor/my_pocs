@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts"
+    "start": "tsx src/server.ts",
+    "client": "tsx src/client.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
