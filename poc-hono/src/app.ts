@@ -76,7 +76,10 @@ export const app = new Hono()
   // ---------------------------------------------------------------
   // JWT middleware — protege TUDO abaixo (mesmo pattern do .use do Express)
   // ---------------------------------------------------------------
-  .use('/tasks/*', jwt({ secret: JWT_SECRET }))
+  // `alg` became required in newer hono/jwt releases (was optional/defaulted
+  // to HS256 when this POC started) — pin it explicitly so a dependency
+  // bump doesn't silently change the signing algorithm.
+  .use('/tasks/*', jwt({ secret: JWT_SECRET, alg: 'HS256' }))
 
   .get('/tasks', (c) => {
     // Payload validado disponível via c.get('jwtPayload')
