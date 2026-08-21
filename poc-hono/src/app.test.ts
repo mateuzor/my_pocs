@@ -11,10 +11,16 @@ import { app } from './app.js';
 // fetch handler in-process.
 const client = testClient(app);
 
-async function login() {
-  const res = await client.auth.login.$post({
-    json: { username: 'mateus', password: 'senha' },
-  });
+// The rate-limit middleware buckets requests by IP (see middlewares/rate-limit.ts),
+// and it's the SAME app instance across every test in this file. Passing a
+// distinct x-forwarded-for per test group keeps their buckets independent —
+// otherwise an earlier test's login attempts would count towards a later
+// test's rate-limit assertions.
+async function login(ip = '10.0.0.1') {
+  const res = await client.auth.login.$post(
+    { json: { username: 'mateus', password: 'senha' } },
+    { headers: { 'x-forwarded-for': ip } }
+  );
   const { token } = await res.json();
   return token;
 }
@@ -54,5 +60,37 @@ describe('tasks CRUD (authenticated)', () => {
       { headers }
     );
     expect(res.status).toBe(404);
+  });
+});
+
+describe('auth edge cases', () => {
+  it('rejects login with wrong credentials as 401', async () => {
+    const res = await client.auth.login.$post(
+      { json: { username: 'mateus', password: 'wrong' } },
+      { headers: { 'x-forwarded-for': '10.0.0.2' } }
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects /tasks without a token as 401', async () => {
+    const res = await client.tasks.$get(
+      {},
+      { headers: { 'x-forwarded-for': '10.0.0.3' } }
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it('rate-limits repeated failed logins (5 per 15min window)', async () => {
+    // The login route has its OWN stricter rate limit than the general one
+    // (see app.ts). This proves the two middlewares stack independently.
+    const attempt = () =>
+      client.auth.login.$post(
+        { json: { username: 'mateus', password: 'wrong' } },
+        { headers: { 'x-forwarded-for': '10.0.0.9' } }
+      );
+
+    for (let i = 0; i < 5; i++) await attempt();
+    const blocked = await attempt();
+    expect(blocked.status).toBe(429);
   });
 });
