@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
+import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { jwt, sign } from 'hono/jwt';
 import { zValidator } from '@hono/zod-validator';
@@ -34,7 +35,23 @@ const users = new Map<string, { id: number; password: string }>([
   ['mateus', { id: 1, password: 'senha' }],
 ]);
 
+// Lesson 6 — CORS.
+//
+// `cors()` handles the preflight `OPTIONS` request automatically and adds
+// the `Access-Control-Allow-*` headers to every response. Restricting
+// `origin` to an allowlist (instead of `*`) is what lets `credentials: true`
+// (cookies/Authorization headers) work — browsers reject wildcard origin
+// combined with credentials.
+const ALLOWED_ORIGINS = ['http://localhost:5173', 'http://localhost:3000'];
+
 export const app = new Hono()
+  .use(
+    cors({
+      origin: ALLOWED_ORIGINS,
+      allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+      credentials: true,
+    })
+  )
   .use(logger())
   .use(rateLimit({ windowMs: 60_000, limit: 100 })) // rate limit geral
 
