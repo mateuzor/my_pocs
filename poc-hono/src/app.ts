@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
+import { secureHeaders } from 'hono/secure-headers';
 import { HTTPException } from 'hono/http-exception';
 import { jwt, sign } from 'hono/jwt';
 import { zValidator } from '@hono/zod-validator';
@@ -52,6 +53,11 @@ export const app = new Hono()
       credentials: true,
     })
   )
+  // Lesson 6 — secureHeaders() sets a batch of hardening headers in one call
+  // (X-Frame-Options, X-Content-Type-Options, a default Content-Security-Policy,
+  // Referrer-Policy, etc.). Express needs the separate `helmet` package for this;
+  // Hono ships it as a built-in middleware.
+  .use(secureHeaders())
   .use(logger())
   .use(rateLimit({ windowMs: 60_000, limit: 100 })) // rate limit geral
 
