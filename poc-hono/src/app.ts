@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
 import { HTTPException } from 'hono/http-exception';
 import { jwt, sign } from 'hono/jwt';
+import { setCookie, getCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
 import { createTaskSchema, updateTaskSchema, taskIdParamSchema } from './schemas.js';
 import { rateLimit } from './middlewares/rate-limit.js';
@@ -95,6 +96,44 @@ export const app = new Hono()
       return c.json({ token });
     }
   )
+
+  // ---------------------------------------------------------------
+  // Lesson 7 — cookie-based session, as an alternative to the JWT bearer
+  // token above. `setCookie` writes a `Set-Cookie` header; `httpOnly` keeps
+  // it out of reach from JS (mitigates XSS stealing it), `sameSite: 'Lax'`
+  // is the built-in CSRF mitigation for top-level navigations.
+  // ---------------------------------------------------------------
+  .post(
+    '/auth/session-login',
+    zValidator(
+      'json',
+      z.object({ username: z.string().min(1), password: z.string().min(1) })
+    ),
+    (c) => {
+      const { username, password } = c.req.valid('json');
+      const user = users.get(username);
+      if (!user || user.password !== password) {
+        throw new HTTPException(401, { message: 'Credenciais inválidas' });
+      }
+      setCookie(c, 'session_user_id', String(user.id), {
+        httpOnly: true,
+        sameSite: 'Lax',
+        maxAge: 60 * 60, // 1h
+      });
+      return c.json({ ok: true });
+    }
+  )
+
+  .get('/session/me', (c) => {
+    const userId = getCookie(c, 'session_user_id');
+    if (!userId) throw new HTTPException(401, { message: 'Sem sessão ativa' });
+    return c.json({ userId: Number(userId) });
+  })
+
+  .post('/auth/session-logout', (c) => {
+    deleteCookie(c, 'session_user_id');
+    return c.json({ ok: true });
+  })
 
   // ---------------------------------------------------------------
   // JWT middleware — protege TUDO abaixo (mesmo pattern do .use do Express)
