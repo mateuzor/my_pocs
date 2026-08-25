@@ -4,7 +4,7 @@ import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
 import { HTTPException } from 'hono/http-exception';
 import { jwt, sign } from 'hono/jwt';
-import { setCookie, getCookie, deleteCookie } from 'hono/cookie';
+import { setSignedCookie, getSignedCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
 import { createTaskSchema, updateTaskSchema, taskIdParamSchema } from './schemas.js';
 import { rateLimit } from './middlewares/rate-limit.js';
@@ -22,6 +22,7 @@ import { z } from 'zod';
 // `hono-rate-limiter` ou colocaria um Redis/upstash.
 
 const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-only-secret';
+const COOKIE_SECRET = process.env.COOKIE_SECRET ?? 'dev-only-cookie-secret';
 
 interface Task {
   id: number;
@@ -99,9 +100,14 @@ export const app = new Hono()
 
   // ---------------------------------------------------------------
   // Lesson 7 — cookie-based session, as an alternative to the JWT bearer
-  // token above. `setCookie` writes a `Set-Cookie` header; `httpOnly` keeps
-  // it out of reach from JS (mitigates XSS stealing it), `sameSite: 'Lax'`
-  // is the built-in CSRF mitigation for top-level navigations.
+  // token above. `setSignedCookie` appends an HMAC signature to the cookie
+  // value; `getSignedCookie` verifies it and returns `false` if the value
+  // was tampered with client-side. Plain `setCookie` would let a client
+  // hand-edit `session_user_id` to impersonate another user — signing closes
+  // that hole without needing a server-side session store.
+  // `httpOnly` keeps the cookie out of reach from JS (mitigates XSS reading
+  // it), `sameSite: 'Lax'` is the built-in CSRF mitigation for top-level
+  // navigations.
   // ---------------------------------------------------------------
   .post(
     '/auth/session-login',
@@ -109,13 +115,13 @@ export const app = new Hono()
       'json',
       z.object({ username: z.string().min(1), password: z.string().min(1) })
     ),
-    (c) => {
+    async (c) => {
       const { username, password } = c.req.valid('json');
       const user = users.get(username);
       if (!user || user.password !== password) {
         throw new HTTPException(401, { message: 'Credenciais inválidas' });
       }
-      setCookie(c, 'session_user_id', String(user.id), {
+      await setSignedCookie(c, 'session_user_id', String(user.id), COOKIE_SECRET, {
         httpOnly: true,
         sameSite: 'Lax',
         maxAge: 60 * 60, // 1h
@@ -124,9 +130,9 @@ export const app = new Hono()
     }
   )
 
-  .get('/session/me', (c) => {
-    const userId = getCookie(c, 'session_user_id');
-    if (!userId) throw new HTTPException(401, { message: 'Sem sessão ativa' });
+  .get('/session/me', async (c) => {
+    const userId = await getSignedCookie(c, COOKIE_SECRET, 'session_user_id');
+    if (!userId) throw new HTTPException(401, { message: 'Sem sessão ativa ou cookie inválido' });
     return c.json({ userId: Number(userId) });
   })
 
