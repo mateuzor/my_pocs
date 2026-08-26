@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { jwt } from 'hono/jwt';
+import { streamSSE } from 'hono/streaming';
 import { zValidator } from '@hono/zod-validator';
 import { createTaskSchema, updateTaskSchema, taskIdParamSchema } from '../schemas.js';
 import { tasks, createTask } from '../store/tasks-store.js';
@@ -21,6 +22,25 @@ export const tasksRoute = new Hono()
   .get('/', (c) => {
     const payload = c.get('jwtPayload') as { sub: number };
     return c.json(tasks.filter((t) => t.userId === payload.sub));
+  })
+
+  // Lesson 9 — Server-Sent Events.
+  //
+  // `streamSSE` keeps the connection open and lets us `writeSSE()` multiple
+  // times over it — the client (EventSource, or fetch reading the stream)
+  // gets one `event:`/`data:` frame per call, without polling. Declared
+  // BEFORE `/:id` so the static segment `/stream` matches first; Hono's
+  // router already prioritizes static routes over `:id`-style params, but
+  // being explicit about ordering avoids surprises when skimming the file.
+  .get('/stream', (c) => {
+    const payload = c.get('jwtPayload') as { sub: number };
+    return streamSSE(c, async (stream) => {
+      for (let tick = 0; tick < 3; tick++) {
+        const count = tasks.filter((t) => t.userId === payload.sub).length;
+        await stream.writeSSE({ event: 'tick', data: JSON.stringify({ tick, count }), id: String(tick) });
+        await stream.sleep(500);
+      }
+    });
   })
 
   .get('/:id', zValidator('param', taskIdParamSchema), (c) => {
