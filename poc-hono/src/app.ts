@@ -7,6 +7,7 @@ import { sign } from 'hono/jwt';
 import { setSignedCookie, getSignedCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
 import { rateLimit } from './middlewares/rate-limit.js';
+import { requestId, type Env } from './middlewares/request-id.js';
 import { tasksRoute } from './routes/tasks.js';
 import { JWT_SECRET, COOKIE_SECRET } from './config.js';
 import { z } from 'zod';
@@ -36,7 +37,8 @@ const users = new Map<string, { id: number; password: string }>([
 // combined with credentials.
 const ALLOWED_ORIGINS = ['http://localhost:5173', 'http://localhost:3000'];
 
-export const app = new Hono()
+export const app = new Hono<Env>()
+  .use(requestId)
   .use(
     cors({
       origin: ALLOWED_ORIGINS,
@@ -53,13 +55,15 @@ export const app = new Hono()
   .use(rateLimit({ windowMs: 60_000, limit: 100 })) // rate limit geral
 
   .onError((err, c) => {
+    // `c.get('requestId')` is typed as `string` here — no cast, thanks to
+    // the `Env` generic on `new Hono<Env>()` above.
     if (err instanceof HTTPException) return c.json({ error: err.message }, err.status);
-    console.error(err);
+    console.error(`[${c.get('requestId')}]`, err);
     return c.json({ error: 'INTERNAL_SERVER_ERROR' }, 500);
   })
 
   .get('/', (c) => c.text('Hono no ar 🔥'))
-  .get('/health', (c) => c.json({ status: 'ok' }))
+  .get('/health', (c) => c.json({ status: 'ok', requestId: c.get('requestId') }))
 
   // ---------------------------------------------------------------
   // LOGIN — público, sem JWT, com rate limit AGRESSIVO

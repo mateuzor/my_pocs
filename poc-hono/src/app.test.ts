@@ -29,7 +29,9 @@ describe('health', () => {
   it('responds ok on GET /health', async () => {
     const res = await client.health.$get();
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ status: 'ok' });
+    const body = await res.json();
+    expect(body.status).toBe('ok');
+    expect(res.headers.get('X-Request-Id')).not.toBeNull();
   });
 });
 
