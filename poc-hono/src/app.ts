@@ -5,6 +5,7 @@ import { secureHeaders } from 'hono/secure-headers';
 import { HTTPException } from 'hono/http-exception';
 import { sign } from 'hono/jwt';
 import { setSignedCookie, getSignedCookie, deleteCookie } from 'hono/cookie';
+import { stream } from 'hono/streaming';
 import { zValidator } from '@hono/zod-validator';
 import { rateLimit } from './middlewares/rate-limit.js';
 import { requestId, type Env } from './middlewares/request-id.js';
@@ -64,6 +65,19 @@ export const app = new Hono<Env>()
 
   .get('/', (c) => c.text('Hono no ar 🔥'))
   .get('/health', (c) => c.json({ status: 'ok', requestId: c.get('requestId') }))
+
+  // Lesson 9 — chunked plain-text streaming with the lower-level `stream()`
+  // helper (no SSE framing, just raw chunks over time). Good fit for CLI
+  // output or progress logs; `streamSSE` above is the right pick when the
+  // CLIENT needs named events/ids to reconnect from.
+  .get('/stream/text', (c) =>
+    stream(c, async (s) => {
+      for (const word of ['Hono', 'streams', 'chunk', 'by', 'chunk']) {
+        await s.write(`${word}\n`);
+        await s.sleep(200);
+      }
+    })
+  )
 
   // ---------------------------------------------------------------
   // LOGIN — público, sem JWT, com rate limit AGRESSIVO
