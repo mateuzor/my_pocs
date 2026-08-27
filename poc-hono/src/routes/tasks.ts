@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { jwt } from 'hono/jwt';
 import { streamSSE } from 'hono/streaming';
+import { etag } from 'hono/etag';
 import { zValidator } from '@hono/zod-validator';
 import { createTaskSchema, updateTaskSchema, taskIdParamSchema } from '../schemas.js';
 import { tasks, createTask } from '../store/tasks-store.js';
@@ -19,7 +20,14 @@ import { JWT_SECRET } from '../config.js';
 export const tasksRoute = new Hono()
   .use('*', jwt({ secret: JWT_SECRET, alg: 'HS256' }))
 
-  .get('/', (c) => {
+  // Lesson 10 — conditional GET with ETag.
+  //
+  // `etag()` hashes the response body and sets the `ETag` header. On the
+  // NEXT request, if the client sends that same value back as
+  // `If-None-Match`, Hono short-circuits with `304 Not Modified` and an
+  // empty body — the list endpoint skips re-sending JSON the client already
+  // has cached, which matters once the task list gets large.
+  .get('/', etag(), (c) => {
     const payload = c.get('jwtPayload') as { sub: number };
     return c.json(tasks.filter((t) => t.userId === payload.sub));
   })
