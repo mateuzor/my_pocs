@@ -6,6 +6,7 @@ import { HTTPException } from 'hono/http-exception';
 import { sign } from 'hono/jwt';
 import { setSignedCookie, getSignedCookie, deleteCookie } from 'hono/cookie';
 import { stream } from 'hono/streaming';
+import { compress } from 'hono/compress';
 import { zValidator } from '@hono/zod-validator';
 import { rateLimit } from './middlewares/rate-limit.js';
 import { requestId, type Env } from './middlewares/request-id.js';
@@ -53,6 +54,11 @@ export const app = new Hono<Env>()
   // Hono ships it as a built-in middleware.
   .use(secureHeaders())
   .use(logger())
+  // Lesson 10 — response compression (gzip/deflate via CompressionStream).
+  // Cuts payload size on the wire; on the Node adapter this only kicks in
+  // when the client sends `Accept-Encoding`, same as Express's `compression`
+  // package — but here it's zero extra dependencies.
+  .use(compress())
   .use(rateLimit({ windowMs: 60_000, limit: 100 })) // rate limit geral
 
   .onError((err, c) => {
@@ -64,7 +70,12 @@ export const app = new Hono<Env>()
   })
 
   .get('/', (c) => c.text('Hono no ar 🔥'))
-  .get('/health', (c) => c.json({ status: 'ok', requestId: c.get('requestId') }))
+  .get('/health', (c) => {
+    // `Cache-Control` here is safe to cache briefly — health is cheap to
+    // compute but gets polled often by uptime checks/load balancers.
+    c.header('Cache-Control', 'public, max-age=10');
+    return c.json({ status: 'ok', requestId: c.get('requestId') });
+  })
 
   // Lesson 9 — chunked plain-text streaming with the lower-level `stream()`
   // helper (no SSE framing, just raw chunks over time). Good fit for CLI
