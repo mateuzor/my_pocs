@@ -7,6 +7,7 @@ import { sign } from 'hono/jwt';
 import { setSignedCookie, getSignedCookie, deleteCookie } from 'hono/cookie';
 import { stream } from 'hono/streaming';
 import { compress } from 'hono/compress';
+import { serveStatic } from '@hono/node-server/serve-static';
 import { zValidator } from '@hono/zod-validator';
 import { rateLimit } from './middlewares/rate-limit.js';
 import { requestId, type Env } from './middlewares/request-id.js';
@@ -70,6 +71,11 @@ export const app = new Hono<Env>()
   })
 
   .get('/', (c) => c.text('Hono no ar 🔥'))
+  // Lesson 11 — static files. `serveStatic` is adapter-specific (this one
+  // is the Node version); Bun/Deno/Cloudflare each ship their own, since
+  // "read a file from disk" isn't a Web Standard the way `Request`/`Response`
+  // are. `root` is relative to the process cwd, not this file.
+  .use('/static/*', serveStatic({ root: './public', rewriteRequestPath: (p) => p.replace('/static', '') }))
   .get('/health', (c) => {
     // `Cache-Control` here is safe to cache briefly — health is cheap to
     // compute but gets polled often by uptime checks/load balancers.

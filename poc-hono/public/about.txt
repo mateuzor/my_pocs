@@ -1,0 +1,1 @@
+This static file is served by @hono/node-server's serveStatic (Lesson 11).
