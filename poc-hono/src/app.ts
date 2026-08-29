@@ -40,6 +40,9 @@ const users = new Map<string, { id: number; password: string }>([
 // combined with credentials.
 const ALLOWED_ORIGINS = ['http://localhost:5173', 'http://localhost:3000'];
 
+const ALLOWED_UPLOAD_MIME = new Set(['image/png', 'image/jpeg', 'text/plain']);
+const MAX_UPLOAD_BYTES = 2 * 1024 * 1024; // 2MB
+
 export const app = new Hono<Env>()
   .use(requestId)
   .use(
@@ -87,6 +90,25 @@ export const app = new Hono<Env>()
   // helper (no SSE framing, just raw chunks over time). Good fit for CLI
   // output or progress logs; `streamSSE` above is the right pick when the
   // CLIENT needs named events/ids to reconnect from.
+  // Lesson 11 — file uploads via `c.req.parseBody()`, no `multer` needed.
+  // Hono parses `multipart/form-data` natively into the Web-standard `File`
+  // API, so validation is just plain JS against `file.type`/`file.size` —
+  // Express needs a separate middleware package to get this far.
+  .post('/uploads', async (c) => {
+    const body = await c.req.parseBody();
+    const file = body['file'];
+    if (!(file instanceof File)) {
+      throw new HTTPException(400, { message: 'Envie um campo "file"' });
+    }
+    if (!ALLOWED_UPLOAD_MIME.has(file.type)) {
+      throw new HTTPException(415, { message: `Tipo não permitido: ${file.type}` });
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      throw new HTTPException(413, { message: 'Arquivo excede o limite de 2MB' });
+    }
+    return c.json({ name: file.name, type: file.type, size: file.size }, 201);
+  })
+
   .get('/stream/text', (c) =>
     stream(c, async (s) => {
       for (const word of ['Hono', 'streams', 'chunk', 'by', 'chunk']) {

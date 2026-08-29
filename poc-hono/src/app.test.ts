@@ -65,6 +65,25 @@ describe('tasks CRUD (authenticated)', () => {
   });
 });
 
+describe('uploads', () => {
+  it('accepts an allowed mime type under the size limit', async () => {
+    const form = new FormData();
+    form.append('file', new File(['hello'], 'hello.txt', { type: 'text/plain' }));
+
+    const res = await app.request('/uploads', { method: 'POST', body: form });
+    expect(res.status).toBe(201);
+    expect(await res.json()).toMatchObject({ name: 'hello.txt', type: 'text/plain', size: 5 });
+  });
+
+  it('rejects a disallowed mime type as 415', async () => {
+    const form = new FormData();
+    form.append('file', new File(['<html></html>'], 'page.html', { type: 'text/html' }));
+
+    const res = await app.request('/uploads', { method: 'POST', body: form });
+    expect(res.status).toBe(415);
+  });
+});
+
 describe('auth edge cases', () => {
   it('rejects login with wrong credentials as 401', async () => {
     const res = await client.auth.login.$post(
