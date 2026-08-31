@@ -59,4 +59,12 @@ export const openapiRoute = new OpenAPIHono()
     // userId 0 marks these as "demo" tasks created through the OpenAPI
     // playground, separate from the real per-user data under /tasks.
     return c.json(createTask(0, input.title), 201);
+  })
+  // Lesson 12 — `.doc()` walks every route registered with `.openapi()`
+  // above and serializes them into a single OpenAPI 3.0 JSON document.
+  // Nothing here is hand-written by us: title/routes/schemas all come from
+  // the `createRoute()` calls and the Zod schemas they point at.
+  .doc('/doc', {
+    openapi: '3.0.0',
+    info: { title: 'poc-hono tasks (demo)', version: '1.0.0' },
   });
