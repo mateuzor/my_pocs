@@ -12,6 +12,7 @@ import { zValidator } from '@hono/zod-validator';
 import { rateLimit } from './middlewares/rate-limit.js';
 import { requestId, type Env } from './middlewares/request-id.js';
 import { tasksRoute } from './routes/tasks.js';
+import { openapiRoute } from './routes/openapi.js';
 import { JWT_SECRET, COOKIE_SECRET } from './config.js';
 import { z } from 'zod';
 
@@ -193,6 +194,10 @@ export const app = new Hono<Env>()
   // its type chain onto `AppType`, so the RPC client keeps full type-safety
   // for `/tasks/*` even though those handlers are defined elsewhere.
   // ---------------------------------------------------------------
-  .route('/tasks', tasksRoute);
+  .route('/tasks', tasksRoute)
+
+  // Lesson 12 — the OpenAPI demo sub-app (routes/openapi.ts) mounted under
+  // its own prefix, same `.route()` mechanic as tasksRoute above.
+  .route('/openapi', openapiRoute);
 
 export type AppType = typeof app;
