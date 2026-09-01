@@ -8,6 +8,7 @@ import { setSignedCookie, getSignedCookie, deleteCookie } from 'hono/cookie';
 import { stream } from 'hono/streaming';
 import { compress } from 'hono/compress';
 import { serveStatic } from '@hono/node-server/serve-static';
+import { swaggerUI } from '@hono/swagger-ui';
 import { zValidator } from '@hono/zod-validator';
 import { rateLimit } from './middlewares/rate-limit.js';
 import { requestId, type Env } from './middlewares/request-id.js';
@@ -198,6 +199,11 @@ export const app = new Hono<Env>()
 
   // Lesson 12 — the OpenAPI demo sub-app (routes/openapi.ts) mounted under
   // its own prefix, same `.route()` mechanic as tasksRoute above.
-  .route('/openapi', openapiRoute);
+  .route('/openapi', openapiRoute)
+
+  // Lesson 12 — Swagger UI, pointed at the JSON doc served by openapiRoute.
+  // It's just a static HTML page that fetches `url` client-side and renders
+  // an interactive "try it out" console — nothing server-specific about it.
+  .get('/docs', swaggerUI({ url: '/openapi/doc' }));
 
 export type AppType = typeof app;
