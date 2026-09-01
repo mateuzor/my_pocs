@@ -1,0 +1,6 @@
+# Lesson 13 — minimal config for deploying src/adapters/cloudflare.ts as a
+# Cloudflare Worker. Not deployed as part of this POC; kept here so the
+# entrypoint's `main` path is a runnable claim, not just a comment.
+name = "poc-hono"
+main = "src/adapters/cloudflare.ts"
+compatibility_date = "2026-08-01"
