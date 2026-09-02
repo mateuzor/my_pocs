@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alpine.js POC</title>
+  </head>
+  <body>
+    <main>
+      <h1>Alpine.js POC</h1>
+
+      <!-- x-data: declares a reactive scope right in the markup, no build step needed -->
+      <section x-data="{ open: false }">
+        <h2>x-show + transition</h2>
+        <button @click="open = !open" x-text="open ? 'Hide' : 'Show'"></button>
+        <!-- x-transition animates the display toggle with CSS classes, no JS animation code -->
+        <div class="box" x-show="open" x-transition.duration.300ms>Hello from Alpine!</div>
+      </section>
+
+      <!-- Component logic extracted to a registered function (see main.ts) -->
+      <section x-data="todos">
+        <h2>x-for + x-model</h2>
+        <form @submit.prevent="add()">
+          <input x-model="newTodo" placeholder="New todo" />
+          <button>Add</button>
+        </form>
+        <ul>
+          <!-- x-for needs a <template> so Alpine can clone the node per item; :key keeps DOM stable -->
+          <template x-for="todo in todos" :key="todo.id">
+            <li :class="{ done: todo.done }">
+              <input type="checkbox" x-model="todo.done" />
+              <span x-text="todo.text"></span>
+              <button @click="remove(todo.id)">x</button>
+            </li>
+          </template>
+        </ul>
+        <p x-show="todos.length === 0">Nothing to do.</p>
+        <p>Remaining: <strong x-text="remaining"></strong></p>
+      </section>
+
+      <!-- Global store shared between unrelated components -->
+      <section>
+        <h2>$store</h2>
+        <div x-data>
+          <button @click="$store.theme.toggle()">Toggle theme</button>
+          <span x-text="'Current: ' + $store.theme.mode"></span>
+        </div>
+        <div x-data>
+          <p>Second component, same state: <b x-text="$store.theme.mode"></b></p>
+          <p>Todos count (from store): <b x-text="$store.counter.count"></b>
+            <button @click="$store.counter.inc()">+1</button></p>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
