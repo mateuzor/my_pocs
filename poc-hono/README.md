@@ -7,10 +7,15 @@ Vercel Edge). Escolhido pra comparar com o Express que estava usando nas
 
 ## Rodar
 
+Usa Node 20 (`.nvmrc`) — a POC depende da Web Crypto global (`hono/jwt`) e do
+`File`/`FormData` globais (upload), que só existem sem flag a partir do Node 20.
+
 ```bash
+nvm use             # ou garanta Node 20+
 npm install
-npm run dev        # servidor em http://localhost:3000
-npm run client     # (em outra aba) exercita o RPC client contra o server
+npm run dev          # servidor em http://localhost:3000
+npm run client       # (em outra aba) exercita o RPC client contra o server
+npm test             # vitest — CRUD, rate limit, uploads, edge cases
 ```
 
 ## O que a POC cobre
@@ -21,6 +26,15 @@ npm run client     # (em outra aba) exercita o RPC client contra o server
 | 2 | validation | `@hono/zod-validator` + `HTTPException` + `.onError` |
 | 3 | rpc | `hc<AppType>` — cliente type-safe derivado dos tipos do servidor |
 | 4 | auth | `hono/jwt` built-in + middleware `.use('/tasks/*', jwt(...))` + rate limit in-memory |
+| 5 | testing | `hono/testing` (`testClient`) + Vitest — CRUD, rate limit e edge cases sem subir porta |
+| 6 | security headers | `hono/cors` (allowlist + credentials) + `hono/secure-headers` |
+| 7 | cookies | sessão alternativa ao JWT com `hono/cookie` — signed cookies contra tampering |
+| 8 | composição | rotas quebradas em sub-apps (`.route()`) + `Env`/`Variables` tipados (`c.set`/`c.get`) |
+| 9 | streaming | SSE (`streamSSE`) e chunked text (`stream()`) |
+| 10 | performance | `hono/etag` (304 condicional) + `hono/compress` + `Cache-Control` |
+| 11 | arquivos | `serveStatic` + upload nativo via `c.req.parseBody()` (sem multer) |
+| 12 | OpenAPI | `@hono/zod-openapi` gera o spec a partir dos MESMOS schemas Zod + Swagger UI em `/docs` |
+| 13 | multi-runtime | entrypoints Bun (`Bun.serve`) e Cloudflare Workers ao lado do adapter Node |
 
 ## O killer feature: RPC type-safe
 
@@ -86,6 +100,9 @@ build. Refactor cross-cliente-servidor com type safety.
   esperava `title` e backend renomeou pra `name`".
 - **Middlewares built-in** (logger, jwt, cors, cache, compress) reduzem
   drasticamente a lista de dependências.
+- **Testar sem subir servidor** — `hono/testing` reusa o MESMO `hc<AppType>`
+  client pra rodar os testes direto contra `app.fetch`, com o mesmo
+  autocomplete/type-check que o RPC client de produção tem.
 
 Trade-off honesto: ecossistema menor, então pra coisas de nicho
 (ex.: Passport strategies) você acaba escrevendo na mão.
