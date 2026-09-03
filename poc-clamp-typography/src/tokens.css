@@ -1,0 +1,20 @@
+/*
+ * clamp(min, preferred, max):
+ * preferred = intercept + slope * viewport width. The browser picks the
+ * preferred value but never goes below min or above max, so we get fluid
+ * sizing between 320px and 1240px viewports without media queries.
+ *
+ * Formula for each step (utopia.fyi style):
+ *   slope = (max - min) / (1240 - 320)
+ *   intercept = min - slope * 320
+ * Using rem in min/max respects the user's browser font-size setting (a11y).
+ */
+:root {
+  --step--1: clamp(0.83rem, 0.80rem + 0.15vw, 0.94rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.19rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.44rem, 1.25rem + 0.95vw, 1.95rem);
+  --step-3: clamp(1.73rem, 1.4rem + 1.65vw, 2.44rem);
+  --step-4: clamp(2.07rem, 1.5rem + 2.85vw, 3.05rem);
+  --step-5: clamp(2.49rem, 1.6rem + 4.45vw, 3.81rem);
+}
