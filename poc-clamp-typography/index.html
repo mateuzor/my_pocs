@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clamp() Typography POC</title>
+  </head>
+  <body>
+    <main class="prose">
+      <h1>Fluid typography with clamp()</h1>
+      <p class="lead">Resize the window: headings and text scale smoothly, with no media queries.</p>
+      <h2>Why fluid?</h2>
+      <p>Each step of the scale interpolates between a minimum size (small screens) and a maximum size (large screens). Beyond those bounds it stops growing.</p>
+      <h3>Scale preview</h3>
+      <ul class="scale">
+        <li class="step-5">Step 5</li>
+        <li class="step-4">Step 4</li>
+        <li class="step-3">Step 3</li>
+        <li class="step-2">Step 2</li>
+        <li class="step-1">Step 1</li>
+        <li class="step-0">Step 0 (body)</li>
+        <li class="step--1">Step -1 (small)</li>
+      </ul>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
