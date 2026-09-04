@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS Variables Theme POC</title>
+    <!-- Inline script runs before first paint to avoid a flash of the wrong theme (FOUC) -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem('theme');
+        if (saved) document.documentElement.dataset.theme = saved;
+      })();
+    </script>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Theme with CSS variables</h1>
+      <p>Follows your OS preference until you pick one manually.</p>
+      <div class="actions">
+        <button id="toggle" type="button">Toggle theme</button>
+        <button id="reset" type="button" class="secondary">Use system</button>
+      </div>
+      <p class="muted">Current: <span id="current"></span></p>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
