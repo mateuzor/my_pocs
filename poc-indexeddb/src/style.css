@@ -1,0 +1,8 @@
+body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; }
+main { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+.row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+button, select, input { padding: .4rem .7rem; border-radius: 6px; border: 1px solid #334155; background: #1e293b; color: inherit; }
+button { cursor: pointer; }
+li { padding: .4rem 0; border-bottom: 1px solid #1e293b; }
+.tag { font-size: .75rem; background: #334155; padding: 1px 6px; border-radius: 4px; margin-left: .5rem; }
+#status { color: #94a3b8; }

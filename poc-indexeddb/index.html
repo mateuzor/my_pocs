@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IndexedDB POC</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>IndexedDB + idb</h1>
+      <section class="row">
+        <button id="seed">Seed 20 notes</button>
+        <button id="clear">Clear all</button>
+        <button id="transfer">Move oldest "inbox" to "archive" (transaction)</button>
+      </section>
+      <section class="row">
+        <label>Tag <select id="tag"><option value="">any</option><option>inbox</option><option>work</option><option>idea</option><option>archive</option></select></label>
+        <label>From <input id="from" type="date" /></label>
+        <label>To <input id="to" type="date" /></label>
+        <button id="query">Query (index + range)</button>
+        <button id="cursor">Cursor: uppercase titles</button>
+      </section>
+      <p id="status"></p>
+      <ul id="list"></ul>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
