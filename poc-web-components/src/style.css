@@ -1,0 +1,12 @@
+body { font-family: system-ui, sans-serif; background: #f8fafc; color: #0f172a; }
+main { max-width: 640px; margin: 2rem auto; display: grid; gap: 1rem; }
+
+/* Light DOM content is styled by the page, shadow DOM is isolated from these rules. */
+ui-card button { padding: .3rem .8rem; }
+
+/* ::part pierces the shadow boundary, but only for parts the component exposes. */
+ui-card.themed::part(header) { background: linear-gradient(90deg, #6366f1, #ec4899); color: white; }
+ui-card.themed::part(container) { border-color: #6366f1; }
+
+/* Custom properties inherit through shadow DOM: the official theming channel. */
+ui-badge { --ui-badge-radius: 999px; }

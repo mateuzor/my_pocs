@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Components POC</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Web Components</h1>
+
+      <h2>ui-badge (attributes, no slots)</h2>
+      <ui-badge variant="success">Paid</ui-badge>
+      <ui-badge variant="danger">Failed</ui-badge>
+
+      <h2>ui-card (named slots, CSS parts)</h2>
+      <ui-card>
+        <span slot="title">Hello slots</span>
+        Default slot content goes here, styled by the page.
+        <button slot="actions">OK</button>
+      </ui-card>
+
+      <h2>ui-counter (properties, events, reflect)</h2>
+      <ui-counter id="counter" label="Clicks" value="3" step="2"></ui-counter>
+      <p id="log"></p>
+
+      <h2>ui-card styled from outside via ::part</h2>
+      <ui-card class="themed">
+        <span slot="title">Themed</span>
+        Parts expose only what the author allows.
+      </ui-card>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
