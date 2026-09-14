@@ -1,0 +1,13 @@
+{
+  "color": {
+    "$type": "color",
+    "bg": {
+      "page": { "$value": "{color.palette.slate.900}" },
+      "surface": { "$value": "{color.palette.slate.700}" }
+    },
+    "text": {
+      "default": { "$value": "{color.palette.slate.50}" },
+      "muted": { "$value": "{color.palette.slate.100}" }
+    }
+  }
+}

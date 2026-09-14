@@ -1,0 +1,28 @@
+/* Only token variables here: no hard-coded colors or spacing. */
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  background: var(--color-bg-page);
+  color: var(--color-text-default);
+}
+main { max-width: 640px; margin: var(--size-space-8) auto; padding: 0 var(--size-space-4); }
+.card {
+  background: var(--color-bg-surface);
+  border-radius: var(--size-radius-md);
+  padding: var(--size-space-4);
+  margin: var(--size-space-4) 0;
+}
+.muted { color: var(--color-text-muted); font-size: var(--font-size-sm); }
+.btn {
+  background: var(--color-action-primary);
+  color: white; border: 0;
+  padding: var(--size-space-2) var(--size-space-4);
+  border-radius: var(--size-radius-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+.btn:hover { background: var(--color-action-primary-hover); }
+.badge { padding: var(--size-space-1) var(--size-space-2); border-radius: var(--size-radius-pill); color: white; font-size: var(--font-size-sm); }
+.badge.danger { background: var(--color-feedback-danger); }
+.badge.success { background: var(--color-feedback-success); }
+.swatch { display: inline-block; width: 4rem; height: 4rem; margin: var(--size-space-1); border-radius: var(--size-radius-sm); font-size: .6rem; color: white; }

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Style Dictionary POC</title>
+  </head>
+  <body>
+    <main>
+      <h1>Design tokens demo</h1>
+      <button id="theme" class="btn">Toggle dark theme</button>
+      <section class="card">
+        <h2>Card</h2>
+        <p class="muted">Every color, space and radius here comes from generated CSS variables.</p>
+        <button class="btn">Primary</button>
+        <span class="badge danger">danger</span>
+        <span class="badge success">success</span>
+      </section>
+      <h2>Palette (read from JS output)</h2>
+      <div id="swatches"></div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
