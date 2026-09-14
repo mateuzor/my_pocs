@@ -1,0 +1,20 @@
+{
+  "color": {
+    "$type": "color",
+    "palette": {
+      "indigo": {
+        "500": { "$value": "#6366f1", "$description": "Brand base" },
+        "600": { "$value": "#4f46e5" },
+        "100": { "$value": "#e0e7ff" }
+      },
+      "slate": {
+        "900": { "$value": "#0f172a" },
+        "700": { "$value": "#334155" },
+        "100": { "$value": "#f1f5f9" },
+        "50": { "$value": "#f8fafc" }
+      },
+      "red": { "500": { "$value": "#ef4444" } },
+      "green": { "500": { "$value": "#22c55e" } }
+    }
+  }
+}

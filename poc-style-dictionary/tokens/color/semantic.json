@@ -1,0 +1,21 @@
+{
+  "color": {
+    "$type": "color",
+    "bg": {
+      "page": { "$value": "{color.palette.slate.50}" },
+      "surface": { "$value": "#ffffff" }
+    },
+    "text": {
+      "default": { "$value": "{color.palette.slate.900}" },
+      "muted": { "$value": "{color.palette.slate.700}" }
+    },
+    "action": {
+      "primary": { "$value": "{color.palette.indigo.500}" },
+      "primary-hover": { "$value": "{color.palette.indigo.600}" }
+    },
+    "feedback": {
+      "danger": { "$value": "{color.palette.red.500}" },
+      "success": { "$value": "{color.palette.green.500}" }
+    }
+  }
+}
