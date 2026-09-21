@@ -1,0 +1,24 @@
+:root,
+[data-theme='light'] {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --primary: #1d4ed8;
+  --primary-fg: #ffffff;
+  --danger: #b91c1c;
+  --border: #cbd5e1;
+  --muted: #475569;
+}
+
+[data-theme='dark'] {
+  --bg: #0f172a;
+  --fg: #f1f5f9;
+  --primary: #60a5fa;
+  --primary-fg: #0f172a;
+  --danger: #f87171;
+  --border: #334155;
+  --muted: #94a3b8;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+}
