@@ -1,0 +1,24 @@
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as ButtonStories from '../components/Button.stories';
+
+<Meta title="Introduction" />
+
+# Mini component library
+
+This Storybook is the single source of truth for the UI components. Every story is a state of a component.
+
+## Why MDX docs
+
+MDX mixes Markdown with live stories, so guidelines and examples cannot drift apart.
+
+<Canvas of={ButtonStories.Primary} />
+
+Try the controls below to change the props of the primary button:
+
+<Controls of={ButtonStories.Primary} />
+
+## Conventions
+
+- One story per meaningful state (default, loading, error, disabled).
+- Use `play` functions for behaviour, the a11y panel for accessibility.
+- Switch the theme from the toolbar.
