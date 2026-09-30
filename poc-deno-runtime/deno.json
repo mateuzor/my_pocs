@@ -1,0 +1,18 @@
+{
+  "tasks": {
+    "dev": "deno run --watch --allow-net=0.0.0.0:8000 --allow-read=. --unstable-kv src/main.ts",
+    "start": "deno run --allow-net=0.0.0.0:8000 --allow-read=. --unstable-kv src/main.ts",
+    "test": "deno test --allow-read=. --unstable-kv",
+    "fmt": "deno fmt",
+    "lint": "deno lint",
+    "perms": "deno run --allow-read=./deno.json src/permissions.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.0",
+    "@std/path": "jsr:@std/path@^1.0.0",
+    "@std/http": "jsr:@std/http@^1.0.0",
+    "@std/fmt/colors": "jsr:@std/fmt@^1.0.0/colors",
+    "chalk": "npm:chalk@5"
+  },
+  "fmt": { "lineWidth": 100 }
+}
