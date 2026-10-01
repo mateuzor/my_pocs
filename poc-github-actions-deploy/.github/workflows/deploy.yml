@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # manual re-deploy button in the Actions tab
+
+# Pages deploys need an OIDC token and write access to the Pages service.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Concurrency for deploys: queue instead of cancelling, so a half-finished
+# deployment is never aborted mid-way; only the latest pending run is kept.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env:
+          # Repo name as base path, e.g. /my_pocs/ for project pages.
+          BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_COMMIT_SHA: ${{ github.sha }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Environment: gives a deployment history, a public URL in the PR/UI, and
+    # lets you add protection rules (required reviewers, branch restrictions).
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
