@@ -1,0 +1,6 @@
+node_modules
+dist-vite
+dist-webpack
+dist-parcel
+.parcel-cache
+.parcel-dev

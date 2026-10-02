@@ -1,0 +1,37 @@
+{
+  "name": "poc-bundler-comparison",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "dev:vite": "vite --port 5171 --strictPort",
+    "dev:webpack": "webpack serve --config webpack.config.cjs --port 5172",
+    "dev:parcel": "parcel index.html --port 5173 --no-cache --dist-dir .parcel-dev",
+    "build:vite": "vite build --outDir dist-vite --emptyOutDir",
+    "build:webpack": "webpack --config webpack.config.cjs --mode production",
+    "build:parcel": "parcel build index.html --dist-dir dist-parcel --no-cache --public-url ./",
+    "bench": "node scripts/benchmark.mjs"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "html-webpack-plugin": "^5.6.0",
+    "parcel": "^2.12.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.4.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
+  }
+}
