@@ -1,0 +1,23 @@
+# electron-builder packages dist/ (compiled main, preload, renderer) into installers.
+appId: com.mateus.poc.electron
+productName: Electron POC
+directories:
+  output: release
+# Ship only compiled output: sources and devDependencies stay out of the app bundle.
+files:
+  - dist/**/*
+  - package.json
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dmg
+    - zip
+win:
+  target:
+    - nsis
+linux:
+  target:
+    - AppImage
+  category: Utility
+# Faster installs of the asar archive; the app code is packed into app.asar.
+asar: true
