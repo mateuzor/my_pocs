@@ -1,0 +1,27 @@
+{
+  "name": "poc-kubb",
+  "version": "1.0.0",
+  "description": "Kubb POC: generate TS types, client and Zod from an OpenAPI spec",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "kubb generate",
+    "typecheck": "tsc -p .",
+    "demo:reset": "node scripts/reset-demo.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@kubb/plugin-axios": "^5.13.0",
+    "@kubb/plugin-ts": "^5.4.1",
+    "@kubb/plugin-zod": "^5.8.2",
+    "kubb": "^5.16.0",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "axios": "^1.21.0",
+    "zod": "^4.6.7"
+  }
+}
