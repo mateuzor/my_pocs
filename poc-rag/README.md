@@ -33,7 +33,7 @@ npm run demo:reset    # delete index.json (the model stays cached)
 | `src/ask.mjs` | Embeds the question, ranks chunks by cosine similarity, prints the prompt |
 | `index.json` | The "vector store": a JSON file, git-ignored, created by `ingest` |
 
-## Demo walkthrough (about 90s, no editing)
+## Demo walkthrough (optional: the talk uses a static slide with this output)
 
 Before starting: `nvm use 22`, `npm run demo:reset`, zoom the terminal in.
 

@@ -59,7 +59,7 @@ Hi everyone. Today I will talk about RAG. It means Retrieval-Augmented Generatio
 
 In simple words: how to give an AI your own data, at the moment of the question.
 
-We have five minutes. What it is, how it works, and a short demo that runs on my laptop.""",
+We have five minutes. What it is, how it works, and a real example from a small project.""",
 
     "problem": """[0:25 - 1:00]
 An LLM learns from public data, until a certain date. So it does not know your company. It does not know your documents, your policies, or what changed last week.
@@ -92,31 +92,22 @@ The second part happens at every question. We turn the question into numbers, in
 
 The key idea: we search by meaning, not by exact words.""",
 
-    "demo": """[2:30 - 4:00]  LIVE DEMO in the terminal. About 90 seconds. Full script in the README.
-Switch to VS Code now.
+    "example": """[2:30 - 3:50]  EXAMPLE (static slide, no live demo)
+Here is a real example, from a small project I built. We have an internal handbook, with six documents. They were cut in twenty chunks.
 
-Step 1. Open docs/remote-work.md. This is an internal handbook, six documents. A normal LLM never saw it.
+The question is: can I work from another country, and for how long?
 
-Step 2. Run npm run ingest. Six documents became twenty chunks. Each chunk has 384 numbers.
+Look at chunk number 1. This is the right one, score about 0.7. It says: up to 30 days per year.
 
-Step 3. Run npm run ask:remote. Point at chunk number 1: this is the right one, score about 0.7.
+Look at chunk number 3. It is noise, score about 0.3. The search always brings the same number of chunks, even when they are weak. This is a real limit.
 
-Point at chunk number 3: it is noise, score about 0.3. The top results always bring the same number of chunks, even when they are weak.
+And look at the last line. We send only 3 chunks, not the whole handbook. This is how we save tokens.
 
-Point at the prompt: only 3 chunks, not the whole handbook. This is how we save tokens.
+One more thing. In another question, I wrote call. The document says page the on-call engineer. Different words, same meaning. The search still found it.
 
-Step 4. Run npm run ask:oncall. The question says call. The document says page the on-call engineer. Different words, same meaning. The search still found it.
+This example stops at the prompt. The next step is to send it to the LLM.""",
 
-Small note: this demo has no LLM step. We stop at the prompt.
-
-If something breaks, go to the hidden slide at the end.""",
-
-    "backup": """BACKUP SLIDE (hidden). Use only if the live demo fails.
-This is the output of npm run ask:remote. Chunk 1 is the right one. Chunk 3 is noise.
-
-The prompt has only 3 chunks, out of 20. The demo stops here: there is no LLM step.""",
-
-    "compare": """[4:00 - 4:40]
+    "compare": """[3:50 - 4:35]
 How does it compare? Fine-tuning changes the model itself. It is good to change style or behavior. But it is hard to update, and it does not show sources.
 
 A long context means pasting everything in the prompt. It is simple, but you pay for all the tokens, in every question.
@@ -125,10 +116,10 @@ RAG sends only the pieces that matter. So it uses fewer tokens, the data can cha
 
 Now the real limits. The answer is only as good as the search. Bad chunks give bad answers. The top results can have noise, like we saw. And you need to control who can see which document.""",
 
-    "close": """[4:40 - 5:00]
+    "close": """[4:35 - 5:00]
 To finish. RAG is retrieve, augment, generate. The answer is only as good as the search.
 
-And you can start small: a few documents and a local model, like in this demo.
+And you can start small: a few documents and a local model, like in this example.
 
 The code is on my GitHub, in the poc-rag folder. Thank you. Questions?""",
 }
@@ -309,14 +300,25 @@ for i, (a, b) in enumerate(lane2):
         text(s, x + 1.95, 4.75, 0.4, 0.7, "→", size=26, color=AMBER, bold=True, align=PP_ALIGN.CENTER)
 text(s, 0.8, 6.2, 11.8, 0.6, "We search by meaning, not by exact words.", size=24, color=MUTED)
 
-# ---------------------------------------------------------------- 5. Live demo
-s = new_slide(NOTES["demo"])
-title(s, "Live demo", "Switch to VS Code")
-for i, (n, t) in enumerate([("1", "Knowledge"), ("2", "Index"), ("3", "Ask"), ("4", "Meaning")]):
-    label(s, 0.8 + i * 3.04, 2.6, 2.9, 1.9, f"{n}\n{t}", size=34, color=TEAL, line=TEAL)
-text(s, 0.8, 5.0, 11.8, 0.6, "$ npm run ingest", size=28, color=GREEN, font=MONO, bold=True)
-text(s, 0.8, 5.7, 11.8, 0.6, "$ npm run ask:remote", size=28, color=GREEN, font=MONO, bold=True)
-text(s, 0.8, 6.5, 11.8, 0.5, "Local embeddings  ·  no API key  ·  stops at the prompt", size=18, color=MUTED)
+OUT = """$ npm run ask:remote
+
+Question: Can I work from another country, and for how long?
+
+#1  score 0.71  remote-work.md
+    You can work from another country for up to 30 days...
+#2  score 0.39  remote-work.md
+    Acme Labs is remote-first. You can work from home...
+#3  score 0.34  learning.md
+    Certifications are paid in full if they are related...
+
+Chunks sent to the LLM: 3 of 20"""
+s = new_slide(NOTES["example"])
+title(s, "Example", "6 documents, 20 chunks, one question")
+code(s, 0.6, 1.9, 7.9, 4.6, OUT, size=14, plain=True, header="top 3 chunks",
+     hl={4: GREEN, 5: GREEN, 8: AMBER, 9: AMBER})
+label(s, 8.8, 1.9, 3.95, 4.6,
+      "Notice\n#1  right chunk (0.71)\n#3  noise (0.34)\n3 of 20 chunks sent\nnot the whole handbook",
+      size=28, color=TEAL, line=TEAL)
 
 # ---------------------------------------------------------------- 6. Compare
 s = new_slide(NOTES["compare"])
@@ -360,27 +362,6 @@ for i, (a, b) in enumerate(points):
     label(s, 0.8, 1.6 + i * 1.45, 11.7, 1.25, f"{a}\n{b}", size=30, color=TEAL if i == 0 else TEXT,
           line=TEAL if i == 0 else None)
 text(s, 0.8, 6.15, 11.8, 0.6, "github.com/mateuzor/my_pocs  ·  poc-rag  ·  Questions?", size=24, color=TEAL, bold=True)
-
-# ---------------------------------------------------------------- 8. Backup (hidden)
-OUT = """$ npm run ask:remote
-
-Question: Can I work from another country, and for how long?
-
-#1  score 0.71  remote-work.md
-    You can work from another country for up to 30 days per year...
-#2  score 0.39  remote-work.md
-    Acme Labs is remote-first. You can work from home every day...
-#3  score 0.34  learning.md
-    Certifications are paid in full if they are related to your role...
-
-Chunks sent to the LLM: 3 of 20  (not the whole handbook)"""
-s = new_slide(NOTES["backup"])
-title(s, "Demo output", "Backup slide")
-code(s, 0.6, 1.8, 12.1, 4.7, OUT, size=18, plain=True, header="npm run ask:remote",
-     hl={4: GREEN, 5: GREEN, 8: AMBER, 9: AMBER})
-
-# Hide the backup slide
-list(prs.slides)[-1]._element.set("show", "0")
 
 import os
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rag-intro.pptx")
