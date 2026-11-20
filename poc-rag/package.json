@@ -1,0 +1,24 @@
+{
+  "name": "poc-rag",
+  "version": "1.0.0",
+  "description": "RAG POC: local embeddings + vector search, no API key",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ingest": "node src/ingest.mjs",
+    "ask": "node src/ask.mjs",
+    "demo:reset": "node scripts/reset-demo.mjs",
+    "ask:remote": "node src/ask.mjs Can I work from another country, and for how long?",
+    "ask:oncall": "node src/ask.mjs Production is down at night, who do I call?"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.2"
+  }
+}
